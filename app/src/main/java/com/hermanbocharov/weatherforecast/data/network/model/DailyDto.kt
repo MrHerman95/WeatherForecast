@@ -70,7 +70,7 @@ data class DailyDto(
 
     @SerializedName("pop")
     @Expose
-    private val precipitationProbability: Int? = null,
+    private val precipitationProbability: Double? = null,
 
     @SerializedName("rain")
     @Expose
@@ -82,5 +82,5 @@ data class DailyDto(
 
     @SerializedName("uvi")
     @Expose
-    private val uvi: Int? = null
+    private val uvi: Double? = null
 )

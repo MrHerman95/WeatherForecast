@@ -1,5 +1,6 @@
 package com.hermanbocharov.weatherforecast.data.network
 
+import com.hermanbocharov.weatherforecast.data.network.model.LocationDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherForecastDto
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
@@ -7,7 +8,7 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    @GET("onecall")
+    @GET("data/2.5/onecall")
     fun getWeatherForecast(
         @Query(QUERY_PARAM_LATITUDE) latitude: Double,
         @Query(QUERY_PARAM_LONGITUDE) longitude: Double,
@@ -17,12 +18,21 @@ interface ApiService {
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY
     ): Single<WeatherForecastDto>
 
+    @GET("geo/1.0/reverse")
+    fun getLocation(
+        @Query(QUERY_PARAM_LATITUDE) latitude: Double,
+        @Query(QUERY_PARAM_LONGITUDE) longitude: Double,
+        @Query(QUERY_PARAM_LIMIT) limit: Int = 1,
+        @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY
+    ): Single<List<LocationDto>>
+
     companion object {
         private const val QUERY_PARAM_LATITUDE = "lat"
         private const val QUERY_PARAM_LONGITUDE = "lon"
         private const val QUERY_PARAM_EXCLUDE = "exclude"
         private const val QUERY_PARAM_UNITS = "units"
         private const val QUERY_PARAM_LANG = "lang"
+        private const val QUERY_PARAM_LIMIT = "limit"
         private const val QUERY_PARAM_API_KEY = "appid"
 
         private const val DEFAULT_EXCLUDE_DATA = "minutely,alerts"

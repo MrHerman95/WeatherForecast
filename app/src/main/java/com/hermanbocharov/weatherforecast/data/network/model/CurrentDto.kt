@@ -70,5 +70,5 @@ data class CurrentDto(
 
     @SerializedName("snow")
     @Expose
-    private val snow: SnowVolumeDto? = null,
+    private val snow: SnowVolumeDto? = null
 )

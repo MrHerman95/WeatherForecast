@@ -4,14 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class WeatherForecastDto(
-    @SerializedName("lat")
-    @Expose
-    private val lat: Double? = null,
-
-    @SerializedName("lon")
-    @Expose
-    private val lon: Double? = null,
-
     @SerializedName("timezone")
     @Expose
     private val timezoneName: String? = null,

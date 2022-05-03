@@ -6,65 +6,65 @@ import com.google.gson.annotations.SerializedName
 data class HourlyDto(
     @SerializedName("dt")
     @Expose
-    private val forecastTime: Int? = null,
+    val forecastTime: Int,
 
     @SerializedName("temp")
     @Expose
-    private val temp: Double? = null,
+    val temp: Double,
 
     @SerializedName("feels_like")
     @Expose
-    private val feelsLike: Double? = null,
+    val feelsLike: Double,
 
     @SerializedName("pressure")
     @Expose
-    private val pressure: Int? = null,
+    val pressure: Int,
 
     @SerializedName("humidity")
     @Expose
-    private val humidity: Int? = null,
+    val humidity: Int,
 
     @SerializedName("dew_point")
     @Expose
-    private val dewPoint: Double? = null,
+    val dewPoint: Double,
 
     @SerializedName("uvi")
     @Expose
-    private val uvi: Double? = null,
+    val uvi: Double,
 
     @SerializedName("clouds")
     @Expose
-    private val clouds: Int? = null,
+    val clouds: Int,
 
     @SerializedName("visibility")
     @Expose
-    private val visibility: Int? = null,
+    val visibility: Int,
 
     @SerializedName("wind_speed")
     @Expose
-    private val windSpeed: Double? = null,
+    val windSpeed: Double,
 
     @SerializedName("wind_deg")
     @Expose
-    private val windDeg: Int? = null,
+    val windDeg: Int,
 
     @SerializedName("wind_gust")
     @Expose
-    private val windGust: Double? = null,
+    val windGust: Double? = null,
 
     @SerializedName("weather")
     @Expose
-    private val weather: List<WeatherConditionDto>? = null,
+    val weather: List<WeatherConditionDto>,
 
     @SerializedName("pop")
     @Expose
-    private val precipitationProbability: Double? = null,
+    val precipitationProbability: Double,
 
     @SerializedName("rain")
     @Expose
-    private val rain: RainVolumeDto? = null,
+    val rain: RainVolumeDto? = null,
 
     @SerializedName("snow")
     @Expose
-    private val snow: SnowVolumeDto? = null
+    val snow: SnowVolumeDto? = null
 )

@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val weather =
-            ApiFactory.apiService.getWeatherForecast(latitude = 50.38952, longitude = 30.31657)
+            ApiFactory.apiService.getWeatherForecast(latitude = 46.482952, longitude = 30.712481)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess {
@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
         val location =
-            ApiFactory.apiService.getLocation(latitude = 50.38952, longitude = 30.31657)
+            ApiFactory.apiService.getLocation(latitude = 46.482952, longitude = 30.712481)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { it[0] }

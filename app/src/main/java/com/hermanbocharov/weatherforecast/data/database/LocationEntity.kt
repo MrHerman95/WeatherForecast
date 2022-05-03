@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
     tableName = "location",
     indices = [Index(value = ["lat", "lon"], unique = true)]
 )
-data class LocationDbModel(
+data class LocationEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val name: String,

@@ -6,81 +6,81 @@ import com.google.gson.annotations.SerializedName
 data class DailyDto(
     @SerializedName("dt")
     @Expose
-    private val forecastTime: Int? = null,
+    val forecastTime: Int,
 
     @SerializedName("sunrise")
     @Expose
-    private val sunrise: Int? = null,
+    val sunrise: Int,
 
     @SerializedName("sunset")
     @Expose
-    private val sunset: Int? = null,
+    val sunset: Int,
 
     @SerializedName("moonrise")
     @Expose
-    private val moonrise: Int? = null,
+    val moonrise: Int,
 
     @SerializedName("moonset")
     @Expose
-    private val moonset: Int? = null,
+    val moonset: Int,
 
     @SerializedName("moon_phase")
     @Expose
-    private val moonPhase: Double? = null,
+    val moonPhase: Double,
 
     @SerializedName("temp")
     @Expose
-    private val temp: TemperatureDto? = null,
+    val temp: TemperatureDto,
 
     @SerializedName("feels_like")
     @Expose
-    private val feelsLike: FeelsLikeDto? = null,
+    val feelsLike: FeelsLikeDto,
 
     @SerializedName("pressure")
     @Expose
-    private val pressure: Int? = null,
+    val pressure: Int,
 
     @SerializedName("humidity")
     @Expose
-    private val humidity: Int? = null,
+    val humidity: Int,
 
     @SerializedName("dew_point")
     @Expose
-    private val dewPoint: Double? = null,
+    val dewPoint: Double,
 
     @SerializedName("wind_speed")
     @Expose
-    private val windSpeed: Double? = null,
+    val windSpeed: Double,
 
     @SerializedName("wind_deg")
     @Expose
-    private val windDeg: Int? = null,
+    val windDeg: Int,
 
     @SerializedName("wind_gust")
     @Expose
-    private val windGust: Double? = null,
+    val windGust: Double? = null,
 
     @SerializedName("weather")
     @Expose
-    private val weather: List<WeatherConditionDto>? = null,
+    val weather: List<WeatherConditionDto>,
 
     @SerializedName("clouds")
     @Expose
-    private val clouds: Int? = null,
+    val clouds: Int,
 
     @SerializedName("pop")
     @Expose
-    private val precipitationProbability: Double? = null,
+    val precipitationProbability: Double,
 
     @SerializedName("rain")
     @Expose
-    private val rainVolume: Double? = null,
+    val rainVolume: Double? = null,
 
     @SerializedName("snow")
     @Expose
-    private val snowVolume: Double? = null,
+    val snowVolume: Double? = null,
 
     @SerializedName("uvi")
     @Expose
-    private val uvi: Double? = null
+    val uvi: Double
 )

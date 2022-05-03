@@ -9,20 +9,20 @@ import androidx.room.PrimaryKey
     tableName = "weather_current",
     foreignKeys = [
         ForeignKey(
-            entity = LocationDbModel::class,
+            entity = LocationEntity::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("location_id"),
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = WeatherConditionDbModel::class,
+            entity = WeatherConditionEntity::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("weather_condition_id"),
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class CurrentDbModel(
+data class CurrentWeatherEntity(
     @PrimaryKey
     val id: Int,
 

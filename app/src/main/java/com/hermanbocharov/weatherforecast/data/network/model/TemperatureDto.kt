@@ -6,25 +6,25 @@ import com.google.gson.annotations.SerializedName
 data class TemperatureDto(
     @SerializedName("day")
     @Expose
-    private val day: Double? = null,
+    val day: Double,
 
     @SerializedName("min")
     @Expose
-    private val min: Double? = null,
+    val min: Double,
 
     @SerializedName("max")
     @Expose
-    private val max: Double? = null,
+    val max: Double,
 
     @SerializedName("night")
     @Expose
-    private val night: Double? = null,
+    val night: Double,
 
     @SerializedName("eve")
     @Expose
-    private val eve: Double? = null,
+    val eve: Double,
 
     @SerializedName("morn")
     @Expose
-    private val morn: Double? = null
+    val morn: Double
 )

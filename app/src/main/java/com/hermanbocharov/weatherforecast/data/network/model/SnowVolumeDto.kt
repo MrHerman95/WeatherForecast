@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class SnowVolumeDto(
     @SerializedName("1h")
     @Expose
-    private val last1h: Double? = null
+    val last1h: Double? = null
 )

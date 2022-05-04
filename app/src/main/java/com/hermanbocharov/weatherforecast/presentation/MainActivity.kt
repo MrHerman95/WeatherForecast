@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.hermanbocharov.weatherforecast.R
+import com.hermanbocharov.weatherforecast.data.database.AppDatabase
+import com.hermanbocharov.weatherforecast.data.mapper.WeatherMapper
 import com.hermanbocharov.weatherforecast.data.network.ApiFactory
 import com.hermanbocharov.weatherforecast.data.network.model.FullWeatherInfoDto
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -15,33 +17,37 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class MainActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
+    private lateinit var db: AppDatabase
+    private val mapper = WeatherMapper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val weather =
-            ApiFactory.apiService.getWeatherForecast(latitude = 46.482952, longitude = 30.712481)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess {
-                    Log.d("TEST_OF_LOADING_DATA", "Weather forecast data loaded successfully")
-                }
+        db = AppDatabase.getInstance(this)
 
-        val location =
-            ApiFactory.apiService.getLocation(latitude = 46.482952, longitude = 30.712481)
+        val disposable = Single.zip(
+            ApiFactory.apiService.getLocation(latitude = 49.2462, longitude = -123.1162)
+                .subscribeOn(Schedulers.io()),
+            ApiFactory.apiService.getWeatherForecast(latitude = 49.2462, longitude = -123.1162)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map { it[0] }
-                .doOnSuccess {
-                    Log.d("TEST_OF_LOADING_DATA", "Location data loaded successfully")
-                }
-
-        val disposable = Single.zip(location, weather) { location, weather ->
-            FullWeatherInfoDto(location, weather)
+        ) { location, weather ->
+            FullWeatherInfoDto(location[0], weather)
         }
+            .observeOn(Schedulers.io())
             .subscribe({
                 Log.d("TEST_OF_LOADING_DATA", it.toString())
+                db.weatherConditionDao().insertWeatherCondition(
+                    mapper.mapWeatherConditionDtoToEntity(it.weatherForecast.current.weather[0])
+                )
+                val locationId = db.locationDao().insertLocation(
+                    mapper.mapLocationDtoToEntity(it.location)
+                )
+                db.currentDao().insertCurrentWeather(
+                    mapper.mapCurrentWeatherDtoToEntity(
+                        it.weatherForecast.current, locationId.toInt()
+                    )
+                )
             }, {
                 Log.d("TEST_OF_LOADING_DATA", it.message + "")
             })

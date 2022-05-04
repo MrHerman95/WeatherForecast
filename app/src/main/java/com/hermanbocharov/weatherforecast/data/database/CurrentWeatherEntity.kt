@@ -23,11 +23,8 @@ import androidx.room.PrimaryKey
     ]
 )
 data class CurrentWeatherEntity(
-    @PrimaryKey
-    val id: Int,
-
-    @ColumnInfo(name = "current_time")
-    val currentTime: Int,
+    @ColumnInfo(name = "update_time")
+    val updateTime: Int,
 
     val temp: Double,
 
@@ -37,6 +34,7 @@ data class CurrentWeatherEntity(
     @ColumnInfo(name = "weather_condition_id")
     val weatherConditionId: Int,
 
+    @PrimaryKey
     @ColumnInfo(name = "location_id")
     val locationId: Int
 )

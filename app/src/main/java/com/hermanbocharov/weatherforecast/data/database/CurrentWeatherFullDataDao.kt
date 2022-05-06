@@ -1,11 +1,13 @@
 package com.hermanbocharov.weatherforecast.data.database
 
 import androidx.lifecycle.LiveData
+import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 
-interface CurrentWeatherCompleteDataDao {
+@Dao
+interface CurrentWeatherFullDataDao {
     @Transaction
     @Query("SELECT * FROM weather_current")
-    fun getCurrentWeatherCompleteData(): LiveData<List<CurrentWeatherCompleteData>>
+    fun getCurrentWeatherCompleteData(): LiveData<List<CurrentWeatherFullData>>
 }

@@ -38,5 +38,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun locationDao(): LocationDao
     abstract fun weatherConditionDao(): WeatherConditionDao
     abstract fun currentDao(): CurrentWeatherDao
-    abstract fun currentWeatherCompleteDao(): CurrentWeatherCompleteData
+    abstract fun currentWeatherFullDataDao(): CurrentWeatherFullDataDao
 }

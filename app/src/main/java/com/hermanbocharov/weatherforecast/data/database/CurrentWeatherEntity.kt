@@ -26,10 +26,10 @@ data class CurrentWeatherEntity(
     @ColumnInfo(name = "update_time")
     val updateTime: Int,
 
-    val temp: Double,
+    val temp: Int,
 
     @ColumnInfo(name = "feels_like")
-    val feelsLike: Double,
+    val feelsLike: Int,
 
     @ColumnInfo(name = "weather_condition_id")
     val weatherConditionId: Int,

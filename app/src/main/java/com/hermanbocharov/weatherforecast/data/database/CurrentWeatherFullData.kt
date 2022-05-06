@@ -3,7 +3,7 @@ package com.hermanbocharov.weatherforecast.data.database
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class CurrentWeatherCompleteData(
+data class CurrentWeatherFullData(
     @Embedded val currentWeather: CurrentWeatherEntity,
 
     @Relation(

@@ -6,21 +6,21 @@ import com.google.gson.annotations.SerializedName
 data class WeatherForecastDto(
     @SerializedName("timezone")
     @Expose
-    private val timezoneName: String? = null,
+    val timezoneName: String,
 
     @SerializedName("timezone_offset")
     @Expose
-    private val timezoneOffset: Int? = null,
+    val timezoneOffset: Int,
 
     @SerializedName("current")
     @Expose
-    private val current: CurrentDto? = null,
+    val current: CurrentDto,
 
     @SerializedName("hourly")
     @Expose
-    private val hourly: List<HourlyDto>? = null,
+    val hourly: List<HourlyDto>,
 
     @SerializedName("daily")
     @Expose
-    private val daily: List<DailyDto>? = null
+    val daily: List<DailyDto>
 )

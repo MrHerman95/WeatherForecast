@@ -6,17 +6,17 @@ import com.google.gson.annotations.SerializedName
 data class FeelsLikeDto(
     @SerializedName("day")
     @Expose
-    private val day: Double? = null,
+    val day: Double,
 
     @SerializedName("night")
     @Expose
-    private val night: Double? = null,
+    val night: Double,
 
     @SerializedName("eve")
     @Expose
-    private val eve: Double? = null,
+    val eve: Double,
 
     @SerializedName("morn")
     @Expose
-    private val morn: Double? = null
+    val morn: Double
 )

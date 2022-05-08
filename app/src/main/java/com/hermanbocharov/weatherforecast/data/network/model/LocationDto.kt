@@ -6,21 +6,21 @@ import com.google.gson.annotations.SerializedName
 data class LocationDto(
     @SerializedName("name")
     @Expose
-    private val name: String? = null,
+    val name: String,
 
     @SerializedName("lat")
     @Expose
-    private val lat: Double? = null,
+    val lat: Double,
 
     @SerializedName("lon")
     @Expose
-    private val lon: Double? = null,
+    val lon: Double,
 
     @SerializedName("country")
     @Expose
-    private val country: String? = null,
+    val country: String,
 
     @SerializedName("state")
     @Expose
-    private val state: String? = null
+    val state: String? = null
 )

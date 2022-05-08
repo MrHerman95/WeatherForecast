@@ -8,6 +8,7 @@ import com.hermanbocharov.weatherforecast.data.database.AppDatabase
 import com.hermanbocharov.weatherforecast.data.mapper.WeatherMapper
 import com.hermanbocharov.weatherforecast.data.network.ApiFactory
 import com.hermanbocharov.weatherforecast.data.network.model.FullWeatherInfoDto
+import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
 import com.hermanbocharov.weatherforecast.domain.CurrentWeather
 import com.hermanbocharov.weatherforecast.domain.WeatherRepository
 import io.reactivex.rxjava3.core.Single
@@ -21,6 +22,7 @@ class WeatherRepositoryImpl(
     private val compositeDisposable = CompositeDisposable()
     private val apiService = ApiFactory.apiService
     private val db = AppDatabase.getInstance(application)
+    private val prefs = PreferenceManager(application)
     private val mapper = WeatherMapper()
 
     override fun getCurrentWeather(): LiveData<CurrentWeather> {
@@ -44,7 +46,7 @@ class WeatherRepositoryImpl(
         val disposable = Single.zip(locationDto, weatherForecastDto) {
             location, weather -> FullWeatherInfoDto(location[0], weather)
         }
-            .observeOn(Schedulers.io())
+            .subscribeOn(Schedulers.io())
             .subscribe({
                 Log.d("TEST_OF_LOADING_DATA", it.toString())
 
@@ -61,6 +63,9 @@ class WeatherRepositoryImpl(
                         it.weatherForecast.current, locationId.toInt()
                     )
                 )
+
+                prefs.saveLastUpdateTime(System.currentTimeMillis().toInt())
+                prefs.saveCurrentLocationId(locationId.toInt())
             }, {
                 Log.d("TEST_OF_LOADING_DATA", it.message + "")
             })

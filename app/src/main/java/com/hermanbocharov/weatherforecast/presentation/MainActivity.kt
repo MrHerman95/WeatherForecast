@@ -9,14 +9,18 @@ import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.hermanbocharov.weatherforecast.BuildConfig
 import com.hermanbocharov.weatherforecast.R
+import com.hermanbocharov.weatherforecast.data.geolocation.FusedLocationDataSource
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 
 class MainActivity : AppCompatActivity() {
 
-    //private lateinit var viewModel: WeatherViewModel
+    private lateinit var viewModel: WeatherViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,18 +28,17 @@ class MainActivity : AppCompatActivity() {
 
         if (locationPermissionApproved()) {
             Log.d("MainActivity", "Permission Granted OnCreate()")
+            viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
+            viewModel.getCurrentWeather().observe(this) {
+                Log.d("TEST_OF_LOADING_DATA", it.cityName)
+                Log.d("TEST_OF_LOADING_DATA", it.temp.toString())
+                Log.d("TEST_OF_LOADING_DATA", it.feelsLike.toString())
+                Log.d("TEST_OF_LOADING_DATA", it.description)
+                Log.d("TEST_OF_LOADING_DATA", it.updateTime.toString())
+            }
         } else {
             requestLocationPermission()
         }
-
-        /*viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
-        viewModel.getCurrentWeather().observe(this) {
-            Log.d("TEST_OF_LOADING_DATA", it.cityName)
-            Log.d("TEST_OF_LOADING_DATA", it.temp.toString())
-            Log.d("TEST_OF_LOADING_DATA", it.feelsLike.toString())
-            Log.d("TEST_OF_LOADING_DATA", it.description)
-            Log.d("TEST_OF_LOADING_DATA", it.updateTime.toString())
-        }*/
     }
 
     private fun locationPermissionApproved(): Boolean {
@@ -50,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         // true -> rejected before, want to use the feature again
         // false -> user asked not to ask him any more / permission disable
         if (ActivityCompat.shouldShowRequestPermissionRationale(
-                this, android.Manifest.permission.ACCESS_COARSE_LOCATION
+                this, Manifest.permission.ACCESS_COARSE_LOCATION
             )
         ) {
             Snackbar.make(

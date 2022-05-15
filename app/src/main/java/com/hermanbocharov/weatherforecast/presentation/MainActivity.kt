@@ -13,9 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.hermanbocharov.weatherforecast.BuildConfig
 import com.hermanbocharov.weatherforecast.R
-import com.hermanbocharov.weatherforecast.data.geolocation.FusedLocationDataSource
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
+import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,9 +25,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         if (locationPermissionApproved()) {
-            Log.d("MainActivity", "Permission Granted OnCreate()")
             viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
-            viewModel.getCurrentWeather().observe(this) {
+            viewModel.currentWeather.observe(this) {
                 Log.d("TEST_OF_LOADING_DATA", it.cityName)
                 Log.d("TEST_OF_LOADING_DATA", it.temp.toString())
                 Log.d("TEST_OF_LOADING_DATA", it.feelsLike.toString())
@@ -71,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 .show()
         } else {
-            Log.d("MainActivity", "Request foreground only permission")
+            Log.d("TEST_OF_LOADING_DATA", "Request foreground only permission")
             ActivityCompat.requestPermissions(
                 this@MainActivity,
                 arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
@@ -90,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == ACCESS_COARSE_LOCATION_RC && grantResults.isNotEmpty()) {
             val permissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED
             if (permissionGranted) {
-                Log.d("MainActivity", "Permission Granted onRequestPermissionsResult()")
+                Log.d("TEST_OF_LOADING_DATA", "Permission Granted onRequestPermissionsResult()")
             } else {
                 Snackbar.make(
                     findViewById(R.id.activity_main),

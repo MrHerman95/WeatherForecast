@@ -34,16 +34,13 @@ class WeatherMapper {
         locationId = locationId
     )
 
-    fun mapEntityToCurrentWeatherDomain(entity: CurrentWeatherFullData?): CurrentWeather? {
-        entity?.let {
-            return CurrentWeather(
-                temp = it.currentWeather.temp,
-                feelsLike = it.currentWeather.feelsLike,
-                cityName = it.location.name,
-                description = it.weatherCondition.description,
-                updateTime = it.currentWeather.updateTime
-            )
-        }
-        return null
+    fun mapEntityToCurrentWeatherDomain(entity: CurrentWeatherFullData): CurrentWeather {
+        return CurrentWeather(
+            temp = entity.currentWeather.temp,
+            feelsLike = entity.currentWeather.feelsLike,
+            cityName = entity.location.name,
+            description = entity.weatherCondition.description,
+            updateTime = entity.currentWeather.updateTime
+        )
     }
 }

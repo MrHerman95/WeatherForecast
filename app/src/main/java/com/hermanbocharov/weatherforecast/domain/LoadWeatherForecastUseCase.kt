@@ -1,7 +1,7 @@
 package com.hermanbocharov.weatherforecast.domain
 
-class LoadDataUseCase(
+class LoadWeatherForecastUseCase(
     private val repository: WeatherRepository
 ) {
-    operator fun invoke() = repository.loadData()
+    operator fun invoke() = repository.loadWeatherForecast()
 }

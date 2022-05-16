@@ -1,8 +1,8 @@
 package com.hermanbocharov.weatherforecast.domain
 
-import androidx.lifecycle.LiveData
+import io.reactivex.rxjava3.core.Single
 
 interface WeatherRepository {
-    fun getCurrentWeather(): LiveData<CurrentWeather>
-    fun loadData()
+    fun getCurrentWeatherFromDb(): Single<CurrentWeather>
+    fun loadWeatherForecast(): Single<Unit>
 }

@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (locationPermissionApproved()) {
+        /*if (locationPermissionApproved()) {
             viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
             viewModel.currentWeather.observe(this) {
                 Log.d("TEST_OF_LOADING_DATA", it.cityName)
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             requestLocationPermission()
-        }
+        }*/
     }
 
     private fun locationPermissionApproved(): Boolean {

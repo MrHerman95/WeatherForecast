@@ -5,4 +5,12 @@
     <string name="str_location">Location</string>
     <string name="str_weather_now">Now</string>
     <string name="str_weather_forecast">Forecast</string>
+
+    <string name="str_tools_city">Indianapolis</string>
+    <string name="str_tools_last_update">9:41 PM</string>
+    <string name="str_tools_weather_condition">Thunderstorm with heavy drizzle</string>
+    <string name="str_tools_temperature">25\u00B0</string>
+    <string name="str_tools_feels_like">Feels Like 23\u00B0</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

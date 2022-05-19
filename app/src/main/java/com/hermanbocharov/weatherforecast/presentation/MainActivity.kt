@@ -9,20 +9,45 @@ import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.hermanbocharov.weatherforecast.BuildConfig
 import com.hermanbocharov.weatherforecast.R
-import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: WeatherViewModel
+    private lateinit var bottomNavView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        bottomNavView = findViewById(R.id.bottom_navigation_view)
+        bottomNavView.selectedItemId = R.id.weather_now_page
+
+        if (savedInstanceState == null) {
+            val startFragment = CurrentWeatherFragment.newInstance()
+            supportFragmentManager.beginTransaction()
+                .add(R.id.fragment_container_view, startFragment)
+                .commit()
+        }
+
+        bottomNavView.setOnItemSelectedListener { item ->
+            val fragment = when (item.itemId) {
+                R.id.location_page -> LocationFragment.newInstance()
+                R.id.weather_now_page -> CurrentWeatherFragment.newInstance()
+                R.id.weather_forecast_page -> WeatherForecastFragment.newInstance()
+                R.id.settings_page -> SettingsFragment.newInstance()
+                else -> throw RuntimeException("There is no fragment for itemId ${item.itemId}")
+            }
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container_view, fragment)
+                .commit()
+            return@setOnItemSelectedListener true
+        }
 
         /*if (locationPermissionApproved()) {
             viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]

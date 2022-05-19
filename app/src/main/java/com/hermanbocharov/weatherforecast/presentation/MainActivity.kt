@@ -13,19 +13,20 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.hermanbocharov.weatherforecast.BuildConfig
 import com.hermanbocharov.weatherforecast.R
+import com.hermanbocharov.weatherforecast.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: WeatherViewModel
-    private lateinit var bottomNavView: BottomNavigationView
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        bottomNavView = findViewById(R.id.bottom_navigation_view)
-        bottomNavView.selectedItemId = R.id.weather_now_page
+        binding.bottomNavView.selectedItemId = R.id.weather_now_page
 
         if (savedInstanceState == null) {
             val startFragment = CurrentWeatherFragment.newInstance()
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
-        bottomNavView.setOnItemSelectedListener { item ->
+        binding.bottomNavView.setOnItemSelectedListener { item ->
             val fragment = when (item.itemId) {
                 R.id.location_page -> LocationFragment.newInstance()
                 R.id.weather_now_page -> CurrentWeatherFragment.newInstance()

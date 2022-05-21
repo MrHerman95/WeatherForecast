@@ -9,22 +9,46 @@ import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.hermanbocharov.weatherforecast.BuildConfig
 import com.hermanbocharov.weatherforecast.R
-import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
+import com.hermanbocharov.weatherforecast.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: WeatherViewModel
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        if (locationPermissionApproved()) {
+        binding.bottomNavView.selectedItemId = R.id.weather_now_page
+
+        if (savedInstanceState == null) {
+            val startFragment = CurrentWeatherFragment.newInstance()
+            supportFragmentManager.beginTransaction()
+                .add(R.id.fragment_container_view, startFragment)
+                .commit()
+        }
+
+        binding.bottomNavView.setOnItemSelectedListener { item ->
+            val fragment = when (item.itemId) {
+                R.id.location_page -> LocationFragment.newInstance()
+                R.id.weather_now_page -> CurrentWeatherFragment.newInstance()
+                R.id.weather_forecast_page -> WeatherForecastFragment.newInstance()
+                R.id.settings_page -> SettingsFragment.newInstance()
+                else -> throw RuntimeException("There is no fragment for itemId ${item.itemId}")
+            }
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container_view, fragment)
+                .commit()
+            return@setOnItemSelectedListener true
+        }
+
+        /*if (locationPermissionApproved()) {
             viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
             viewModel.currentWeather.observe(this) {
                 Log.d("TEST_OF_LOADING_DATA", it.cityName)
@@ -35,17 +59,17 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             requestLocationPermission()
-        }
+        }*/
     }
 
-    private fun locationPermissionApproved(): Boolean {
+    /*private fun locationPermissionApproved(): Boolean {
         return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
             this,
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
-    }
+    }*/
 
-    private fun requestLocationPermission() {
+    /*private fun requestLocationPermission() {
 
         // true -> rejected before, want to use the feature again
         // false -> user asked not to ask him any more / permission disable
@@ -75,9 +99,9 @@ class MainActivity : AppCompatActivity() {
                 ACCESS_COARSE_LOCATION_RC
             )
         }
-    }
+    }*/
 
-    override fun onRequestPermissionsResult(
+    /*override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
@@ -110,9 +134,5 @@ class MainActivity : AppCompatActivity() {
                     .show()
             }
         }
-    }
-
-    companion object {
-        private const val ACCESS_COARSE_LOCATION_RC = 100
-    }
+    }*/
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/location_page"
+        android:enabled="true"
+        android:icon="@drawable/ic_location"
+        android:title="@string/str_location"/>
+    <item
+        android:id="@+id/weather_now_page"
+        android:enabled="true"
+        android:icon="@drawable/ic_weather_now"
+        android:title="@string/str_weather_now"/>
+    <item
+        android:id="@+id/weather_forecast_page"
+        android:enabled="true"
+        android:icon="@drawable/ic_weather_forecast"
+        android:title="@string/str_weather_forecast"/>
+    <item
+        android:id="@+id/settings_page"
+        android:enabled="true"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/str_settings"/>
+</menu>

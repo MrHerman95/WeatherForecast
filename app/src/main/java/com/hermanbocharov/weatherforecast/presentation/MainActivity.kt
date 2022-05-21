@@ -9,7 +9,6 @@ import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.hermanbocharov.weatherforecast.BuildConfig
 import com.hermanbocharov.weatherforecast.R
@@ -18,7 +17,6 @@ import com.hermanbocharov.weatherforecast.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: WeatherViewModel
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,14 +62,14 @@ class MainActivity : AppCompatActivity() {
         }*/
     }
 
-    private fun locationPermissionApproved(): Boolean {
+    /*private fun locationPermissionApproved(): Boolean {
         return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
             this,
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
-    }
+    }*/
 
-    private fun requestLocationPermission() {
+    /*private fun requestLocationPermission() {
 
         // true -> rejected before, want to use the feature again
         // false -> user asked not to ask him any more / permission disable
@@ -101,9 +99,9 @@ class MainActivity : AppCompatActivity() {
                 ACCESS_COARSE_LOCATION_RC
             )
         }
-    }
+    }*/
 
-    override fun onRequestPermissionsResult(
+    /*override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
@@ -136,9 +134,5 @@ class MainActivity : AppCompatActivity() {
                     .show()
             }
         }
-    }
-
-    companion object {
-        private const val ACCESS_COARSE_LOCATION_RC = 100
-    }
+    }*/
 }

@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
+import com.hermanbocharov.weatherforecast.data.geolocation.GpsCoordinates
 import com.hermanbocharov.weatherforecast.data.repository.WeatherRepositoryImpl
 import com.hermanbocharov.weatherforecast.domain.CurrentWeather
 import com.hermanbocharov.weatherforecast.domain.GetCurrentWeatherUseCase
@@ -39,6 +39,11 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
     }
 
     init {
+
+    }
+
+    fun onLocationPermissionGranted() {
+        Log.d("TEST_OF_LOADING_DATA", "viewModel onLocationPermissionGranted()")
         val disposable = loadWeatherForecastUseCase()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -49,6 +54,18 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
             })
 
         compositeDisposable.add(disposable)
+    }
+
+    fun onLocationPermissionDenied() {
+        Log.d("TEST_OF_LOADING_DATA", "viewModel onLocationPermissionDenied()")
+    }
+
+    private fun onGetLocationSuccess(gpsCoordinates: GpsCoordinates) {
+
+    }
+
+    private fun onGetLocationError(throwable: Throwable) {
+
     }
 
     override fun onCleared() {

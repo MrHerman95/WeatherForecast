@@ -7,9 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.hermanbocharov.weatherforecast.data.geolocation.GpsCoordinates
 import com.hermanbocharov.weatherforecast.data.repository.WeatherRepositoryImpl
-import com.hermanbocharov.weatherforecast.domain.CurrentWeather
-import com.hermanbocharov.weatherforecast.domain.GetCurrentWeatherUseCase
-import com.hermanbocharov.weatherforecast.domain.LoadWeatherForecastUseCase
+import com.hermanbocharov.weatherforecast.domain.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -19,11 +17,16 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
     private val repository = WeatherRepositoryImpl(application)
     private val loadWeatherForecastUseCase = LoadWeatherForecastUseCase(repository)
     private val getCurrentWeatherUseCase = GetCurrentWeatherUseCase(repository)
+    private val getListOfCitiesUseCase = GetListOfCitiesUseCase(repository)
     private val compositeDisposable = CompositeDisposable()
 
     private val _currentWeather = MutableLiveData<CurrentWeather>()
     val currentWeather: LiveData<CurrentWeather>
         get() = _currentWeather
+
+    private val _listOfCities = MutableLiveData<List<Location>>()
+    val listOfCities: LiveData<List<Location>>
+        get() = _listOfCities
 
     private fun getCurrentWeather() {
         val disposable = getCurrentWeatherUseCase()
@@ -38,8 +41,17 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
         compositeDisposable.add(disposable)
     }
 
-    init {
+    fun getListOfCities(city: String) {
+        val disposable = getListOfCitiesUseCase(city)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _listOfCities.value = it
+            }, {
+                Log.d("TEST_OF_LOADING_DATA", "getListOfCities() ${it.message}")
+            })
 
+        compositeDisposable.add(disposable)
     }
 
     fun onLocationPermissionGranted() {

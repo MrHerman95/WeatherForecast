@@ -8,6 +8,7 @@ import com.hermanbocharov.weatherforecast.data.network.model.CurrentDto
 import com.hermanbocharov.weatherforecast.data.network.model.LocationDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherConditionDto
 import com.hermanbocharov.weatherforecast.domain.CurrentWeather
+import com.hermanbocharov.weatherforecast.domain.Location
 import kotlin.math.roundToInt
 
 class WeatherMapper {
@@ -41,6 +42,16 @@ class WeatherMapper {
             cityName = entity.location.name,
             description = entity.weatherCondition.description,
             updateTime = entity.currentWeather.updateTime
+        )
+    }
+
+    fun mapDtoToLocationDomain(dto: LocationDto): Location {
+        return Location(
+            name = dto.name,
+            lat = dto.lat,
+            lon = dto.lon,
+            country = dto.country,
+            state = dto.state
         )
     }
 }

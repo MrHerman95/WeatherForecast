@@ -5,4 +5,5 @@ import io.reactivex.rxjava3.core.Single
 interface WeatherRepository {
     fun getCurrentWeatherFromDb(): Single<CurrentWeather>
     fun loadWeatherForecast(): Single<Unit>
+    fun getListOfCities(city: String): Single<List<Location>>
 }

@@ -5,24 +5,29 @@
     android:id="@+id/fragment_location"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LocationFragment" >
+    tools:context=".LocationFragment">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_location"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Fragment Location"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/sv_location"
+        tools:listitem="@layout/item_location" />
 
-    <Button
-        android:id="@+id/btn_test"
-        android:layout_width="wrap_content"
+    <SearchView
+        android:id="@+id/sv_location"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:queryHint="@string/str_location_search_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hermanbocharov.weatherforecast.databinding.FragmentLocationBinding
@@ -18,6 +19,8 @@ class LocationFragment : Fragment() {
     private val viewModel: WeatherViewModel by lazy {
         ViewModelProvider(this)[WeatherViewModel::class.java]
     }
+
+    private lateinit var adapter: LocationAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,24 +37,45 @@ class LocationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.btnTest.setOnClickListener {
-            viewModel.getListOfCities("Lviv")
-        }
+        setupRecyclerView()
+        setupSearchView()
 
         viewModel.listOfCities.observe(viewLifecycleOwner) {
-            for (location in it) {
-                Log.d(
-                    "TEST_OF_LOADING_DATA",
-                    "Name: ${location.name} Lon: ${location.lon} Lat: ${location.lat} Country: ${location.country} State: ${location.state}"
-                )
-            }
+            adapter.locationList = it
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupRecyclerView() {
+        adapter = LocationAdapter()
+        binding.rvLocation.adapter = adapter
+    }
+
+    private fun setupSearchView() {
+        binding.svLocation.apply {
+            isIconifiedByDefault = false
+            isSubmitButtonEnabled = true
+
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(input: String?): Boolean {
+                    if (input.isNullOrBlank()) {
+                        return false
+                    }
+
+                    viewModel.getListOfCities(input)
+                    return true
+                }
+
+                override fun onQueryTextChange(input: String?): Boolean {
+                    return true
+                }
+
+            })
+        }
     }
 
     companion object {

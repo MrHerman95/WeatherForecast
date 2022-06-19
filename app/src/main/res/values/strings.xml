@@ -9,6 +9,7 @@
     <string name="str_location_full">%s, %s, %s</string>
     <string name="str_location_without_state">%s, %s</string>
     <string name="str_location_search_hint">Search your city</string>
+    <string name="str_current_city">Current city: %s</string>
 
     <string name="str_tools_city">Indianapolis</string>
     <string name="str_tools_last_update">9:41 PM</string>

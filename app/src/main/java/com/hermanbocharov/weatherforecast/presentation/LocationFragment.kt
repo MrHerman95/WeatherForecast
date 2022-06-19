@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentLocationBinding
+import com.hermanbocharov.weatherforecast.domain.Location
 
 class LocationFragment : Fragment() {
 
@@ -20,7 +22,7 @@ class LocationFragment : Fragment() {
         ViewModelProvider(this)[WeatherViewModel::class.java]
     }
 
-    private lateinit var adapter: LocationAdapter
+    private lateinit var locationAdapter: LocationAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +43,7 @@ class LocationFragment : Fragment() {
         setupSearchView()
 
         viewModel.listOfCities.observe(viewLifecycleOwner) {
-            adapter.locationList = it
+            locationAdapter.submitList(it)
         }
     }
 
@@ -51,8 +53,17 @@ class LocationFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = LocationAdapter()
-        binding.rvLocation.adapter = adapter
+        locationAdapter = LocationAdapter()
+        binding.rvLocation.adapter = locationAdapter
+
+        locationAdapter.onLocationClickListener = {
+            binding.tvCurrentCity.text = requireContext().getString(
+                R.string.str_current_city,
+                it.name
+            )
+
+            locationAdapter.submitList(listOf<Location>())
+        }
     }
 
     private fun setupSearchView() {

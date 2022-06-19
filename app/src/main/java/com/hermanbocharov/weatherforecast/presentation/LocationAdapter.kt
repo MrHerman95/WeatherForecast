@@ -4,17 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.domain.Location
 
-class LocationAdapter : RecyclerView.Adapter<LocationAdapter.LocationViewHolder>() {
+class LocationAdapter : ListAdapter<Location, LocationAdapter.LocationViewHolder>(LocationDiffCallback()) {
 
-    var locationList = listOf<Location>()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
+    var onLocationClickListener: ((Location) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -26,7 +23,7 @@ class LocationAdapter : RecyclerView.Adapter<LocationAdapter.LocationViewHolder>
     }
 
     override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
-        val locationItem = locationList[position]
+        val locationItem = getItem(position)
 
         if (locationItem.state.isNullOrBlank()) {
             holder.tvLocation.text = holder.view.context.getString(
@@ -44,12 +41,8 @@ class LocationAdapter : RecyclerView.Adapter<LocationAdapter.LocationViewHolder>
         }
 
         holder.view.setOnClickListener {
-
+            onLocationClickListener?.invoke(locationItem)
         }
-    }
-
-    override fun getItemCount(): Int {
-        return locationList.size
     }
 
     class LocationViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

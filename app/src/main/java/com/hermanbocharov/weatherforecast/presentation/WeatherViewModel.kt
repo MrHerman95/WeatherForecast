@@ -7,9 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.hermanbocharov.weatherforecast.data.geolocation.GpsCoordinates
 import com.hermanbocharov.weatherforecast.data.repository.WeatherRepositoryImpl
-import com.hermanbocharov.weatherforecast.domain.CurrentWeather
-import com.hermanbocharov.weatherforecast.domain.GetCurrentWeatherUseCase
-import com.hermanbocharov.weatherforecast.domain.LoadWeatherForecastUseCase
+import com.hermanbocharov.weatherforecast.domain.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -19,13 +17,25 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
     private val repository = WeatherRepositoryImpl(application)
     private val loadWeatherForecastUseCase = LoadWeatherForecastUseCase(repository)
     private val getCurrentWeatherUseCase = GetCurrentWeatherUseCase(repository)
+    private val getListOfCitiesUseCase = GetListOfCitiesUseCase(repository)
+    private val getCurrentLocationUseCase = GetCurrentLocationUseCase(repository)
+    private val getCurrentLocationIdUseCase = GetCurrentLocationIdUseCase(repository)
+    private val addNewLocationUseCase = AddNewLocationUseCase(repository)
     private val compositeDisposable = CompositeDisposable()
 
     private val _currentWeather = MutableLiveData<CurrentWeather>()
     val currentWeather: LiveData<CurrentWeather>
         get() = _currentWeather
 
-    private fun getCurrentWeather() {
+    private val _listOfCities = MutableLiveData<List<Location>>()
+    val listOfCities: LiveData<List<Location>>
+        get() = _listOfCities
+
+    private val _currentLocation = MutableLiveData<Location>()
+    val currentLocation: LiveData<Location>
+        get() = _currentLocation
+
+    fun getCurrentWeather() {
         val disposable = getCurrentWeatherUseCase()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -38,8 +48,39 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
         compositeDisposable.add(disposable)
     }
 
-    init {
+    fun getListOfCities(city: String) {
+        val disposable = getListOfCitiesUseCase(city)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _listOfCities.value = it
+            }, {
+                Log.d("TEST_OF_LOADING_DATA", "getListOfCities() ${it.message}")
+            })
 
+        compositeDisposable.add(disposable)
+    }
+
+    fun getCurrentLocation() {
+        val disposable = getCurrentLocationUseCase()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _currentLocation.value = it
+            }, {
+                Log.d("TEST_OF_LOADING_DATA", "getCurrentLocation() ${it.message}")
+            })
+
+        compositeDisposable.add(disposable)
+    }
+
+    fun getCurrentLocationId(): Int {
+        return getCurrentLocationIdUseCase()
+    }
+
+    fun addNewLocation(location: Location) {
+        addNewLocationUseCase(location)
+        _currentLocation.value = location
     }
 
     fun onLocationPermissionGranted() {

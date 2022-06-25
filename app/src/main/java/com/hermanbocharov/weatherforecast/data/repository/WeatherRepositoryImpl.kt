@@ -9,10 +9,10 @@ import com.hermanbocharov.weatherforecast.data.network.ApiFactory
 import com.hermanbocharov.weatherforecast.data.network.model.FullWeatherInfoDto
 import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
 import com.hermanbocharov.weatherforecast.domain.CurrentWeather
+import com.hermanbocharov.weatherforecast.domain.Location
 import com.hermanbocharov.weatherforecast.domain.WeatherRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class WeatherRepositoryImpl(
@@ -27,7 +27,7 @@ class WeatherRepositoryImpl(
 
     override fun getCurrentWeatherFromDb(): Single<CurrentWeather> {
         return db.currentWeatherFullDataDao()
-            .getCurrentWeatherFullData(prefs.getCurrentLocationId())
+            .getCurrentWeatherFullData(getCurrentLocationId())
             .map { mapper.mapEntityToCurrentWeatherDomain(it) }
     }
 
@@ -35,7 +35,10 @@ class WeatherRepositoryImpl(
         return locationDataSource.getLastLocation()
             .flatMap {
                 Single.zip(
-                    apiService.getLocation(latitude = it.latitude, longitude = it.longitude),
+                    apiService.getLocationByCoordinates(
+                        latitude = it.latitude,
+                        longitude = it.longitude
+                    ),
                     apiService.getWeatherForecast(latitude = it.latitude, longitude = it.longitude)
                     //apiService.getLocation(latitude = 35.652832, longitude = 139.839478),
                     //apiService.getWeatherForecast(latitude = 35.652832, longitude = 139.839478)
@@ -48,9 +51,9 @@ class WeatherRepositoryImpl(
                     mapper.mapWeatherConditionDtoToEntity(it.weatherForecast.current.weather[0])
                 )
 
-                val locationId: Int = db.locationDao().insertLocation(
+                val locationId = db.locationDao().insertLocation(
                     mapper.mapLocationDtoToEntity(it.location)
-                ).toInt()
+                ).blockingGet().toInt()
 
                 db.currentDao().insertCurrentWeather(
                     mapper.mapCurrentWeatherDtoToEntity(
@@ -60,5 +63,52 @@ class WeatherRepositoryImpl(
 
                 prefs.saveCurrentLocationId(locationId)
             }
+    }
+
+    override fun getListOfCities(city: String): Single<List<Location>> {
+        return apiService.getListOfCities(city)
+            .map {
+                it.map { mapper.mapDtoToLocationDomain(it) }
+            }
+    }
+
+    override fun getCurrentLocation(): Single<Location> {
+        return db.locationDao().getLocation(getCurrentLocationId())
+            .map { mapper.mapEntityToLocationDomain(it) }
+    }
+
+    override fun getCurrentLocationId(): Int {
+        return prefs.getCurrentLocationId()
+    }
+
+    override fun addNewLocation(location: Location) {
+        db.locationDao().insertLocation(mapper.mapLocationDomainToEntity(location))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                prefs.saveCurrentLocationId(it.toInt())
+            }, {
+                Log.d("TEST_OF_LOADING_DATA", "addNewLocation() ${it.message}")
+            })
+
+        apiService.getWeatherForecast(latitude = location.lat, longitude = location.lon)
+            .map {
+                db.weatherConditionDao().insertWeatherCondition(
+                    mapper.mapWeatherConditionDtoToEntity(it.current.weather[0])
+                )
+
+                Log.d("TEST_OF_LOADING_DATA", "loc id addNewLocation ${getCurrentLocationId()}")
+
+                db.currentDao().insertCurrentWeather(
+                    mapper.mapCurrentWeatherDtoToEntity(it.current, getCurrentLocationId())
+                )
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.d("TEST_OF_LOADING_DATA", "addNewLocation() getWeatherForecast success")
+            }, {
+                Log.d("TEST_OF_LOADING_DATA", "addNewLocation() getWeatherForecast ${it.message}")
+            })
     }
 }

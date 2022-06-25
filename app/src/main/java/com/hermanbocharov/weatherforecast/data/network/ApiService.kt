@@ -19,16 +19,24 @@ interface ApiService {
     ): Single<WeatherForecastDto>
 
     @GET("geo/1.0/reverse")
-    fun getLocation(
+    fun getLocationByCoordinates(
         @Query(QUERY_PARAM_LATITUDE) latitude: Double,
         @Query(QUERY_PARAM_LONGITUDE) longitude: Double,
         @Query(QUERY_PARAM_LIMIT) limit: Int = 1,
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY
     ): Single<List<LocationDto>>
 
+    @GET("geo/1.0/direct")
+    fun getListOfCities(
+        @Query(QUERY_PARAM_GEOCODING) city: String,
+        @Query(QUERY_PARAM_LIMIT) limit: Int = 5,
+        @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY
+    ): Single<List<LocationDto>>
+
     companion object {
         private const val QUERY_PARAM_LATITUDE = "lat"
         private const val QUERY_PARAM_LONGITUDE = "lon"
+        private const val QUERY_PARAM_GEOCODING = "q"
         private const val QUERY_PARAM_EXCLUDE = "exclude"
         private const val QUERY_PARAM_UNITS = "units"
         private const val QUERY_PARAM_LANG = "lang"

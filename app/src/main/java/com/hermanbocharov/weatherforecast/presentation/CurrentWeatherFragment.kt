@@ -38,7 +38,16 @@ class CurrentWeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requestLocationPermission()
+        Log.d(
+            "TEST_OF_LOADING_DATA",
+            "Current location id curr weather frag = ${viewModel.getCurrentLocationId()}"
+        )
+
+        if (viewModel.getCurrentLocationId() == 0) {
+            requestLocationPermission()
+        } else {
+            viewModel.getCurrentWeather()
+        }
 
         viewModel.currentWeather.observe(viewLifecycleOwner) {
             Log.d("TEST_OF_LOADING_DATA", it.cityName)

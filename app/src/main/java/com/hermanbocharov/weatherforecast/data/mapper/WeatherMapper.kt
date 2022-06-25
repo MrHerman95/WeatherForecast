@@ -45,6 +45,26 @@ class WeatherMapper {
         )
     }
 
+    fun mapEntityToLocationDomain(entity: LocationEntity): Location {
+        return Location(
+            name = entity.name,
+            lat = entity.lat,
+            lon = entity.lon,
+            country = entity.country,
+            state = entity.state
+        )
+    }
+
+    fun mapLocationDomainToEntity(domain: Location): LocationEntity {
+        return LocationEntity(
+            name = domain.name,
+            lat = domain.lat,
+            lon = domain.lon,
+            country = domain.country,
+            state = domain.state
+        )
+    }
+
     fun mapDtoToLocationDomain(dto: LocationDto): Location {
         return Location(
             name = dto.name,

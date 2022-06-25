@@ -18,6 +18,9 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
     private val loadWeatherForecastUseCase = LoadWeatherForecastUseCase(repository)
     private val getCurrentWeatherUseCase = GetCurrentWeatherUseCase(repository)
     private val getListOfCitiesUseCase = GetListOfCitiesUseCase(repository)
+    private val getCurrentLocationUseCase = GetCurrentLocationUseCase(repository)
+    private val getCurrentLocationIdUseCase = GetCurrentLocationIdUseCase(repository)
+    private val addNewLocationUseCase = AddNewLocationUseCase(repository)
     private val compositeDisposable = CompositeDisposable()
 
     private val _currentWeather = MutableLiveData<CurrentWeather>()
@@ -28,7 +31,11 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
     val listOfCities: LiveData<List<Location>>
         get() = _listOfCities
 
-    private fun getCurrentWeather() {
+    private val _currentLocation = MutableLiveData<Location>()
+    val currentLocation: LiveData<Location>
+        get() = _currentLocation
+
+    fun getCurrentWeather() {
         val disposable = getCurrentWeatherUseCase()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -52,6 +59,28 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
             })
 
         compositeDisposable.add(disposable)
+    }
+
+    fun getCurrentLocation() {
+        val disposable = getCurrentLocationUseCase()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _currentLocation.value = it
+            }, {
+                Log.d("TEST_OF_LOADING_DATA", "getCurrentLocation() ${it.message}")
+            })
+
+        compositeDisposable.add(disposable)
+    }
+
+    fun getCurrentLocationId(): Int {
+        return getCurrentLocationIdUseCase()
+    }
+
+    fun addNewLocation(location: Location) {
+        addNewLocationUseCase(location)
+        _currentLocation.value = location
     }
 
     fun onLocationPermissionGranted() {

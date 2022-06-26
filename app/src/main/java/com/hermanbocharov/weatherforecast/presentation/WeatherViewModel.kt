@@ -15,7 +15,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class WeatherViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = WeatherRepositoryImpl(application)
-    private val loadWeatherForecastUseCase = LoadWeatherForecastUseCase(repository)
+    private val loadWeatherForecastGpsLocUseCase = LoadWeatherForecastGpsLocUseCase(repository)
+    private val loadWeatherForecastCurLocUseCase = LoadWeatherForecastCurLocUseCase(repository)
     private val getCurrentWeatherUseCase = GetCurrentWeatherUseCase(repository)
     private val getListOfCitiesUseCase = GetListOfCitiesUseCase(repository)
     private val getCurrentLocationUseCase = GetCurrentLocationUseCase(repository)
@@ -79,13 +80,24 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun addNewLocation(location: Location) {
-        addNewLocationUseCase(location)
-        _currentLocation.value = location
+        val disposable = addNewLocationUseCase(location)
+            .flatMap {
+                loadWeatherForecastCurLocUseCase()
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _currentLocation.value = location
+            }, {
+                Log.d("TEST_OF_LOADING_DATA", "getCurrentLocation() ${it.message}")
+            })
+
+        compositeDisposable.add(disposable)
     }
 
     fun onLocationPermissionGranted() {
         Log.d("TEST_OF_LOADING_DATA", "viewModel onLocationPermissionGranted()")
-        val disposable = loadWeatherForecastUseCase()
+        val disposable = loadWeatherForecastGpsLocUseCase()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({

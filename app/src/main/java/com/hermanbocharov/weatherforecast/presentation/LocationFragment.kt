@@ -42,6 +42,10 @@ class LocationFragment : Fragment() {
         setupRecyclerView()
         setupSearchView()
         observeViewModel()
+
+        binding.btnDetect.setOnClickListener {
+            viewModel.detectLocation()
+        }
     }
 
     override fun onDestroyView() {

@@ -20,7 +20,7 @@ class FusedLocationDataSource(
                         val gpsCoordinates = GpsCoordinates(location.latitude, location.longitude)
                         e.onSuccess(gpsCoordinates)
                     } else {
-                        Log.d("TEST_OF_LOADING_DATA", "Location is turned off")
+                        e.onError(Throwable("Location is turned off"))
                     }
                 }
             } catch (unlikely: SecurityException) {

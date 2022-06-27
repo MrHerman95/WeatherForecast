@@ -11,9 +11,8 @@ import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
 import com.hermanbocharov.weatherforecast.domain.CurrentWeather
 import com.hermanbocharov.weatherforecast.domain.Location
 import com.hermanbocharov.weatherforecast.domain.WeatherRepository
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class WeatherRepositoryImpl(
     application: Application
@@ -25,13 +24,46 @@ class WeatherRepositoryImpl(
     private val mapper = WeatherMapper()
     private val locationDataSource = FusedLocationDataSource(application)
 
-    override fun getCurrentWeatherFromDb(): Single<CurrentWeather> {
-        return db.currentWeatherFullDataDao()
-            .getCurrentWeatherFullData(getCurrentLocationId())
-            .map { mapper.mapEntityToCurrentWeatherDomain(it) }
+    override fun getCurrentWeather(): Single<CurrentWeather> {
+        Log.d("TEST_OF_LOADING_DATA", "System time = ${TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())}")
+        Log.d("TEST_OF_LOADING_DATA", "Last update time = ${prefs.getLastUpdateTime()}")
+        return if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - prefs.getLastUpdateTime() < UPDATE_FREQUENCY) {
+            Log.d("TEST_OF_LOADING_DATA", "From db")
+            db.currentWeatherFullDataDao()
+                .getCurrentWeatherFullData(getCurrentLocationId())
+                .map { mapper.mapEntityToCurrentWeatherDomain(it) }
+        } else {
+            Log.d("TEST_OF_LOADING_DATA", "From internet")
+            loadWeatherForecastCurLoc()
+                .flatMap {
+                    db.currentWeatherFullDataDao()
+                        .getCurrentWeatherFullData(getCurrentLocationId())
+                        .map { mapper.mapEntityToCurrentWeatherDomain(it) }
+                }
+        }
     }
 
-    override fun loadWeatherForecast(): Single<Unit> {
+    override fun loadWeatherForecastCurLoc(): Single<Unit> {
+        return getCurrentLocation()
+            .flatMap {
+                apiService.getWeatherForecast(latitude = it.lat, longitude = it.lon)
+            }
+            .map {
+                db.weatherConditionDao().insertWeatherCondition(
+                    mapper.mapWeatherConditionDtoToEntity(it.current.weather[0])
+                )
+
+                db.currentDao().insertCurrentWeather(
+                    mapper.mapCurrentWeatherDtoToEntity(
+                        it.current, getCurrentLocationId()
+                    )
+                )
+
+                prefs.saveLastUpdateTime(it.current.updateTime)
+            }
+    }
+
+    override fun loadWeatherForecastGpsLoc(): Single<Unit> {
         return locationDataSource.getLastLocation()
             .flatMap {
                 Single.zip(
@@ -40,8 +72,6 @@ class WeatherRepositoryImpl(
                         longitude = it.longitude
                     ),
                     apiService.getWeatherForecast(latitude = it.latitude, longitude = it.longitude)
-                    //apiService.getLocation(latitude = 35.652832, longitude = 139.839478),
-                    //apiService.getWeatherForecast(latitude = 35.652832, longitude = 139.839478)
                 ) { location, weather ->
                     FullWeatherInfoDto(location[0], weather)
                 }
@@ -62,6 +92,7 @@ class WeatherRepositoryImpl(
                 )
 
                 prefs.saveCurrentLocationId(locationId)
+                prefs.saveLastUpdateTime(it.weatherForecast.current.updateTime)
             }
     }
 
@@ -81,34 +112,15 @@ class WeatherRepositoryImpl(
         return prefs.getCurrentLocationId()
     }
 
-    override fun addNewLocation(location: Location) {
-        db.locationDao().insertLocation(mapper.mapLocationDomainToEntity(location))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                prefs.saveCurrentLocationId(it.toInt())
-            }, {
-                Log.d("TEST_OF_LOADING_DATA", "addNewLocation() ${it.message}")
-            })
-
-        apiService.getWeatherForecast(latitude = location.lat, longitude = location.lon)
+    override fun addNewLocation(location: Location): Single<Unit> {
+        return db.locationDao().insertLocation(mapper.mapLocationDomainToEntity(location))
             .map {
-                db.weatherConditionDao().insertWeatherCondition(
-                    mapper.mapWeatherConditionDtoToEntity(it.current.weather[0])
-                )
-
-                Log.d("TEST_OF_LOADING_DATA", "loc id addNewLocation ${getCurrentLocationId()}")
-
-                db.currentDao().insertCurrentWeather(
-                    mapper.mapCurrentWeatherDtoToEntity(it.current, getCurrentLocationId())
-                )
+                Log.d("TEST_OF_LOADING_DATA", "New loc id = $it")
+                prefs.saveCurrentLocationId(it.toInt())
             }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Log.d("TEST_OF_LOADING_DATA", "addNewLocation() getWeatherForecast success")
-            }, {
-                Log.d("TEST_OF_LOADING_DATA", "addNewLocation() getWeatherForecast ${it.message}")
-            })
+    }
+
+    companion object {
+        private const val UPDATE_FREQUENCY = 1 * 60; /* in seconds */
     }
 }

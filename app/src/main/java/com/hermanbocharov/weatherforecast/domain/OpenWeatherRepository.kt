@@ -2,7 +2,7 @@ package com.hermanbocharov.weatherforecast.domain
 
 import io.reactivex.rxjava3.core.Single
 
-interface WeatherRepository {
+interface OpenWeatherRepository {
     fun getCurrentWeather(): Single<CurrentWeather>
     fun loadWeatherForecastGpsLoc(): Single<Unit>
     fun loadWeatherForecastCurLoc(): Single<Unit>

@@ -1,7 +1,7 @@
 package com.hermanbocharov.weatherforecast.domain
 
 class GetCurrentLocationIdUseCase(
-    private val repository: WeatherRepository
+    private val repository: OpenWeatherRepository
 ) {
     operator fun invoke() = repository.getCurrentLocationId()
 }

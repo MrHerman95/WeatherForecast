@@ -49,6 +49,10 @@ class CurrentWeatherFragment : Fragment() {
             viewModel.getCurrentWeather()
         }
 
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
         viewModel.currentWeather.observe(viewLifecycleOwner) {
             Log.d("TEST_OF_LOADING_DATA", it.cityName)
             Log.d("TEST_OF_LOADING_DATA", it.temp.toString())

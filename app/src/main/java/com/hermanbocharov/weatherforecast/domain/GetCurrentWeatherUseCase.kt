@@ -1,7 +1,7 @@
 package com.hermanbocharov.weatherforecast.domain
 
 class GetCurrentWeatherUseCase(
-    private val repository: WeatherRepository
+    private val repository: OpenWeatherRepository
 ) {
     operator fun invoke() = repository.getCurrentWeather()
 }

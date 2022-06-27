@@ -9,10 +9,8 @@ import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hermanbocharov.weatherforecast.R
-import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
 import com.hermanbocharov.weatherforecast.databinding.FragmentLocationBinding
 import com.hermanbocharov.weatherforecast.domain.Location
-import com.hermanbocharov.weatherforecast.utils.PermissionsManager
 
 class LocationFragment : Fragment() {
 
@@ -20,10 +18,8 @@ class LocationFragment : Fragment() {
     private val binding
         get() = _binding ?: throw RuntimeException("FragmentLocationBinding is null")
 
-    private lateinit var prefs: PreferenceManager
-
-    private val viewModel: WeatherViewModel by lazy {
-        ViewModelProvider(this)[WeatherViewModel::class.java]
+    private val viewModel: LocationViewModel by lazy {
+        ViewModelProvider(this)[LocationViewModel::class.java]
     }
 
     private lateinit var locationAdapter: LocationAdapter
@@ -43,23 +39,9 @@ class LocationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getCurrentLocation()
         setupRecyclerView()
         setupSearchView()
-
-        viewModel.listOfCities.observe(viewLifecycleOwner) {
-            locationAdapter.submitList(it)
-        }
-
-        viewModel.currentLocation.observe(viewLifecycleOwner) {
-            binding.tvCurrentCity.text = requireContext().getString(
-                R.string.str_current_city,
-                it.name
-            )
-        }
-
-        prefs = PreferenceManager(requireContext())
-        Log.d("TEST_OF_LOADING_DATA", "Current loc id ${prefs.getCurrentLocationId()}")
+        observeViewModel()
     }
 
     override fun onDestroyView() {
@@ -103,6 +85,19 @@ class LocationFragment : Fragment() {
                 }
 
             })
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.listOfCities.observe(viewLifecycleOwner) {
+            locationAdapter.submitList(it)
+        }
+
+        viewModel.currentLocation.observe(viewLifecycleOwner) {
+            binding.tvCurrentCity.text = requireContext().getString(
+                R.string.str_current_city,
+                it.name
+            )
         }
     }
 

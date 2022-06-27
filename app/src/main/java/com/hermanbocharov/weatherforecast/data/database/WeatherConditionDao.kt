@@ -6,6 +6,6 @@ import androidx.room.OnConflictStrategy
 
 @Dao
 interface WeatherConditionDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertWeatherCondition(weatherCondition: WeatherConditionEntity)
 }

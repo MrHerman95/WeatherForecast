@@ -10,13 +10,13 @@ import com.hermanbocharov.weatherforecast.data.network.model.FullWeatherInfoDto
 import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
 import com.hermanbocharov.weatherforecast.domain.CurrentWeather
 import com.hermanbocharov.weatherforecast.domain.Location
-import com.hermanbocharov.weatherforecast.domain.WeatherRepository
+import com.hermanbocharov.weatherforecast.domain.OpenWeatherRepository
 import io.reactivex.rxjava3.core.Single
 import java.util.concurrent.TimeUnit
 
-class WeatherRepositoryImpl(
+class OpenWeatherRepositoryImpl(
     application: Application
-) : WeatherRepository {
+) : OpenWeatherRepository {
 
     private val apiService = ApiFactory.apiService
     private val db = AppDatabase.getInstance(application)
@@ -114,13 +114,14 @@ class WeatherRepositoryImpl(
 
     override fun addNewLocation(location: Location): Single<Unit> {
         return db.locationDao().insertLocation(mapper.mapLocationDomainToEntity(location))
-            .map {
+            .flatMap {
                 Log.d("TEST_OF_LOADING_DATA", "New loc id = $it")
                 prefs.saveCurrentLocationId(it.toInt())
+                loadWeatherForecastCurLoc()
             }
     }
 
     companion object {
-        private const val UPDATE_FREQUENCY = 1 * 60; /* in seconds */
+        private const val UPDATE_FREQUENCY = 1 * 60 /* in seconds */
     }
 }

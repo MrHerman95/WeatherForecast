@@ -6,10 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.hermanbocharov.weatherforecast.data.repository.OpenWeatherRepositoryImpl
-import com.hermanbocharov.weatherforecast.domain.AddNewLocationUseCase
-import com.hermanbocharov.weatherforecast.domain.GetCurrentLocationUseCase
-import com.hermanbocharov.weatherforecast.domain.GetListOfCitiesUseCase
-import com.hermanbocharov.weatherforecast.domain.Location
+import com.hermanbocharov.weatherforecast.domain.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -20,6 +17,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     private val getListOfCitiesUseCase = GetListOfCitiesUseCase(repository)
     private val getCurrentLocationUseCase = GetCurrentLocationUseCase(repository)
     private val addNewLocationUseCase = AddNewLocationUseCase(repository)
+    private val loadWeatherForecastGpsLocUseCase = LoadWeatherForecastGpsLocUseCase(repository)
     private val compositeDisposable = CompositeDisposable()
 
     private val _listOfCities = MutableLiveData<List<Location>>()
@@ -58,6 +56,20 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
             })
 
         compositeDisposable.add(disposable)
+    }
+
+    fun detectLocation() {
+        loadWeatherForecastGpsLocUseCase()
+            .flatMap {
+                getCurrentLocationUseCase()
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _currentLocation.value = it
+            }, {
+                Log.d("TEST_OF_LOADING_DATA", "detectLocation() ${it.message}")
+            })
     }
 
     private fun getCurrentLocation() {

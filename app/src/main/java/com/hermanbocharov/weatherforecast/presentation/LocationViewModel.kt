@@ -1,23 +1,22 @@
 package com.hermanbocharov.weatherforecast.presentation
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.hermanbocharov.weatherforecast.data.repository.OpenWeatherRepositoryImpl
+import androidx.lifecycle.ViewModel
 import com.hermanbocharov.weatherforecast.domain.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import javax.inject.Inject
 
-class LocationViewModel(application: Application) : AndroidViewModel(application) {
+class LocationViewModel @Inject constructor(
+    private val getListOfCitiesUseCase: GetListOfCitiesUseCase,
+    private val getCurrentLocationUseCase: GetCurrentLocationUseCase,
+    private val addNewLocationUseCase: AddNewLocationUseCase,
+    private val loadWeatherForecastGpsLocUseCase: LoadWeatherForecastGpsLocUseCase
+) : ViewModel() {
 
-    private val repository = OpenWeatherRepositoryImpl(application)
-    private val getListOfCitiesUseCase = GetListOfCitiesUseCase(repository)
-    private val getCurrentLocationUseCase = GetCurrentLocationUseCase(repository)
-    private val addNewLocationUseCase = AddNewLocationUseCase(repository)
-    private val loadWeatherForecastGpsLocUseCase = LoadWeatherForecastGpsLocUseCase(repository)
     private val compositeDisposable = CompositeDisposable()
 
     private val _listOfCities = MutableLiveData<List<Location>>()

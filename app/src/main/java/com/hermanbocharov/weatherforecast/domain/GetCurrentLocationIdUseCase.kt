@@ -1,6 +1,8 @@
 package com.hermanbocharov.weatherforecast.domain
 
-class GetCurrentLocationIdUseCase(
+import javax.inject.Inject
+
+class GetCurrentLocationIdUseCase @Inject constructor(
     private val repository: OpenWeatherRepository
 ) {
     operator fun invoke() = repository.getCurrentLocationId()

@@ -1,6 +1,8 @@
 package com.hermanbocharov.weatherforecast.domain
 
-class LoadWeatherForecastCurLocUseCase(
+import javax.inject.Inject
+
+class LoadWeatherForecastCurLocUseCase @Inject constructor(
     private val repository: OpenWeatherRepository
 ) {
     operator fun invoke() = repository.loadWeatherForecastCurLoc()

@@ -1,15 +1,20 @@
 package com.hermanbocharov.weatherforecast.data.geolocation
 
+import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.google.android.gms.location.LocationServices
+import com.hermanbocharov.weatherforecast.di.ApplicationScope
 import io.reactivex.rxjava3.core.Single
+import javax.inject.Inject
 
-class FusedLocationDataSource(
-    context: Context
+@ApplicationScope
+class FusedLocationDataSource @Inject constructor(
+    application: Application
 ) {
 
-    private val locationClient = LocationServices.getFusedLocationProviderClient(context)
+    private val locationClient =
+        LocationServices.getFusedLocationProviderClient(application.applicationContext)
 
     fun getLastLocation(): Single<GpsCoordinates> {
 

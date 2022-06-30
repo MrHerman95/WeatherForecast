@@ -1,5 +1,6 @@
 package com.hermanbocharov.weatherforecast.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentLocationBinding
 import com.hermanbocharov.weatherforecast.domain.Location
+import javax.inject.Inject
 
 class LocationFragment : Fragment() {
 
@@ -18,15 +20,27 @@ class LocationFragment : Fragment() {
     private val binding
         get() = _binding ?: throw RuntimeException("FragmentLocationBinding is null")
 
-    private val viewModel: LocationViewModel by lazy {
-        ViewModelProvider(this)[LocationViewModel::class.java]
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[LocationViewModel::class.java]
+    }
+
+    private val component by lazy {
+        (requireActivity().application as WeatherForecastApp).component
     }
 
     private lateinit var locationAdapter: LocationAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("FRAGMENTS", "onCreate() LocationFragment")
+        Log.d("INSTANCES", "onCreate() LocationFragment")
+    }
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(

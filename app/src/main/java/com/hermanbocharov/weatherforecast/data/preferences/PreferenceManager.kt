@@ -1,14 +1,17 @@
 package com.hermanbocharov.weatherforecast.data.preferences
 
-import android.content.Context
+import android.app.Application
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
+import com.hermanbocharov.weatherforecast.di.ApplicationScope
+import javax.inject.Inject
 
-class PreferenceManager(
-    context: Context
+@ApplicationScope
+class PreferenceManager @Inject constructor(
+    application: Application
 ) {
 
-    private val appContext = context.applicationContext
+    private val appContext = application.applicationContext
 
     private val preferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(appContext)

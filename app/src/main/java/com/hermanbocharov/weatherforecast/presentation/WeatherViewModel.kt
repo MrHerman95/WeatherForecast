@@ -1,22 +1,24 @@
 package com.hermanbocharov.weatherforecast.presentation
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.hermanbocharov.weatherforecast.data.repository.OpenWeatherRepositoryImpl
-import com.hermanbocharov.weatherforecast.domain.*
+import androidx.lifecycle.ViewModel
+import com.hermanbocharov.weatherforecast.domain.CurrentWeather
+import com.hermanbocharov.weatherforecast.domain.GetCurrentLocationIdUseCase
+import com.hermanbocharov.weatherforecast.domain.GetCurrentWeatherUseCase
+import com.hermanbocharov.weatherforecast.domain.LoadWeatherForecastGpsLocUseCase
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import javax.inject.Inject
 
-class WeatherViewModel(application: Application) : AndroidViewModel(application) {
+class WeatherViewModel @Inject constructor(
+    private val loadWeatherForecastGpsLocUseCase: LoadWeatherForecastGpsLocUseCase,
+    private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
+    private val getCurrentLocationIdUseCase: GetCurrentLocationIdUseCase
+) : ViewModel() {
 
-    private val repository = OpenWeatherRepositoryImpl(application)
-    private val loadWeatherForecastGpsLocUseCase = LoadWeatherForecastGpsLocUseCase(repository)
-    private val getCurrentWeatherUseCase = GetCurrentWeatherUseCase(repository)
-    private val getCurrentLocationIdUseCase = GetCurrentLocationIdUseCase(repository)
     private val compositeDisposable = CompositeDisposable()
 
     private val _currentWeather = MutableLiveData<CurrentWeather>()

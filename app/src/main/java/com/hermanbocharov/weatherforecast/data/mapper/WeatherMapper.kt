@@ -1,7 +1,7 @@
 package com.hermanbocharov.weatherforecast.data.mapper
 
-import com.hermanbocharov.weatherforecast.data.database.CurrentWeatherFullData
 import com.hermanbocharov.weatherforecast.data.database.CurrentWeatherEntity
+import com.hermanbocharov.weatherforecast.data.database.CurrentWeatherFullData
 import com.hermanbocharov.weatherforecast.data.database.LocationEntity
 import com.hermanbocharov.weatherforecast.data.database.WeatherConditionEntity
 import com.hermanbocharov.weatherforecast.data.network.model.CurrentDto
@@ -9,9 +9,10 @@ import com.hermanbocharov.weatherforecast.data.network.model.LocationDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherConditionDto
 import com.hermanbocharov.weatherforecast.domain.CurrentWeather
 import com.hermanbocharov.weatherforecast.domain.Location
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
-class WeatherMapper {
+class WeatherMapper @Inject constructor() {
 
     fun mapLocationDtoToEntity(dto: LocationDto) = LocationEntity(
         name = dto.name,

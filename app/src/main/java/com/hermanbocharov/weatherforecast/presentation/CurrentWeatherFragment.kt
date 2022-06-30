@@ -1,5 +1,6 @@
 package com.hermanbocharov.weatherforecast.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hermanbocharov.weatherforecast.databinding.FragmentCurrentWeatherBinding
 import com.hermanbocharov.weatherforecast.utils.PermissionsManager
+import javax.inject.Inject
 
 class CurrentWeatherFragment : Fragment() {
 
@@ -18,13 +20,25 @@ class CurrentWeatherFragment : Fragment() {
 
     private val permissionsManager = PermissionsManager()
 
-    private val viewModel: WeatherViewModel by lazy {
-        ViewModelProvider(this)[WeatherViewModel::class.java]
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[WeatherViewModel::class.java]
+    }
+
+    private val component by lazy {
+        (requireActivity().application as WeatherForecastApp).component
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("FRAGMENTS", "onCreate() CurrentWeatherFragment")
+        Log.d("INSTANCES", "onCreate() CurrentWeatherFragment")
+    }
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(

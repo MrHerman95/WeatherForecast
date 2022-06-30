@@ -1,11 +1,13 @@
 package com.hermanbocharov.weatherforecast.data.repository
 
-import android.app.Application
 import android.util.Log
-import com.hermanbocharov.weatherforecast.data.database.AppDatabase
+import com.hermanbocharov.weatherforecast.data.database.CurrentWeatherDao
+import com.hermanbocharov.weatherforecast.data.database.CurrentWeatherFullDataDao
+import com.hermanbocharov.weatherforecast.data.database.LocationDao
+import com.hermanbocharov.weatherforecast.data.database.WeatherConditionDao
 import com.hermanbocharov.weatherforecast.data.geolocation.FusedLocationDataSource
 import com.hermanbocharov.weatherforecast.data.mapper.WeatherMapper
-import com.hermanbocharov.weatherforecast.data.network.ApiFactory
+import com.hermanbocharov.weatherforecast.data.network.ApiService
 import com.hermanbocharov.weatherforecast.data.network.model.FullWeatherInfoDto
 import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
 import com.hermanbocharov.weatherforecast.domain.CurrentWeather
@@ -13,30 +15,32 @@ import com.hermanbocharov.weatherforecast.domain.Location
 import com.hermanbocharov.weatherforecast.domain.OpenWeatherRepository
 import io.reactivex.rxjava3.core.Single
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class OpenWeatherRepositoryImpl(
-    application: Application
+class OpenWeatherRepositoryImpl @Inject constructor(
+    private val mapper: WeatherMapper,
+    private val apiService: ApiService,
+    private val currentDao: CurrentWeatherDao,
+    private val weatherConditionDao: WeatherConditionDao,
+    private val locationDao: LocationDao,
+    private val currentWeatherFullDataDao: CurrentWeatherFullDataDao,
+    private val locationDataSource: FusedLocationDataSource,
+    private val prefs: PreferenceManager
 ) : OpenWeatherRepository {
-
-    private val apiService = ApiFactory.apiService
-    private val db = AppDatabase.getInstance(application)
-    private val prefs = PreferenceManager(application)
-    private val mapper = WeatherMapper()
-    private val locationDataSource = FusedLocationDataSource(application)
 
     override fun getCurrentWeather(): Single<CurrentWeather> {
         Log.d("TEST_OF_LOADING_DATA", "System time = ${TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())}")
         Log.d("TEST_OF_LOADING_DATA", "Last update time = ${prefs.getLastUpdateTime()}")
         return if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - prefs.getLastUpdateTime() < UPDATE_FREQUENCY) {
             Log.d("TEST_OF_LOADING_DATA", "From db")
-            db.currentWeatherFullDataDao()
+            currentWeatherFullDataDao
                 .getCurrentWeatherFullData(getCurrentLocationId())
                 .map { mapper.mapEntityToCurrentWeatherDomain(it) }
         } else {
             Log.d("TEST_OF_LOADING_DATA", "From internet")
             loadWeatherForecastCurLoc()
                 .flatMap {
-                    db.currentWeatherFullDataDao()
+                    currentWeatherFullDataDao
                         .getCurrentWeatherFullData(getCurrentLocationId())
                         .map { mapper.mapEntityToCurrentWeatherDomain(it) }
                 }
@@ -49,11 +53,11 @@ class OpenWeatherRepositoryImpl(
                 apiService.getWeatherForecast(latitude = it.lat, longitude = it.lon)
             }
             .map {
-                db.weatherConditionDao().insertWeatherCondition(
+                weatherConditionDao.insertWeatherCondition(
                     mapper.mapWeatherConditionDtoToEntity(it.current.weather[0])
                 )
 
-                db.currentDao().insertCurrentWeather(
+                currentDao.insertCurrentWeather(
                     mapper.mapCurrentWeatherDtoToEntity(
                         it.current, getCurrentLocationId()
                     )
@@ -77,15 +81,15 @@ class OpenWeatherRepositoryImpl(
                 }
             }
             .map {
-                db.weatherConditionDao().insertWeatherCondition(
+                weatherConditionDao.insertWeatherCondition(
                     mapper.mapWeatherConditionDtoToEntity(it.weatherForecast.current.weather[0])
                 )
 
-                val locationId = db.locationDao().insertLocation(
+                val locationId = locationDao.insertLocation(
                     mapper.mapLocationDtoToEntity(it.location)
                 ).blockingGet().toInt()
 
-                db.currentDao().insertCurrentWeather(
+                currentDao.insertCurrentWeather(
                     mapper.mapCurrentWeatherDtoToEntity(
                         it.weatherForecast.current, locationId
                     )
@@ -104,7 +108,7 @@ class OpenWeatherRepositoryImpl(
     }
 
     override fun getCurrentLocation(): Single<Location> {
-        return db.locationDao().getLocation(getCurrentLocationId())
+        return locationDao.getLocation(getCurrentLocationId())
             .map { mapper.mapEntityToLocationDomain(it) }
     }
 
@@ -113,7 +117,7 @@ class OpenWeatherRepositoryImpl(
     }
 
     override fun addNewLocation(location: Location): Single<Unit> {
-        return db.locationDao().insertLocation(mapper.mapLocationDomainToEntity(location))
+        return locationDao.insertLocation(mapper.mapLocationDomainToEntity(location))
             .flatMap {
                 Log.d("TEST_OF_LOADING_DATA", "New loc id = $it")
                 prefs.saveCurrentLocationId(it.toInt())

@@ -1,9 +1,9 @@
 package com.hermanbocharov.weatherforecast.di
 
 import android.app.Application
-import android.content.Context
 import com.hermanbocharov.weatherforecast.presentation.CurrentWeatherFragment
 import com.hermanbocharov.weatherforecast.presentation.LocationFragment
+import com.hermanbocharov.weatherforecast.presentation.SettingsFragment
 import dagger.BindsInstance
 import dagger.Component
 
@@ -13,6 +13,7 @@ interface ApplicationComponent {
 
     fun inject(fragment: CurrentWeatherFragment)
     fun inject(fragment: LocationFragment)
+    fun inject(fragment: SettingsFragment)
 
     @Component.Factory
     interface Factory {

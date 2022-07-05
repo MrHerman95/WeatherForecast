@@ -2,10 +2,8 @@ package com.hermanbocharov.weatherforecast.di
 
 import android.app.Application
 import com.hermanbocharov.weatherforecast.data.database.*
-import com.hermanbocharov.weatherforecast.data.geolocation.FusedLocationDataSource
 import com.hermanbocharov.weatherforecast.data.network.ApiFactory
 import com.hermanbocharov.weatherforecast.data.network.ApiService
-import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
 import com.hermanbocharov.weatherforecast.data.repository.OpenWeatherRepositoryImpl
 import com.hermanbocharov.weatherforecast.domain.OpenWeatherRepository
 import dagger.Binds

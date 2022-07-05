@@ -2,6 +2,7 @@ package com.hermanbocharov.weatherforecast.di
 
 import androidx.lifecycle.ViewModel
 import com.hermanbocharov.weatherforecast.presentation.LocationViewModel
+import com.hermanbocharov.weatherforecast.presentation.SettingsViewModel
 import com.hermanbocharov.weatherforecast.presentation.WeatherViewModel
 import dagger.Binds
 import dagger.Module
@@ -19,4 +20,9 @@ interface ViewModelModule {
     @ViewModelKey(LocationViewModel::class)
     @Binds
     fun bindLocationViewModel(impl: LocationViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(SettingsViewModel::class)
+    @Binds
+    fun bindSettingsViewModel(impl: SettingsViewModel): ViewModel
 }

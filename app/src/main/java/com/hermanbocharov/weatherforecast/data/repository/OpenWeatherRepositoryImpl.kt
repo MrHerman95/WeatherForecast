@@ -35,14 +35,14 @@ class OpenWeatherRepositoryImpl @Inject constructor(
             Log.d("TEST_OF_LOADING_DATA", "From db")
             currentWeatherFullDataDao
                 .getCurrentWeatherFullData(getCurrentLocationId())
-                .map { mapper.mapEntityToCurrentWeatherDomain(it) }
+                .map { mapper.mapEntityToCurrentWeatherDomain(it, getTemperatureUnit()) }
         } else {
             Log.d("TEST_OF_LOADING_DATA", "From internet")
             loadWeatherForecastCurLoc()
                 .flatMap {
                     currentWeatherFullDataDao
                         .getCurrentWeatherFullData(getCurrentLocationId())
-                        .map { mapper.mapEntityToCurrentWeatherDomain(it) }
+                        .map { mapper.mapEntityToCurrentWeatherDomain(it, getTemperatureUnit()) }
                 }
         }
     }
@@ -114,6 +114,14 @@ class OpenWeatherRepositoryImpl @Inject constructor(
 
     override fun getCurrentLocationId(): Int {
         return prefs.getCurrentLocationId()
+    }
+
+    override fun getTemperatureUnit(): Int {
+        return prefs.getTemperatureUnit()
+    }
+
+    override fun saveTemperatureUnit(unitId: Int) {
+        prefs.saveTemperatureUnit(unitId)
     }
 
     override fun addNewLocation(location: Location): Single<Unit> {

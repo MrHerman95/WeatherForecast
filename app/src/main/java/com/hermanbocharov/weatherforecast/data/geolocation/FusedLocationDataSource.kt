@@ -1,7 +1,6 @@
 package com.hermanbocharov.weatherforecast.data.geolocation
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
 import com.google.android.gms.location.LocationServices
 import com.hermanbocharov.weatherforecast.di.ApplicationScope

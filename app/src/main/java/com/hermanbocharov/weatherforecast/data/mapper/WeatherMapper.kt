@@ -9,6 +9,7 @@ import com.hermanbocharov.weatherforecast.data.network.model.LocationDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherConditionDto
 import com.hermanbocharov.weatherforecast.domain.CurrentWeather
 import com.hermanbocharov.weatherforecast.domain.Location
+import com.hermanbocharov.weatherforecast.domain.TemperatureUnit
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -36,10 +37,21 @@ class WeatherMapper @Inject constructor() {
         locationId = locationId
     )
 
-    fun mapEntityToCurrentWeatherDomain(entity: CurrentWeatherFullData): CurrentWeather {
+    fun mapEntityToCurrentWeatherDomain(
+        entity: CurrentWeatherFullData,
+        tempUnit: Int
+    ): CurrentWeather {
+        var temperature = entity.currentWeather.temp
+        var feelsLike = entity.currentWeather.feelsLike
+
+        if (tempUnit == TemperatureUnit.FAHRENHEIT) {
+            temperature = convertCelsiusToFahrenheit(temperature)
+            feelsLike = convertCelsiusToFahrenheit(feelsLike)
+        }
+
         return CurrentWeather(
-            temp = entity.currentWeather.temp,
-            feelsLike = entity.currentWeather.feelsLike,
+            temp = temperature,
+            feelsLike = feelsLike,
             cityName = entity.location.name,
             description = entity.weatherCondition.description,
             updateTime = entity.currentWeather.updateTime
@@ -74,5 +86,9 @@ class WeatherMapper @Inject constructor() {
             country = dto.country,
             state = dto.state
         )
+    }
+
+    private fun convertCelsiusToFahrenheit(celsius: Int): Int {
+        return (celsius * 1.8).roundToInt() + 32
     }
 }

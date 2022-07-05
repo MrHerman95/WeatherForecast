@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.hermanbocharov.weatherforecast.di.ApplicationScope
+import com.hermanbocharov.weatherforecast.domain.TemperatureUnit
 import javax.inject.Inject
 
 @ApplicationScope
@@ -32,8 +33,17 @@ class PreferenceManager @Inject constructor(
         return preferences.getInt(KEY_LOCATION_ID, 0)
     }
 
+    fun saveTemperatureUnit(unitId: Int) {
+        preferences.edit().putInt(KEY_TEMPERATURE_UNITS, unitId).apply()
+    }
+
+    fun getTemperatureUnit(): Int {
+        return preferences.getInt(KEY_TEMPERATURE_UNITS, TemperatureUnit.CELSIUS)
+    }
+
     companion object {
         private const val KEY_LAST_UPDATE_TIME = "key_last_update_time"
         private const val KEY_LOCATION_ID = "key_location_id"
+        private const val KEY_TEMPERATURE_UNITS = "key_temperature_units"
     }
 }

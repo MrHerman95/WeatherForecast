@@ -13,6 +13,11 @@
 
     <string name="str_detect_btn">Detect</string>
 
+    <string name="str_settings_units">Measurement units</string>
+    <string name="str_settings_temp">Temperature</string>
+    <string name="str_settings_celsius">Celsius (\u00B0C)</string>
+    <string name="str_settings_fahrenheit">Fahrenheit (\u00B0F)</string>
+
     <string name="str_tools_city">Indianapolis</string>
     <string name="str_tools_last_update">9:41 PM</string>
     <string name="str_tools_weather_condition">Thunderstorm with heavy drizzle</string>

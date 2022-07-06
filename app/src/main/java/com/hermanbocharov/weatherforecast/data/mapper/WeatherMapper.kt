@@ -10,6 +10,7 @@ import com.hermanbocharov.weatherforecast.data.network.model.WeatherConditionDto
 import com.hermanbocharov.weatherforecast.domain.CurrentWeather
 import com.hermanbocharov.weatherforecast.domain.Location
 import com.hermanbocharov.weatherforecast.domain.TemperatureUnit
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -52,8 +53,11 @@ class WeatherMapper @Inject constructor() {
         return CurrentWeather(
             temp = temperature,
             feelsLike = feelsLike,
+            tempUnit = tempUnit,
             cityName = entity.location.name,
-            description = entity.weatherCondition.description,
+            description = entity.weatherCondition.description.replaceFirstChar {
+                it.titlecase(Locale.getDefault())
+            },
             updateTime = entity.currentWeather.updateTime
         )
     }

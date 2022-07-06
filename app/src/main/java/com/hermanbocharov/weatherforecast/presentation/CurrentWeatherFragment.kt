@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentCurrentWeatherBinding
+import com.hermanbocharov.weatherforecast.domain.TemperatureUnit
 import com.hermanbocharov.weatherforecast.utils.PermissionsManager
 import javax.inject.Inject
 
@@ -76,10 +78,18 @@ class CurrentWeatherFragment : Fragment() {
 
             with(binding) {
                 tvCity.text = it.cityName
-                tvLastUpdate.text = it.updateTime.toString()
+                tvTime.text = it.updateTime.toString()
                 tvWeatherCondition.text = it.description
-                tvTemperature.text = it.temp.toString()
-                tvFeelsLike.text = it.feelsLike.toString()
+                tvTemperature.text = if (it.tempUnit == TemperatureUnit.CELSIUS) {
+                    requireContext().getString(R.string.str_temp_celsius, it.temp)
+                } else {
+                    requireContext().getString(R.string.str_temp_fahrenheit, it.temp)
+                }
+                tvFeelsLike.text = if (it.tempUnit == TemperatureUnit.CELSIUS) {
+                    requireContext().getString(R.string.str_feels_like_celsius, it.feelsLike)
+                } else {
+                    requireContext().getString(R.string.str_feels_like_fahrenheit, it.feelsLike)
+                }
             }
         }
     }

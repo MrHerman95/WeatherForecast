@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="item_color_active">@color/cyan_light</color>
+    <color name="item_color_inactive">@color/grey</color>
+
+    <color name="cyan_light">#FF6BD7FF</color>
+    <color name="grey">#FFB1B1B1</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>

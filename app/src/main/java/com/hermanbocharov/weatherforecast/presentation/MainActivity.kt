@@ -1,7 +1,13 @@
 package com.hermanbocharov.weatherforecast.presentation
 
+import android.annotation.TargetApi
+import android.app.Activity
+import android.os.Build
 import android.os.Bundle
+import android.view.Window
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.ActivityMainBinding
 
@@ -12,6 +18,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setStatusBarGradiant(this)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -51,6 +60,17 @@ class MainActivity : AppCompatActivity() {
         } else {
             requestLocationPermission()
         }*/
+    }
+
+    private fun setStatusBarGradiant(activity: Activity) {
+        val window: Window = activity.window
+        val background = ContextCompat.getDrawable(activity, R.drawable.app_background)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+
+        window.statusBarColor = ContextCompat.getColor(activity, android.R.color.transparent)
+        window.navigationBarColor =
+            ContextCompat.getColor(activity, android.R.color.transparent)
+        window.setBackgroundDrawable(background)
     }
 
     /*private fun locationPermissionApproved(): Boolean {

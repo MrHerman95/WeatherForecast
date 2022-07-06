@@ -5,55 +5,106 @@
     android:id="@+id/fragment_current_weather"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.CurrentWeatherFragment" >
+    tools:context=".presentation.CurrentWeatherFragment">
 
     <TextView
         android:id="@+id/tv_city"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_temperature"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/str_tools_city" />
+        tools:text="@string/str_tools_city"
+        tools:textColor="@color/black" />
 
     <TextView
-        android:id="@+id/tv_last_update"
+        android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_city"
-        tools:text="@string/str_tools_last_update" />
+        tools:text="@string/str_tools_time"
+        tools:textColor="@color/black" />
 
     <TextView
         android:id="@+id/tv_weather_condition"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:singleLine="false"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toStartOf="@id/guideline_left_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_last_update"
-        tools:text="@string/str_tools_weather_condition" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/str_tools_weather_condition"
+        tools:textColor="@color/black" />
 
     <TextView
         android:id="@+id/tv_temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="32dp"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_feels_like"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_weather_condition"
-        tools:text="@string/str_tools_temperature" />
+        tools:text="@string/str_tools_temperature"
+        tools:textColor="@color/black" />
 
     <TextView
         android:id="@+id/tv_feels_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="32dp"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_temperature"
-        tools:text="@string/str_tools_feels_like" />
+        tools:text="@string/str_tools_feels_like"
+        tools:textColor="@color/black" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_left_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.6" />
+
+    <TextView
+        android:id="@+id/tv_timezone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="@string/str_tools_timezone"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="@string/str_tools_date"
+        tools:textColor="@color/black" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

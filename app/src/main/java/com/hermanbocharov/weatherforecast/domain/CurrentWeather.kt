@@ -6,5 +6,6 @@ data class CurrentWeather(
     val tempUnit: Int,
     val cityName: String,
     val description: String,
-    val updateTime: Int
+    val timezone: String,
+    val timezoneName: String
 )

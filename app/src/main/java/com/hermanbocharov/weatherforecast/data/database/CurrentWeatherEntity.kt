@@ -36,5 +36,11 @@ data class CurrentWeatherEntity(
 
     @PrimaryKey
     @ColumnInfo(name = "location_id")
-    val locationId: Int
+    val locationId: Int,
+
+    @ColumnInfo(name = "timezone_offset")
+    val timezoneOffset: Int,
+
+    @ColumnInfo(name = "timezone_name")
+    val timezoneName: String
 )

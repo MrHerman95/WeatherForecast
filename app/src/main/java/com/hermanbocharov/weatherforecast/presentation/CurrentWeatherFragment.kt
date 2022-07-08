@@ -12,6 +12,10 @@ import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentCurrentWeatherBinding
 import com.hermanbocharov.weatherforecast.domain.TemperatureUnit
 import com.hermanbocharov.weatherforecast.utils.PermissionsManager
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class CurrentWeatherFragment : Fragment() {
@@ -21,6 +25,8 @@ class CurrentWeatherFragment : Fragment() {
         get() = _binding ?: throw RuntimeException("FragmentCurrentWeatherBinding is null")
 
     private val permissionsManager = PermissionsManager()
+
+    private lateinit var disposable: Disposable
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -66,19 +72,13 @@ class CurrentWeatherFragment : Fragment() {
         }
 
         observeViewModel()
+        postDelayTvCityAnimation()
     }
 
     private fun observeViewModel() {
         viewModel.currentWeather.observe(viewLifecycleOwner) {
-            Log.d("TEST_OF_LOADING_DATA", it.cityName)
-            Log.d("TEST_OF_LOADING_DATA", it.temp.toString())
-            Log.d("TEST_OF_LOADING_DATA", it.feelsLike.toString())
-            Log.d("TEST_OF_LOADING_DATA", it.description)
-            Log.d("TEST_OF_LOADING_DATA", it.updateTime.toString())
-
             with(binding) {
                 tvCity.text = it.cityName
-                tvTime.text = it.updateTime.toString()
                 tvWeatherCondition.text = it.description
                 tvTemperature.text = if (it.tempUnit == TemperatureUnit.CELSIUS) {
                     requireContext().getString(R.string.str_temp_celsius, it.temp)
@@ -90,8 +90,22 @@ class CurrentWeatherFragment : Fragment() {
                 } else {
                     requireContext().getString(R.string.str_feels_like_fahrenheit, it.feelsLike)
                 }
+                tvTimezone.text = it.timezone
+
+                tcClock.timeZone = it.timezoneName
+                tcClock.visibility = View.VISIBLE
+                tcDate.timeZone = it.timezoneName
+                tcDate.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun postDelayTvCityAnimation() {
+        disposable = Observable.timer(2000, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.tvCity.isSelected = true
+            }
     }
 
     private fun requestLocationPermission() {
@@ -108,6 +122,7 @@ class CurrentWeatherFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        disposable.dispose()
         _binding = null
     }
 

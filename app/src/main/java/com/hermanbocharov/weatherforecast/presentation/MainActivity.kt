@@ -1,8 +1,8 @@
 package com.hermanbocharov.weatherforecast.presentation
 
-import android.annotation.TargetApi
 import android.app.Activity
-import android.os.Build
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.ActivityMainBinding
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -71,6 +72,14 @@ class MainActivity : AppCompatActivity() {
         window.navigationBarColor =
             ContextCompat.getColor(activity, android.R.color.transparent)
         window.setBackgroundDrawable(background)
+    }
+
+    private fun setLocale(activity: Activity, locale: Locale) {
+        Locale.setDefault(locale)
+        val resources: Resources = activity.resources
+        val config: Configuration = resources.configuration
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
     }
 
     /*private fun locationPermissionApproved(): Boolean {

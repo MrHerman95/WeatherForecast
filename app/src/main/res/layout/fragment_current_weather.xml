@@ -13,24 +13,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
         android:textColor="@color/white"
         android:textSize="28sp"
         app:layout_constraintBottom_toTopOf="@+id/tv_temperature"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="@string/str_tools_city"
-        tools:textColor="@color/black" />
-
-    <TextView
-        android:id="@+id/tv_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/tv_date"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="@string/str_tools_time"
         tools:textColor="@color/black" />
 
     <TextView
@@ -89,22 +80,42 @@
         android:layout_marginEnd="32dp"
         android:textColor="@color/white"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/tv_time"
+        app:layout_constraintBottom_toTopOf="@+id/tc_clock"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="@string/str_tools_timezone"
         tools:textColor="@color/black" />
 
-    <TextView
-        android:id="@+id/tv_date"
+    <TextClock
+        android:id="@+id/tc_clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:format12Hour="h:mm a"
+        android:format24Hour="HH:mm"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/tc_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="@string/str_tools_time"
+        tools:textColor="@color/black"
+        tools:visibility="visible" />
+
+    <TextClock
+        android:id="@+id/tc_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
+        android:format12Hour="EEEE, MMM. d"
+        android:format24Hour="EEEE, MMM. d"
         android:textColor="@color/white"
         android:textSize="16sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="@string/str_tools_date"
-        tools:textColor="@color/black" />
+        tools:textColor="@color/black"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,15 +4,19 @@ import com.hermanbocharov.weatherforecast.data.database.CurrentWeatherEntity
 import com.hermanbocharov.weatherforecast.data.database.CurrentWeatherFullData
 import com.hermanbocharov.weatherforecast.data.database.LocationEntity
 import com.hermanbocharov.weatherforecast.data.database.WeatherConditionEntity
-import com.hermanbocharov.weatherforecast.data.network.model.CurrentDto
 import com.hermanbocharov.weatherforecast.data.network.model.LocationDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherConditionDto
+import com.hermanbocharov.weatherforecast.data.network.model.WeatherForecastDto
 import com.hermanbocharov.weatherforecast.domain.CurrentWeather
 import com.hermanbocharov.weatherforecast.domain.Location
 import com.hermanbocharov.weatherforecast.domain.TemperatureUnit
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.math.abs
 import kotlin.math.roundToInt
+import kotlin.text.Typography.ndash
+import kotlin.text.Typography.plusMinus
 
 class WeatherMapper @Inject constructor() {
 
@@ -30,13 +34,16 @@ class WeatherMapper @Inject constructor() {
         description = dto.description
     )
 
-    fun mapCurrentWeatherDtoToEntity(dto: CurrentDto, locationId: Int) = CurrentWeatherEntity(
-        updateTime = dto.updateTime,
-        temp = dto.temp.roundToInt(),
-        feelsLike = dto.feelsLike.roundToInt(),
-        weatherConditionId = dto.weather[0].id,
-        locationId = locationId
-    )
+    fun mapWeatherForecastDtoToCurrentWeatherEntity(dto: WeatherForecastDto, locationId: Int) =
+        CurrentWeatherEntity(
+            updateTime = dto.current.updateTime,
+            temp = dto.current.temp.roundToInt(),
+            feelsLike = dto.current.feelsLike.roundToInt(),
+            weatherConditionId = dto.current.weather[0].id,
+            locationId = locationId,
+            timezoneOffset = dto.timezoneOffset,
+            timezoneName = dto.timezoneName
+        )
 
     fun mapEntityToCurrentWeatherDomain(
         entity: CurrentWeatherFullData,
@@ -50,6 +57,8 @@ class WeatherMapper @Inject constructor() {
             feelsLike = convertCelsiusToFahrenheit(feelsLike)
         }
 
+        convertTimezoneOffsetToTimezone(entity.currentWeather.timezoneOffset)
+
         return CurrentWeather(
             temp = temperature,
             feelsLike = feelsLike,
@@ -58,7 +67,8 @@ class WeatherMapper @Inject constructor() {
             description = entity.weatherCondition.description.replaceFirstChar {
                 it.titlecase(Locale.getDefault())
             },
-            updateTime = entity.currentWeather.updateTime
+            timezone = convertTimezoneOffsetToTimezone(entity.currentWeather.timezoneOffset),
+            timezoneName = entity.currentWeather.timezoneName
         )
     }
 
@@ -94,5 +104,17 @@ class WeatherMapper @Inject constructor() {
 
     private fun convertCelsiusToFahrenheit(celsius: Int): Int {
         return (celsius * 1.8).roundToInt() + 32
+    }
+
+    private fun convertTimezoneOffsetToTimezone(offset: Int): String {
+        val hours = TimeUnit.SECONDS.toHours(offset.toLong())
+        val minutes = TimeUnit.SECONDS.toMinutes(offset - TimeUnit.HOURS.toSeconds(hours))
+        val sign = when {
+            offset < 0 -> ndash
+            offset > 0 -> "+"
+            else -> plusMinus
+        }
+
+        return String.format("UTC%s%02d:%02d", sign, abs(hours), abs(minutes))
     }
 }

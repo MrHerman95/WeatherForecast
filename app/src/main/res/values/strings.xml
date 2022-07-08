@@ -24,8 +24,8 @@
 
     <string name="str_tools_city">Indianapolis</string>
     <string name="str_tools_timezone">UTC+3:30</string>
-    <string name="str_tools_date">Wednesday, 31th</string>
-    <string name="str_tools_time">9:41 p.m.</string>
+    <string name="str_tools_date">Wednesday, Sept. 28</string>
+    <string name="str_tools_time">9:41 PM</string>
     <string name="str_tools_zone_date">Wednesday, 31st</string>
     <string name="str_tools_weather_condition">Thunderstorm with heavy drizzle</string>
     <string name="str_tools_temperature">25\u00B0C</string>

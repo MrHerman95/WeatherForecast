@@ -1,8 +1,8 @@
 package com.hermanbocharov.weatherforecast.presentation
 
 import android.app.Activity
-import android.content.res.Configuration
-import android.content.res.Resources
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
@@ -63,6 +63,18 @@ class MainActivity : AppCompatActivity() {
         }*/
     }
 
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(ContextWrapper(newBase?.setAppLocale(Locale.ENGLISH)))
+    }
+
+    private fun Context.setAppLocale(locale: Locale): Context {
+        Locale.setDefault(locale)
+        val config = resources.configuration
+        config.setLocale(locale)
+        config.setLayoutDirection(locale)
+        return createConfigurationContext(config)
+    }
+
     private fun setStatusBarGradiant(activity: Activity) {
         val window: Window = activity.window
         val background = ContextCompat.getDrawable(activity, R.drawable.app_background)
@@ -72,14 +84,6 @@ class MainActivity : AppCompatActivity() {
         window.navigationBarColor =
             ContextCompat.getColor(activity, android.R.color.transparent)
         window.setBackgroundDrawable(background)
-    }
-
-    private fun setLocale(activity: Activity, locale: Locale) {
-        Locale.setDefault(locale)
-        val resources: Resources = activity.resources
-        val config: Configuration = resources.configuration
-        config.setLocale(locale)
-        resources.updateConfiguration(config, resources.displayMetrics)
     }
 
     /*private fun locationPermissionApproved(): Boolean {

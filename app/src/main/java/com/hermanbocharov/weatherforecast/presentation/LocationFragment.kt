@@ -6,12 +6,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentLocationBinding
 import com.hermanbocharov.weatherforecast.domain.Location
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class LocationFragment : Fragment() {
@@ -31,6 +35,7 @@ class LocationFragment : Fragment() {
         (requireActivity().application as WeatherForecastApp).component
     }
 
+    private var disposable: Disposable? = null
     private lateinit var locationAdapter: LocationAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,13 +62,14 @@ class LocationFragment : Fragment() {
         setupSearchView()
         observeViewModel()
 
-        binding.btnDetect.setOnClickListener {
+        binding.ivDetectLoc.setOnClickListener {
             viewModel.detectLocation()
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        disposable?.dispose()
         _binding = null
     }
 
@@ -72,21 +78,18 @@ class LocationFragment : Fragment() {
         binding.rvLocation.adapter = locationAdapter
 
         locationAdapter.onLocationClickListener = {
-            binding.tvCurrentCity.text = requireContext().getString(
-                R.string.str_current_city,
-                it.name
-            )
-
+            disposable?.dispose()
+            binding.tvLocationName.isSelected = false
             viewModel.addNewLocation(it)
-
             locationAdapter.submitList(listOf<Location>())
         }
     }
 
     private fun setupSearchView() {
         binding.svLocation.apply {
-            isIconifiedByDefault = false
-            isSubmitButtonEnabled = true
+            setBackgroundResource(R.drawable.search_view_bg)
+            //isIconified = false
+            //isSubmitButtonEnabled = true
 
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(input: String?): Boolean {
@@ -112,11 +115,21 @@ class LocationFragment : Fragment() {
         }
 
         viewModel.currentLocation.observe(viewLifecycleOwner) {
-            binding.tvCurrentCity.text = requireContext().getString(
-                R.string.str_current_city,
-                it.name
+            binding.tvLocationName.text = requireContext().getString(
+                R.string.str_location_name,
+                it.name,
+                it.country
             )
+            postDelayTvLocationNameAnimation()
         }
+    }
+
+    private fun postDelayTvLocationNameAnimation() {
+        disposable = Observable.timer(2000, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.tvLocationName.isSelected = true
+            }
     }
 
     companion object {

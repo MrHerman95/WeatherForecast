@@ -39,6 +39,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.bottomNavView.setOnItemSelectedListener { item ->
+            if (item.isChecked) {
+                return@setOnItemSelectedListener true
+            }
+
             val fragment = when (item.itemId) {
                 R.id.location_page -> LocationFragment.newInstance()
                 R.id.weather_now_page -> CurrentWeatherFragment.newInstance()

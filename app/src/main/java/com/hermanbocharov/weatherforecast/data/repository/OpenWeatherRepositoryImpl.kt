@@ -53,13 +53,18 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 apiService.getWeatherForecast(latitude = it.lat, longitude = it.lon)
             }
             .map {
+                Log.d("TEST_OF_LOADING_DATA", "Timezone name = ${it.timezoneName}, offset = ${it.timezoneOffset}")
+                for (cond in it.current.weather) {
+                    Log.d("TEST_OF_LOADING_DATA", "Condition = $cond")
+                }
+
                 weatherConditionDao.insertWeatherCondition(
                     mapper.mapWeatherConditionDtoToEntity(it.current.weather[0])
                 )
 
                 currentDao.insertCurrentWeather(
-                    mapper.mapCurrentWeatherDtoToEntity(
-                        it.current, getCurrentLocationId()
+                    mapper.mapWeatherForecastDtoToCurrentWeatherEntity(
+                        it, getCurrentLocationId()
                     )
                 )
 
@@ -81,6 +86,8 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 }
             }
             .map {
+                Log.d("TEST_OF_LOADING_DATA", "Timezone name = ${it.weatherForecast.timezoneName}, offset = ${it.weatherForecast.timezoneOffset}")
+
                 weatherConditionDao.insertWeatherCondition(
                     mapper.mapWeatherConditionDtoToEntity(it.weatherForecast.current.weather[0])
                 )
@@ -90,8 +97,8 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 ).blockingGet().toInt()
 
                 currentDao.insertCurrentWeather(
-                    mapper.mapCurrentWeatherDtoToEntity(
-                        it.weatherForecast.current, locationId
+                    mapper.mapWeatherForecastDtoToCurrentWeatherEntity(
+                        it.weatherForecast, locationId
                     )
                 )
 

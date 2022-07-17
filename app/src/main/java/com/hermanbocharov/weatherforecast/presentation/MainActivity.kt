@@ -1,9 +1,16 @@
 package com.hermanbocharov.weatherforecast.presentation
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Bundle
+import android.view.Window
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.ActivityMainBinding
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -12,6 +19,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setStatusBarGradiant(this)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -51,6 +61,29 @@ class MainActivity : AppCompatActivity() {
         } else {
             requestLocationPermission()
         }*/
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(ContextWrapper(newBase?.setAppLocale(Locale.ENGLISH)))
+    }
+
+    private fun Context.setAppLocale(locale: Locale): Context {
+        Locale.setDefault(locale)
+        val config = resources.configuration
+        config.setLocale(locale)
+        config.setLayoutDirection(locale)
+        return createConfigurationContext(config)
+    }
+
+    private fun setStatusBarGradiant(activity: Activity) {
+        val window: Window = activity.window
+        val background = ContextCompat.getDrawable(activity, R.drawable.app_background)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+
+        window.statusBarColor = ContextCompat.getColor(activity, android.R.color.transparent)
+        window.navigationBarColor =
+            ContextCompat.getColor(activity, android.R.color.transparent)
+        window.setBackgroundDrawable(background)
     }
 
     /*private fun locationPermissionApproved(): Boolean {

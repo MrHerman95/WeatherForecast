@@ -1,9 +1,9 @@
 package com.hermanbocharov.weatherforecast.di
 
 import android.app.Application
-import com.hermanbocharov.weatherforecast.presentation.CurrentWeatherFragment
-import com.hermanbocharov.weatherforecast.presentation.LocationFragment
-import com.hermanbocharov.weatherforecast.presentation.SettingsFragment
+import com.hermanbocharov.weatherforecast.presentation.fragments.CurrentWeatherFragment
+import com.hermanbocharov.weatherforecast.presentation.fragments.LocationFragment
+import com.hermanbocharov.weatherforecast.presentation.fragments.SettingsFragment
 import dagger.BindsInstance
 import dagger.Component
 

@@ -1,24 +1,24 @@
 package com.hermanbocharov.weatherforecast.data.repository
 
 import android.util.Log
-import com.hermanbocharov.weatherforecast.data.database.CurrentWeatherDao
-import com.hermanbocharov.weatherforecast.data.database.CurrentWeatherFullDataDao
-import com.hermanbocharov.weatherforecast.data.database.LocationDao
-import com.hermanbocharov.weatherforecast.data.database.WeatherConditionDao
+import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherDao
+import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherFullDataDao
+import com.hermanbocharov.weatherforecast.data.database.dao.LocationDao
+import com.hermanbocharov.weatherforecast.data.database.dao.WeatherConditionDao
 import com.hermanbocharov.weatherforecast.data.geolocation.FusedLocationDataSource
-import com.hermanbocharov.weatherforecast.data.mapper.WeatherMapper
-import com.hermanbocharov.weatherforecast.data.network.ApiService
+import com.hermanbocharov.weatherforecast.data.mapper.OpenWeatherMapper
+import com.hermanbocharov.weatherforecast.data.network.api.ApiService
 import com.hermanbocharov.weatherforecast.data.network.model.FullWeatherInfoDto
 import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
-import com.hermanbocharov.weatherforecast.domain.CurrentWeather
-import com.hermanbocharov.weatherforecast.domain.Location
-import com.hermanbocharov.weatherforecast.domain.OpenWeatherRepository
+import com.hermanbocharov.weatherforecast.domain.entities.CurrentWeather
+import com.hermanbocharov.weatherforecast.domain.entities.Location
+import com.hermanbocharov.weatherforecast.domain.repository.OpenWeatherRepository
 import io.reactivex.rxjava3.core.Single
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class OpenWeatherRepositoryImpl @Inject constructor(
-    private val mapper: WeatherMapper,
+    private val mapper: OpenWeatherMapper,
     private val apiService: ApiService,
     private val currentDao: CurrentWeatherDao,
     private val weatherConditionDao: WeatherConditionDao,

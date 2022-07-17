@@ -5,7 +5,7 @@
     android:id="@+id/fragment_settings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.SettingsFragment">
+    tools:context=".presentation.fragments.SettingsFragment">
 
     <TextView
         android:id="@+id/tv_units"

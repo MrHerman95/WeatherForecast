@@ -10,6 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.ActivityMainBinding
+import com.hermanbocharov.weatherforecast.presentation.fragments.CurrentWeatherFragment
+import com.hermanbocharov.weatherforecast.presentation.fragments.LocationFragment
+import com.hermanbocharov.weatherforecast.presentation.fragments.SettingsFragment
+import com.hermanbocharov.weatherforecast.presentation.fragments.WeatherForecastFragment
 import java.util.*
 
 

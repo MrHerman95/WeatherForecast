@@ -46,22 +46,7 @@ class LocationViewModel @Inject constructor(
 
     fun addNewLocation(location: Location) {
         val disposable = addNewLocationUseCase(location)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                _currentLocation.value = location
-            }, {
-                Log.d("TEST_OF_LOADING_DATA", "getCurrentLocation() ${it.message}")
-            })
-
-        compositeDisposable.add(disposable)
-    }
-
-    fun detectLocation() {
-        loadWeatherForecastGpsLocUseCase()
-            .flatMap {
-                getCurrentLocationUseCase()
-            }
+            .flatMap { getCurrentLocationUseCase() }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -69,6 +54,22 @@ class LocationViewModel @Inject constructor(
             }, {
                 Log.d("TEST_OF_LOADING_DATA", "detectLocation() ${it.message}")
             })
+
+        compositeDisposable.add(disposable)
+    }
+
+    fun detectLocation() {
+        val disposable = loadWeatherForecastGpsLocUseCase()
+            .flatMap { getCurrentLocationUseCase() }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _currentLocation.value = it
+            }, {
+                Log.d("TEST_OF_LOADING_DATA", "detectLocation() ${it.message}")
+            })
+
+        compositeDisposable.add(disposable)
     }
 
     private fun getCurrentLocation() {

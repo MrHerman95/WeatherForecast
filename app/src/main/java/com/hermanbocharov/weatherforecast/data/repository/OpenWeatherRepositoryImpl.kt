@@ -93,7 +93,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 )
 
                 val locationId = locationDao.insertLocation(
-                    mapper.mapLocationDtoToEntity(it.location)
+                    mapper.mapDtoToLocationEntity(it.location)
                 ).blockingGet().toInt()
 
                 currentDao.insertCurrentWeather(

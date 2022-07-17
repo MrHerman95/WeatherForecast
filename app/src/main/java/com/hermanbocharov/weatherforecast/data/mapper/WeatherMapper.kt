@@ -20,13 +20,43 @@ import kotlin.text.Typography.plusMinus
 
 class WeatherMapper @Inject constructor() {
 
-    fun mapLocationDtoToEntity(dto: LocationDto) = LocationEntity(
+    fun mapDtoToLocationEntity(dto: LocationDto) = LocationEntity(
         name = dto.name,
         lat = dto.lat,
         lon = dto.lon,
-        country = dto.country,
+        country = convertCountryCodeToName(dto.country),
         state = dto.state
     )
+
+    fun mapDtoToLocationDomain(dto: LocationDto): Location {
+        return Location(
+            name = dto.name,
+            lat = dto.lat,
+            lon = dto.lon,
+            country = convertCountryCodeToName(dto.country),
+            state = dto.state
+        )
+    }
+
+    fun mapEntityToLocationDomain(entity: LocationEntity): Location {
+        return Location(
+            name = entity.name,
+            lat = entity.lat,
+            lon = entity.lon,
+            country = entity.country,
+            state = entity.state
+        )
+    }
+
+    fun mapLocationDomainToEntity(domain: Location): LocationEntity {
+        return LocationEntity(
+            name = domain.name,
+            lat = domain.lat,
+            lon = domain.lon,
+            country = domain.country,
+            state = domain.state
+        )
+    }
 
     fun mapWeatherConditionDtoToEntity(dto: WeatherConditionDto) = WeatherConditionEntity(
         id = dto.id,
@@ -72,34 +102,8 @@ class WeatherMapper @Inject constructor() {
         )
     }
 
-    fun mapEntityToLocationDomain(entity: LocationEntity): Location {
-        return Location(
-            name = entity.name,
-            lat = entity.lat,
-            lon = entity.lon,
-            country = entity.country,
-            state = entity.state
-        )
-    }
-
-    fun mapLocationDomainToEntity(domain: Location): LocationEntity {
-        return LocationEntity(
-            name = domain.name,
-            lat = domain.lat,
-            lon = domain.lon,
-            country = domain.country,
-            state = domain.state
-        )
-    }
-
-    fun mapDtoToLocationDomain(dto: LocationDto): Location {
-        return Location(
-            name = dto.name,
-            lat = dto.lat,
-            lon = dto.lon,
-            country = dto.country,
-            state = dto.state
-        )
+    private fun convertCountryCodeToName(code: String): String {
+        return Locale("", code).displayCountry
     }
 
     private fun convertCelsiusToFahrenheit(celsius: Int): Int {

@@ -1,5 +1,6 @@
 package com.hermanbocharov.weatherforecast.presentation.fragments
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
@@ -7,27 +8,33 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.*
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentLocationBinding
 import com.hermanbocharov.weatherforecast.domain.entities.Location
-import com.hermanbocharov.weatherforecast.presentation.recyclerview.LocationAdapter
-import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
+import com.hermanbocharov.weatherforecast.presentation.recyclerview.LocationAdapter
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.LocationViewModel
+import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+
 
 class LocationFragment : Fragment() {
 
@@ -78,19 +85,36 @@ class LocationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
-        setupSearchView()
+        setupSearchModeView()
         observeViewModel()
-
-        binding.ivDetectLoc.setOnClickListener {
-            viewModel.detectLocation()
-        }
+        setupDetectLocationButton()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         compositeDisposable.dispose()
         _binding = null
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupDetectLocationButton() {
+        binding.ivDetectLoc.setOnTouchListener { view, motionEvent ->
+            val iv: ImageView = view as ImageView
+
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    animateImageViewPressed(iv, binding.cvDetectLocation)
+                }
+                MotionEvent.ACTION_UP -> {
+                    animateImageViewUnpressed(iv, binding.cvDetectLocation)
+                    viewModel.detectLocation()
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    animateImageViewUnpressed(iv, binding.cvDetectLocation)
+                }
+            }
+            return@setOnTouchListener true
+        }
     }
 
     private fun setupRecyclerView() {
@@ -104,7 +128,10 @@ class LocationFragment : Fragment() {
         }
     }
 
-    private fun setupSearchView() {
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupSearchModeView() {
+        setupRecyclerView()
+
         binding.searchViewFlow.setOnClickListener {
             if (!isSearchMode) {
                 searchModeOn()
@@ -115,36 +142,80 @@ class LocationFragment : Fragment() {
             binding.etLocName.text.clear()
         }
 
-        binding.ivCancelSearch.setOnClickListener {
-            searchModeOff()
+        binding.ivCancelSearch.setOnTouchListener { view, motionEvent ->
+            val iv: ImageView = view as ImageView
+
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    animateImageViewPressed(iv, binding.cvCancelSearch)
+                }
+                MotionEvent.ACTION_UP -> {
+                    animateImageViewUnpressed(iv, binding.cvCancelSearch)
+                    searchModeOff()
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    animateImageViewUnpressed(iv, binding.cvCancelSearch)
+                }
+            }
+            return@setOnTouchListener true
         }
 
         binding.etLocName.addTextChangedListener(object : TextWatcher {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.isNullOrEmpty()) {
-                    binding.ivClearEt.visibility = View.INVISIBLE
+                    hideClearEditTextIcon()
                 } else {
-                    if (binding.ivClearEt.visibility == View.INVISIBLE) {
-                        binding.ivClearEt.visibility = View.VISIBLE
-                    }
+                    showClearEditTextIcon()
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
-                compositeDisposable.clear()
-                val disposable = Observable.timer(1000, TimeUnit.MILLISECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        if (binding.etLocName.text.isNotBlank()) {
-                            viewModel.getListOfCities(s.toString())
-                        }
-                    }
-                compositeDisposable.add(disposable)
+                updateListOfCities(s.toString())
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         })
+    }
+
+    private fun updateListOfCities(city: String) {
+        compositeDisposable.clear()
+        val disposable = Observable.timer(1000, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (binding.etLocName.text.isNotBlank()) {
+                    viewModel.getListOfCities(city)
+                }
+            }
+        compositeDisposable.add(disposable)
+    }
+
+    private fun showClearEditTextIcon() {
+        if (binding.ivClearEt.visibility == View.INVISIBLE) {
+            binding.ivClearEt.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hideClearEditTextIcon() {
+        binding.ivClearEt.visibility = View.INVISIBLE
+    }
+
+    private fun animateImageViewPressed(iv: ImageView, cv: CardView) {
+        iv.drawable.colorFilter =
+            BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                0xFFFFFFFF.toInt(),
+                BlendModeCompat.SRC_ATOP
+            )
+        iv.invalidate()
+        cv.cardElevation = 2f
+        cv.useCompatPadding = true
+    }
+
+    private fun animateImageViewUnpressed(iv: ImageView, cv: CardView) {
+        iv.drawable.clearColorFilter()
+        iv.invalidate()
+        cv.cardElevation = 0f
+        cv.useCompatPadding = false
     }
 
     private fun observeViewModel() {
@@ -211,10 +282,12 @@ class LocationFragment : Fragment() {
         if (binding.etLocName.requestFocus()) {
             showKeyboard()
         }
+
         binding.searchViewFlow.background = null
         binding.recyclerViewFlow.background = null
         binding.ivClearEt.visibility = View.INVISIBLE
         binding.ivRecyclerDiv.visibility = View.GONE
+        binding.ivCancelSearch.visibility = View.VISIBLE
     }
 
     private fun showKeyboard() {

@@ -4,6 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherDao
+import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherFullDataDao
+import com.hermanbocharov.weatherforecast.data.database.dao.LocationDao
+import com.hermanbocharov.weatherforecast.data.database.dao.WeatherConditionDao
+import com.hermanbocharov.weatherforecast.data.database.entities.CurrentWeatherEntity
+import com.hermanbocharov.weatherforecast.data.database.entities.LocationEntity
+import com.hermanbocharov.weatherforecast.data.database.entities.WeatherConditionEntity
 
 @Database(
     entities = [LocationEntity::class, WeatherConditionEntity::class, CurrentWeatherEntity::class],

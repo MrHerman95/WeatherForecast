@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.hermanbocharov.weatherforecast.di.ApplicationScope
-import com.hermanbocharov.weatherforecast.domain.TemperatureUnit
+import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit
 import javax.inject.Inject
 
 @ApplicationScope

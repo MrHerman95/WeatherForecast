@@ -1,9 +1,9 @@
 package com.hermanbocharov.weatherforecast.di
 
 import androidx.lifecycle.ViewModel
-import com.hermanbocharov.weatherforecast.presentation.LocationViewModel
-import com.hermanbocharov.weatherforecast.presentation.SettingsViewModel
-import com.hermanbocharov.weatherforecast.presentation.WeatherViewModel
+import com.hermanbocharov.weatherforecast.presentation.viewmodel.LocationViewModel
+import com.hermanbocharov.weatherforecast.presentation.viewmodel.SettingsViewModel
+import com.hermanbocharov.weatherforecast.presentation.viewmodel.WeatherViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

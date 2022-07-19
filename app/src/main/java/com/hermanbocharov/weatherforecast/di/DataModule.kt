@@ -1,7 +1,7 @@
 package com.hermanbocharov.weatherforecast.di
 
 import android.app.Application
-import com.hermanbocharov.weatherforecast.data.database.*
+import com.hermanbocharov.weatherforecast.data.database.AppDatabase
 import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherDao
 import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherFullDataDao
 import com.hermanbocharov.weatherforecast.data.database.dao.LocationDao

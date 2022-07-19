@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentCurrentWeatherBinding
 import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit
-import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
+import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.WeatherViewModel
 import com.hermanbocharov.weatherforecast.utils.PermissionsManager
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers

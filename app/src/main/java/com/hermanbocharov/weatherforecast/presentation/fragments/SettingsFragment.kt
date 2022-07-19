@@ -11,9 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentSettingsBinding
 import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit
-import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.SettingsViewModel
+import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
 import javax.inject.Inject
 
 class SettingsFragment : Fragment() {

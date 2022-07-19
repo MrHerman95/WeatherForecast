@@ -72,17 +72,20 @@
         app:layout_constraintTop_toBottomOf="@+id/iv_earth"
         tools:textColor="@color/black" />
 
-    <ImageView
-        android:id="@+id/iv_detect_loc"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_detect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="24dp"
         android:contentDescription="@string/str_detect_loc_desc"
         android:src="@drawable/ic_location_detect"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_search_location"
+        app:backgroundTint="@color/cyan_blue"
+        app:borderWidth="0dp"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@id/tv_search_location"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_search_location" />
+        app:layout_constraintTop_toTopOf="@id/tv_search_location" />
 
     <androidx.constraintlayout.helper.widget.Flow
         android:id="@+id/search_view_flow"
@@ -143,8 +146,9 @@
         android:orientation="vertical"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
+        android:paddingBottom="8dp"
         android:visibility="visible"
-        app:constraint_referenced_ids="rv_location,iv_recycler_div,iv_cancel_search"
+        app:constraint_referenced_ids="rv_location,iv_recycler_div,cv_cancel_search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_view_flow" />
@@ -156,17 +160,28 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:layout_editor_absoluteY="608dp"
         tools:listitem="@layout/item_location" />
 
-    <ImageView
-        android:id="@+id/iv_cancel_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:contentDescription="@string/str_ic_cancel_desc"
-        android:src="@drawable/ic_cancel"
-        android:visibility="visible" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_cancel_search"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false">
+
+        <ImageView
+            android:id="@+id/iv_cancel_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/str_ic_cancel_desc"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_cancel"
+            android:visibility="visible" />
+    </androidx.cardview.widget.CardView>
 
     <ImageView
         android:id="@+id/iv_search_div"

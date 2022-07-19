@@ -3,8 +3,8 @@ package com.hermanbocharov.weatherforecast.data.database.entities
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class CurrentWeatherFullData(
-    @Embedded val currentWeather: CurrentWeatherEntity,
+data class DailyForecastFullData(
+    @Embedded val dailyForecast: DailyForecastEntity,
 
     @Relation(
         entity = LocationEntity::class, parentColumn = "location_id", entityColumn = "id"

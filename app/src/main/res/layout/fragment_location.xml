@@ -72,29 +72,20 @@
         app:layout_constraintTop_toBottomOf="@+id/iv_earth"
         tools:textColor="@color/black" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cv_detect_location"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:layout_marginEnd="32dp"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_detect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="@string/str_detect_loc_desc"
+        android:src="@drawable/ic_location_detect"
         android:visibility="visible"
-        app:cardBackgroundColor="@android:color/transparent"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="0dp"
-        app:cardPreventCornerOverlap="false"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_search_location"
+        app:backgroundTint="@color/cyan_blue"
+        app:borderWidth="0dp"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@id/tv_search_location"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_search_location">
-
-        <ImageView
-            android:id="@+id/iv_detect_loc"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/str_detect_loc_desc"
-            android:src="@drawable/ic_location_detect"
-            android:visibility="visible" />
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toTopOf="@id/tv_search_location" />
 
     <androidx.constraintlayout.helper.widget.Flow
         android:id="@+id/search_view_flow"

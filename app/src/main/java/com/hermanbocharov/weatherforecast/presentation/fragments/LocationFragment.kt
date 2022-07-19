@@ -15,7 +15,6 @@ import android.view.animation.AnticipateOvershootInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
@@ -87,34 +86,16 @@ class LocationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupSearchModeView()
         observeViewModel()
-        setupDetectLocationButton()
+
+        binding.fabDetect.setOnClickListener {
+            viewModel.detectLocation()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         compositeDisposable.dispose()
         _binding = null
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setupDetectLocationButton() {
-        binding.ivDetectLoc.setOnTouchListener { view, motionEvent ->
-            val iv: ImageView = view as ImageView
-
-            when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    animateImageViewPressed(iv, binding.cvDetectLocation)
-                }
-                MotionEvent.ACTION_UP -> {
-                    animateImageViewUnpressed(iv, binding.cvDetectLocation)
-                    viewModel.detectLocation()
-                }
-                MotionEvent.ACTION_CANCEL -> {
-                    animateImageViewUnpressed(iv, binding.cvDetectLocation)
-                }
-            }
-            return@setOnTouchListener true
-        }
     }
 
     private fun setupRecyclerView() {
@@ -147,14 +128,14 @@ class LocationFragment : Fragment() {
 
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    animateImageViewPressed(iv, binding.cvCancelSearch)
+                    animateImageViewPressed(iv)
                 }
                 MotionEvent.ACTION_UP -> {
-                    animateImageViewUnpressed(iv, binding.cvCancelSearch)
+                    animateImageViewUnpressed(iv)
                     searchModeOff()
                 }
                 MotionEvent.ACTION_CANCEL -> {
-                    animateImageViewUnpressed(iv, binding.cvCancelSearch)
+                    animateImageViewUnpressed(iv)
                 }
             }
             return@setOnTouchListener true
@@ -200,22 +181,22 @@ class LocationFragment : Fragment() {
         binding.ivClearEt.visibility = View.INVISIBLE
     }
 
-    private fun animateImageViewPressed(iv: ImageView, cv: CardView) {
+    private fun animateImageViewPressed(iv: ImageView) {
         iv.drawable.colorFilter =
             BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
                 0xFFFFFFFF.toInt(),
                 BlendModeCompat.SRC_ATOP
             )
         iv.invalidate()
-        cv.cardElevation = 2f
-        cv.useCompatPadding = true
+        binding.cvCancelSearch.cardElevation = 2f
+        binding.cvCancelSearch.useCompatPadding = true
     }
 
-    private fun animateImageViewUnpressed(iv: ImageView, cv: CardView) {
+    private fun animateImageViewUnpressed(iv: ImageView) {
         iv.drawable.clearColorFilter()
         iv.invalidate()
-        cv.cardElevation = 0f
-        cv.useCompatPadding = false
+        binding.cvCancelSearch.cardElevation = 0f
+        binding.cvCancelSearch.useCompatPadding = false
     }
 
     private fun observeViewModel() {

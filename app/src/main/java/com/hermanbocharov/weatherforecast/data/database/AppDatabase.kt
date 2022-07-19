@@ -5,12 +5,16 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.hermanbocharov.weatherforecast.data.database.dao.*
-import com.hermanbocharov.weatherforecast.data.database.entities.CurrentWeatherEntity
-import com.hermanbocharov.weatherforecast.data.database.entities.LocationEntity
-import com.hermanbocharov.weatherforecast.data.database.entities.WeatherConditionEntity
+import com.hermanbocharov.weatherforecast.data.database.entities.*
 
 @Database(
-    entities = [LocationEntity::class, WeatherConditionEntity::class, CurrentWeatherEntity::class],
+    entities = [
+        LocationEntity::class,
+        WeatherConditionEntity::class,
+        CurrentWeatherEntity::class,
+        HourlyForecastEntity::class,
+        DailyForecastEntity::class
+    ],
     version = 1,
     exportSchema = false
 )

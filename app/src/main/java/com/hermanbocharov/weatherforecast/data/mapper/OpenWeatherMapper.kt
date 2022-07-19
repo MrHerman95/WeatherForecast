@@ -1,9 +1,6 @@
 package com.hermanbocharov.weatherforecast.data.mapper
 
-import com.hermanbocharov.weatherforecast.data.database.entities.CurrentWeatherEntity
-import com.hermanbocharov.weatherforecast.data.database.entities.CurrentWeatherFullData
-import com.hermanbocharov.weatherforecast.data.database.entities.LocationEntity
-import com.hermanbocharov.weatherforecast.data.database.entities.WeatherConditionEntity
+import com.hermanbocharov.weatherforecast.data.database.entities.*
 import com.hermanbocharov.weatherforecast.data.network.model.LocationDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherConditionDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherForecastDto
@@ -74,6 +71,63 @@ class OpenWeatherMapper @Inject constructor() {
             timezoneOffset = dto.timezoneOffset,
             timezoneName = dto.timezoneName
         )
+
+    fun mapWeatherForecastDtoToHourlyForecastEntityList(
+        dto: WeatherForecastDto,
+        locationId: Int
+    ): List<HourlyForecastEntity> {
+        val hourlyForecast = mutableListOf<HourlyForecastEntity>()
+        for (hour in dto.hourly) {
+            val item = HourlyForecastEntity(
+                forecastTime = hour.forecastTime,
+                locationId = locationId,
+                temp = hour.temp.roundToInt(),
+                pressure = hour.pressure,
+                humidity = hour.humidity,
+                cloudiness = hour.clouds,
+                uvi = hour.uvi,
+                rain = hour.rain?.last1h,
+                snow = hour.snow?.last1h,
+                windSpeed = hour.windSpeed,
+                windDegree = hour.windDeg,
+                windGust = hour.windGust,
+                weatherConditionId = hour.weather[0].id,
+                timezoneOffset = dto.timezoneOffset
+            )
+            hourlyForecast.add(item)
+        }
+        return hourlyForecast
+    }
+
+    fun mapWeatherForecastDtoToDailyForecastEntityList(
+        dto: WeatherForecastDto,
+        locationId: Int
+    ): List<DailyForecastEntity> {
+        val dailyForecast = mutableListOf<DailyForecastEntity>()
+        for (day in dto.daily) {
+            val item = DailyForecastEntity(
+                forecastTime = day.forecastTime,
+                locationId = locationId,
+                sunrise = day.sunrise,
+                sunset = day.sunset,
+                tempMin = day.temp.min.roundToInt(),
+                tempMax = day.temp.max.roundToInt(),
+                pressure = day.pressure,
+                humidity = day.humidity,
+                cloudiness = day.clouds,
+                uvi = day.uvi,
+                rain = day.rainVolume,
+                snow = day.snowVolume,
+                windSpeed = day.windSpeed,
+                windDegree = day.windDeg,
+                windGust = day.windGust,
+                weatherConditionId = day.weather[0].id,
+                timezoneOffset = dto.timezoneOffset
+            )
+            dailyForecast.add(item)
+        }
+        return dailyForecast
+    }
 
     fun mapEntityToCurrentWeatherDomain(
         entity: CurrentWeatherFullData,

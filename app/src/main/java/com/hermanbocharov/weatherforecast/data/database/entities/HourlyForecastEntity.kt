@@ -47,7 +47,7 @@ data class HourlyForecastEntity(
     val windDegree: Int,
 
     @ColumnInfo(name = "wind_gust")
-    val windGust: Int,
+    val windGust: Double?,
 
     @ColumnInfo(name = "weather_condition_id")
     val weatherConditionId: Int,

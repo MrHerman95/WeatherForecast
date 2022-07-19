@@ -2,10 +2,7 @@ package com.hermanbocharov.weatherforecast.di
 
 import android.app.Application
 import com.hermanbocharov.weatherforecast.data.database.AppDatabase
-import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherDao
-import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherFullDataDao
-import com.hermanbocharov.weatherforecast.data.database.dao.LocationDao
-import com.hermanbocharov.weatherforecast.data.database.dao.WeatherConditionDao
+import com.hermanbocharov.weatherforecast.data.database.dao.*
 import com.hermanbocharov.weatherforecast.data.network.api.ApiFactory
 import com.hermanbocharov.weatherforecast.data.network.api.ApiService
 import com.hermanbocharov.weatherforecast.data.repository.OpenWeatherRepositoryImpl
@@ -30,6 +27,18 @@ interface DataModule {
 
         @Provides
         @ApplicationScope
+        fun provideHourlyForecastDao(application: Application): HourlyForecastDao {
+            return AppDatabase.getInstance(application).hourlyDao()
+        }
+
+        @Provides
+        @ApplicationScope
+        fun provideDailyForecastDao(application: Application): DailyForecastDao {
+            return AppDatabase.getInstance(application).dailyDao()
+        }
+
+        @Provides
+        @ApplicationScope
         fun provideWeatherConditionDao(application: Application): WeatherConditionDao {
             return AppDatabase.getInstance(application).weatherConditionDao()
         }
@@ -44,6 +53,18 @@ interface DataModule {
         @ApplicationScope
         fun provideCurrentWeatherFullDataDao(application: Application): CurrentWeatherFullDataDao {
             return AppDatabase.getInstance(application).currentWeatherFullDataDao()
+        }
+
+        @Provides
+        @ApplicationScope
+        fun provideHourlyForecastFullDataDao(application: Application): HourlyForecastFullDataDao {
+            return AppDatabase.getInstance(application).hourlyForecastFullDataDao()
+        }
+
+        @Provides
+        @ApplicationScope
+        fun provideDailyForecastFullDataDao(application: Application): DailyForecastFullDataDao {
+            return AppDatabase.getInstance(application).dailyForecastFullDataDao()
         }
 
         @Provides

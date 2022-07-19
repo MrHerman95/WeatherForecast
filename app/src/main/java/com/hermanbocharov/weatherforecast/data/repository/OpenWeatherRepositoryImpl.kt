@@ -1,14 +1,12 @@
 package com.hermanbocharov.weatherforecast.data.repository
 
 import android.util.Log
-import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherDao
-import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherFullDataDao
-import com.hermanbocharov.weatherforecast.data.database.dao.LocationDao
-import com.hermanbocharov.weatherforecast.data.database.dao.WeatherConditionDao
+import com.hermanbocharov.weatherforecast.data.database.dao.*
 import com.hermanbocharov.weatherforecast.data.geolocation.FusedLocationDataSource
 import com.hermanbocharov.weatherforecast.data.mapper.OpenWeatherMapper
 import com.hermanbocharov.weatherforecast.data.network.api.ApiService
 import com.hermanbocharov.weatherforecast.data.network.model.FullWeatherInfoDto
+import com.hermanbocharov.weatherforecast.data.network.model.WeatherForecastDto
 import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
 import com.hermanbocharov.weatherforecast.domain.entities.CurrentWeather
 import com.hermanbocharov.weatherforecast.domain.entities.Location
@@ -21,15 +19,22 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     private val mapper: OpenWeatherMapper,
     private val apiService: ApiService,
     private val currentDao: CurrentWeatherDao,
+    private val hourlyForecastDao: HourlyForecastDao,
+    private val dailyForecastDao: DailyForecastDao,
     private val weatherConditionDao: WeatherConditionDao,
     private val locationDao: LocationDao,
     private val currentWeatherFullDataDao: CurrentWeatherFullDataDao,
+    private val hourlyForecastFullDataDao: HourlyForecastFullDataDao,
+    private val dailyForecastFullDataDao: DailyForecastFullDataDao,
     private val locationDataSource: FusedLocationDataSource,
     private val prefs: PreferenceManager
 ) : OpenWeatherRepository {
 
     override fun getCurrentWeather(): Single<CurrentWeather> {
-        Log.d("TEST_OF_LOADING_DATA", "System time = ${TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())}")
+        Log.d(
+            "TEST_OF_LOADING_DATA",
+            "System time = ${TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())}"
+        )
         Log.d("TEST_OF_LOADING_DATA", "Last update time = ${prefs.getLastUpdateTime()}")
         return if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - prefs.getLastUpdateTime() < UPDATE_FREQUENCY) {
             Log.d("TEST_OF_LOADING_DATA", "From db")
@@ -53,20 +58,15 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 apiService.getWeatherForecast(latitude = it.lat, longitude = it.lon)
             }
             .map {
-                Log.d("TEST_OF_LOADING_DATA", "Timezone name = ${it.timezoneName}, offset = ${it.timezoneOffset}")
+                Log.d(
+                    "TEST_OF_LOADING_DATA",
+                    "Timezone name = ${it.timezoneName}, offset = ${it.timezoneOffset}"
+                )
                 for (cond in it.current.weather) {
                     Log.d("TEST_OF_LOADING_DATA", "Condition = $cond")
                 }
 
-                weatherConditionDao.insertWeatherCondition(
-                    mapper.mapWeatherConditionDtoToEntity(it.current.weather[0])
-                )
-
-                currentDao.insertCurrentWeather(
-                    mapper.mapWeatherForecastDtoToCurrentWeatherEntity(
-                        it, getCurrentLocationId()
-                    )
-                )
+                insertWeatherForecastToDatabase(it, getCurrentLocationId())
 
                 prefs.saveLastUpdateTime(it.current.updateTime)
             }
@@ -86,21 +86,16 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 }
             }
             .map {
-                Log.d("TEST_OF_LOADING_DATA", "Timezone name = ${it.weatherForecast.timezoneName}, offset = ${it.weatherForecast.timezoneOffset}")
-
-                weatherConditionDao.insertWeatherCondition(
-                    mapper.mapWeatherConditionDtoToEntity(it.weatherForecast.current.weather[0])
+                Log.d(
+                    "TEST_OF_LOADING_DATA",
+                    "Timezone name = ${it.weatherForecast.timezoneName}, offset = ${it.weatherForecast.timezoneOffset}"
                 )
 
                 val locationId = locationDao.insertLocation(
                     mapper.mapDtoToLocationEntity(it.location)
                 ).blockingGet().toInt()
 
-                currentDao.insertCurrentWeather(
-                    mapper.mapWeatherForecastDtoToCurrentWeatherEntity(
-                        it.weatherForecast, locationId
-                    )
-                )
+                insertWeatherForecastToDatabase(it.weatherForecast, locationId)
 
                 prefs.saveCurrentLocationId(locationId)
                 prefs.saveLastUpdateTime(it.weatherForecast.current.updateTime)
@@ -138,6 +133,43 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 prefs.saveCurrentLocationId(it.toInt())
                 loadWeatherForecastCurLoc()
             }
+    }
+
+    private fun insertAllWeatherConditions(forecast: WeatherForecastDto) {
+        weatherConditionDao.insertWeatherCondition(
+            mapper.mapWeatherConditionDtoToEntity(forecast.current.weather[0])
+        )
+
+        for (hour in forecast.hourly) {
+            weatherConditionDao.insertWeatherCondition(
+                mapper.mapWeatherConditionDtoToEntity(hour.weather[0])
+            )
+        }
+
+        for (day in forecast.daily) {
+            weatherConditionDao.insertWeatherCondition(
+                mapper.mapWeatherConditionDtoToEntity(day.weather[0])
+            )
+        }
+    }
+
+    private fun insertWeatherForecastToDatabase(
+        forecast: WeatherForecastDto,
+        locationId: Int
+    ) {
+        insertAllWeatherConditions(forecast)
+
+        currentDao.insertCurrentWeather(
+            mapper.mapWeatherForecastDtoToCurrentWeatherEntity(forecast, locationId)
+        )
+
+        hourlyForecastDao.insertHourlyForecast(
+            mapper.mapWeatherForecastDtoToHourlyForecastEntityList(forecast, locationId)
+        )
+
+        dailyForecastDao.insertDailyForecast(
+            mapper.mapWeatherForecastDtoToDailyForecastEntityList(forecast, locationId)
+        )
     }
 
     companion object {

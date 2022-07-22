@@ -12,8 +12,8 @@ import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentCurrentWeatherBinding
 import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
+import com.hermanbocharov.weatherforecast.presentation.viewmodel.CurrentWeatherViewModel
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
-import com.hermanbocharov.weatherforecast.presentation.viewmodel.WeatherViewModel
 import com.hermanbocharov.weatherforecast.utils.PermissionsManager
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
@@ -35,7 +35,7 @@ class CurrentWeatherFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[WeatherViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[CurrentWeatherViewModel::class.java]
     }
 
     private val component by lazy {

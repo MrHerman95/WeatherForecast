@@ -5,8 +5,10 @@ import com.hermanbocharov.weatherforecast.data.network.model.LocationDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherConditionDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherForecastDto
 import com.hermanbocharov.weatherforecast.domain.entities.CurrentWeather
+import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.Location
 import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -92,7 +94,7 @@ class OpenWeatherMapper @Inject constructor() {
                 windDegree = hour.windDeg,
                 windGust = hour.windGust,
                 weatherConditionId = hour.weather[0].id,
-                timezoneOffset = dto.timezoneOffset
+                timezoneName = dto.timezoneName
             )
             hourlyForecast.add(item)
         }
@@ -156,6 +158,43 @@ class OpenWeatherMapper @Inject constructor() {
         )
     }
 
+    fun mapHourlyForecastFullDataToDomain(
+        entityList: List<HourlyForecastFullData>,
+        tempUnit: Int
+    ): List<HourlyForecast> {
+        val hourlyForecast = mutableListOf<HourlyForecast>()
+
+        for (hour in entityList) {
+            hourlyForecast.add(
+                HourlyForecast(
+                    forecastDate = getDateFromTimestamp(
+                        hour.hourlyForecast.forecastTime.toLong(),
+                        hour.hourlyForecast.timezoneName
+                    ),
+                    forecastTime = getTimeFromTimestamp(
+                        hour.hourlyForecast.forecastTime.toLong(),
+                        hour.hourlyForecast.timezoneName
+                    ),
+                    temp = hour.hourlyForecast.temp,
+                    pressure = hour.hourlyForecast.pressure,
+                    humidity = hour.hourlyForecast.humidity,
+                    cloudiness = hour.hourlyForecast.cloudiness,
+                    uvi = hour.hourlyForecast.uvi,
+                    rain = hour.hourlyForecast.rain,
+                    snow = hour.hourlyForecast.snow,
+                    windSpeed = hour.hourlyForecast.windSpeed,
+                    windDegree = hour.hourlyForecast.windDegree,
+                    windGust = hour.hourlyForecast.windGust,
+                    tempUnit = tempUnit,
+                    cityName = hour.location.name,
+                    description = hour.weatherCondition.main
+                )
+            )
+        }
+
+        return hourlyForecast
+    }
+
     private fun convertCountryCodeToName(code: String): String {
         return Locale("", code).displayCountry
     }
@@ -174,5 +213,17 @@ class OpenWeatherMapper @Inject constructor() {
         }
 
         return String.format("UTC%s%02d:%02d", sign, abs(hours), abs(minutes))
+    }
+
+    private fun getDateFromTimestamp(timestamp: Long, timezone: String): String {
+        val formatter = SimpleDateFormat("MMM. d", Locale.ENGLISH)
+        formatter.timeZone = TimeZone.getTimeZone(timezone)
+        return formatter.format(Date(timestamp * 1000))
+    }
+
+    private fun getTimeFromTimestamp(timestamp: Long, timezone: String): String {
+        val formatter = SimpleDateFormat("h a", Locale.ENGLISH)
+        formatter.timeZone = TimeZone.getTimeZone(timezone)
+        return formatter.format(Date(timestamp * 1000))
     }
 }

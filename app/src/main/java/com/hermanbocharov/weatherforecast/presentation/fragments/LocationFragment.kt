@@ -60,9 +60,12 @@ class LocationFragment : Fragment() {
         requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     }
 
+    private val locationAdapter by lazy {
+        LocationAdapter()
+    }
+
     private val compositeDisposable = CompositeDisposable()
     private var isSearchMode = false
-    private lateinit var locationAdapter: LocationAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,7 +102,6 @@ class LocationFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        locationAdapter = LocationAdapter()
         binding.rvLocation.adapter = locationAdapter
 
         locationAdapter.onLocationClickListener = {

@@ -5,15 +5,50 @@
     android:id="@+id/fragment_weather_forecast"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.fragments.WeatherForecastFragment" >
+    tools:context=".presentation.fragments.WeatherForecastFragment">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_hourly_forecast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fragment Weather Forecast"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:maxLines="1"
+        android:text="@string/str_hourly_forecast"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_city_forecast"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:gravity="end"
+        android:maxLines="1"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_hourly_forecast"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/str_tools_city"
+        tools:textColor="@color/black" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_hourly_forecast"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_hourly_forecast"
+        tools:listitem="@layout/item_hourly" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

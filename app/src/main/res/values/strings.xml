@@ -8,7 +8,7 @@
 
     <string name="str_location_full">%1$s, %2$s, %3$s</string>
     <string name="str_location_without_state">%1$s, %2$s</string>
-    <string name="str_location_search_hint">Search city...</string>
+    <string name="str_location_search_hint">Search city…</string>
     <string name="str_current_location">Current location</string>
     <string name="str_undefined_location">Undefined</string>
     <string name="str_search_location">Search location</string>
@@ -24,21 +24,26 @@
     <string name="str_settings_celsius">Celsius (\u00B0C)</string>
     <string name="str_settings_fahrenheit">Fahrenheit (\u00B0F)</string>
 
+    <string name="str_hourly_forecast">Hourly forecast</string>
+
     <string name="str_earth_desc">This is just a picture of the planet Earth</string>
     <string name="str_detect_loc_desc">Detect your location automatically</string>
     <string name="str_ic_search_desc">Press to input your location</string>
     <string name="str_ic_clear_desc">Clear location edit text</string>
     <string name="str_ic_cancel_desc">Cancel current search</string>
     <string name="str_divider_desc">Just a divider</string>
+    <string name="str_weather_ic_desc">This is an image showing the weather condition</string>
 
     <string name="str_tools_city">Indianapolis</string>
     <string name="str_tools_timezone">UTC+3:30</string>
     <string name="str_tools_date">Wednesday, Sept. 28</string>
     <string name="str_tools_time">9:41 PM</string>
+    <string name="str_tools_hour">9 AM</string>
+    <string name="str_tools_date_hour_forecast">Sept. 28</string>
     <string name="str_tools_zone_date">Wednesday, 31st</string>
     <string name="str_tools_weather_condition">Thunderstorm with heavy drizzle</string>
     <string name="str_tools_temperature">25\u00B0C</string>
     <string name="str_tools_feels_like">Feels Like 23\u00B0C</string>
-    <string name="str_tools_item_location">Lviv, Lviv Oblast, UA</string>
-    <string name="str_tools_location_name">Odesa, UA</string>
+    <string name="str_tools_item_location">Lviv, Lviv Oblast, Ukraine</string>
+    <string name="str_tools_location_name">Odesa, Ukraine</string>
 </resources>

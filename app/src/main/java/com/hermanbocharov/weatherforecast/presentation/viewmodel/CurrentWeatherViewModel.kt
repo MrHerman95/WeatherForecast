@@ -13,7 +13,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
-class WeatherViewModel @Inject constructor(
+class CurrentWeatherViewModel @Inject constructor(
     private val loadWeatherForecastGpsLocUseCase: LoadWeatherForecastGpsLocUseCase,
     private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
     private val getCurrentLocationIdUseCase: GetCurrentLocationIdUseCase

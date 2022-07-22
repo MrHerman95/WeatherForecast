@@ -42,6 +42,7 @@
     <string name="str_tools_date_hour_forecast">Sept. 28</string>
     <string name="str_tools_zone_date">Wednesday, 31st</string>
     <string name="str_tools_weather_condition">Thunderstorm with heavy drizzle</string>
+    <string name="str_tools_weather_cond_main">Rain</string>
     <string name="str_tools_temperature">25\u00B0C</string>
     <string name="str_tools_feels_like">Feels Like 23\u00B0C</string>
     <string name="str_tools_item_location">Lviv, Lviv Oblast, Ukraine</string>

@@ -25,6 +25,14 @@
     <string name="str_settings_fahrenheit">Fahrenheit (\u00B0F)</string>
 
     <string name="str_hourly_forecast">Hourly forecast</string>
+    <string name="str_humidity">Humidity</string>
+    <string name="str_cloudiness">Cloudiness</string>
+    <string name="str_precipitation">Precipitation</string>
+    <string name="str_pressure">Pressure</string>
+    <string name="str_wind_speed">Wind Speed</string>
+    <string name="str_wind_gust">Wind Gusts</string>
+    <string name="str_wind_dir">Wind Direction</string>
+    <string name="str_uvi">UV index</string>
 
     <string name="str_earth_desc">This is just a picture of the planet Earth</string>
     <string name="str_detect_loc_desc">Detect your location automatically</string>
@@ -33,6 +41,14 @@
     <string name="str_ic_cancel_desc">Cancel current search</string>
     <string name="str_divider_desc">Just a divider</string>
     <string name="str_weather_ic_desc">This is an image showing the weather condition</string>
+    <string name="str_humidity_ic_desc">Humidity parameter</string>
+    <string name="str_cloudiness_ic_desc">Cloudiness parameter</string>
+    <string name="str_precipitation_ic_desc">Precipitation parameter</string>
+    <string name="str_pressure_ic_desc">Pressure parameter</string>
+    <string name="str_wind_speed_ic_desc">Wind speed parameter</string>
+    <string name="str_wind_gust_ic_desc">Wind gusts parameter</string>
+    <string name="str_wind_dir_ic_desc">Wind direction parameter</string>
+    <string name="str_uvi_ic_desc">Ultraviolet index parameter</string>
 
     <string name="str_tools_city">Indianapolis</string>
     <string name="str_tools_timezone">UTC+3:30</string>
@@ -47,4 +63,12 @@
     <string name="str_tools_feels_like">Feels Like 23\u00B0C</string>
     <string name="str_tools_item_location">Lviv, Lviv Oblast, Ukraine</string>
     <string name="str_tools_location_name">Odesa, Ukraine</string>
+    <string name="str_tools_humidity_value">100%</string>
+    <string name="str_tools_cloudiness_value">0%</string>
+    <string name="str_tools_precipitation_value">15 mm</string>
+    <string name="str_tools_pressure_value">750 mmHg</string>
+    <string name="str_tools_wind_speed_value">6 m/s</string>
+    <string name="str_tools_wind_gust_value">9 m/s</string>
+    <string name="str_tools_wind_dir_value">SW</string>
+    <string name="str_tools_uvi_value">3</string>
 </resources>

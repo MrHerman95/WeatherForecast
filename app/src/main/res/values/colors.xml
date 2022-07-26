@@ -4,6 +4,7 @@
     <color name="item_color_inactive">@color/grey</color>
 
     <color name="cyan_light">#FF6BD7FF</color>
+    <color name="cyan_transparent_60">#996AD5FF</color>
     <color name="cyan_blue">#FF3A7FBF</color>
     <color name="sky_blue">#FF85BEDB</color>
     <color name="white_transparent_20">#33FFFFFF</color>

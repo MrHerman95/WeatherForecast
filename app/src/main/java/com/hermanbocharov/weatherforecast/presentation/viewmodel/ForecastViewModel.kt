@@ -30,6 +30,7 @@ class ForecastViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
+                it[DEFAULT_SELECTED_ITEM_POS].isSelected = true
                 _hourlyForecast.value = it
             }, {
                 Log.d("TEST_OF_LOADING_DATA", "getHourlyForecast() ${it.message}")
@@ -41,5 +42,9 @@ class ForecastViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.dispose()
+    }
+
+    companion object {
+        const val DEFAULT_SELECTED_ITEM_POS = 0
     }
 }

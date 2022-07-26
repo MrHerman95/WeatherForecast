@@ -18,14 +18,16 @@ class HourlyForecastAdapter :
     ) {
 
     var onHourForecastClickListener: ((HourlyForecast) -> Unit)? = null
+    private var selectedItemPos = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HourlyForecastViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.item_hourly,
-            parent,
-            false
-        )
-        return HourlyForecastViewHolder(view)
+        val inflater = LayoutInflater.from(parent.context)
+        val layout = when (viewType) {
+            VIEW_TYPE_NOT_SELECTED -> R.layout.item_hourly
+            VIEW_TYPE_SELECTED -> R.layout.item_hourly_selected
+            else -> throw RuntimeException("Unknown view type: $viewType")
+        }
+        return HourlyForecastViewHolder(inflater.inflate(layout, parent, false))
     }
 
     override fun onBindViewHolder(holder: HourlyForecastViewHolder, position: Int) {
@@ -54,8 +56,24 @@ class HourlyForecastAdapter :
         )
 
         holder.view.setOnClickListener {
+            getItem(selectedItemPos).isSelected = false
+            notifyItemChanged(selectedItemPos)
             onHourForecastClickListener?.invoke(hourForecastItem)
+            selectedItemPos = holder.bindingAdapterPosition
+            notifyItemChanged(selectedItemPos)
         }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position).isSelected) {
+            false -> VIEW_TYPE_NOT_SELECTED
+            true -> VIEW_TYPE_SELECTED
+        }
+    }
+
+    companion object {
+        private const val VIEW_TYPE_NOT_SELECTED = 100
+        private const val VIEW_TYPE_SELECTED = 101
     }
 
     class HourlyForecastViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

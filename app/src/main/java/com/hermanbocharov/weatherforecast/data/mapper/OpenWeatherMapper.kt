@@ -5,6 +5,14 @@ import com.hermanbocharov.weatherforecast.data.network.model.LocationDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherConditionDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherForecastDto
 import com.hermanbocharov.weatherforecast.domain.entities.CurrentWeather
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.EAST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTH
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHEAST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHWEST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTH
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHEAST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHWEST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.WEST
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.Location
 import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit
@@ -176,14 +184,14 @@ class OpenWeatherMapper @Inject constructor() {
                         hour.hourlyForecast.timezoneName
                     ),
                     temp = hour.hourlyForecast.temp,
-                    pressure = hour.hourlyForecast.pressure,
+                    pressure = convertHPaToMmHg(hour.hourlyForecast.pressure),
                     humidity = hour.hourlyForecast.humidity,
                     cloudiness = hour.hourlyForecast.cloudiness,
                     uvi = hour.hourlyForecast.uvi,
                     rain = hour.hourlyForecast.rain,
                     snow = hour.hourlyForecast.snow,
                     windSpeed = hour.hourlyForecast.windSpeed,
-                    windDegree = hour.hourlyForecast.windDegree,
+                    windDirection = convertWindDegreeToDirection(hour.hourlyForecast.windDegree),
                     windGust = hour.hourlyForecast.windGust,
                     tempUnit = tempUnit,
                     cityName = hour.location.name,
@@ -201,6 +209,23 @@ class OpenWeatherMapper @Inject constructor() {
 
     private fun convertCelsiusToFahrenheit(celsius: Int): Int {
         return (celsius * 1.8).roundToInt() + 32
+    }
+
+    private fun convertHPaToMmHg(pressure: Int): Int {
+        return (pressure / 1.333).roundToInt()
+    }
+
+    private fun convertWindDegreeToDirection(degree: Int): String {
+        return when (degree) {
+            in 24..68 -> NORTHEAST
+            in 69..113 -> EAST
+            in 114..158 -> SOUTHEAST
+            in 159..203 -> SOUTH
+            in 204..248 -> SOUTHWEST
+            in 249..293 -> WEST
+            in 294..336 -> NORTHWEST
+            else -> NORTH
+        }
     }
 
     private fun convertTimezoneOffsetToTimezone(offset: Int): String {

@@ -10,7 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentCurrentWeatherBinding
-import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit
+import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit.CELSIUS
+import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit.FAHRENHEIT
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.CurrentWeatherViewModel
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
@@ -81,20 +82,25 @@ class CurrentWeatherFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.currentWeather.observe(viewLifecycleOwner) {
             with(binding) {
+                val tempResId: Int
+                val feelsLikeResId: Int
+                when (it.tempUnit) {
+                    CELSIUS -> {
+                        tempResId = R.string.str_temp_celsius
+                        feelsLikeResId = R.string.str_feels_like_celsius
+                    }
+                    FAHRENHEIT -> {
+                        tempResId = R.string.str_temp_fahrenheit
+                        feelsLikeResId = R.string.str_feels_like_fahrenheit
+                    }
+                    else -> throw RuntimeException("Unknown temperature unit ${it.tempUnit}")
+                }
+
+                tvTemperature.text = requireContext().getString(tempResId, it.temp)
+                tvFeelsLike.text = requireContext().getString(feelsLikeResId, it.feelsLike)
                 tvCity.text = it.cityName
                 tvWeatherCondition.text = it.description
-                tvTemperature.text = if (it.tempUnit == TemperatureUnit.CELSIUS) {
-                    requireContext().getString(R.string.str_temp_celsius, it.temp)
-                } else {
-                    requireContext().getString(R.string.str_temp_fahrenheit, it.temp)
-                }
-                tvFeelsLike.text = if (it.tempUnit == TemperatureUnit.CELSIUS) {
-                    requireContext().getString(R.string.str_feels_like_celsius, it.feelsLike)
-                } else {
-                    requireContext().getString(R.string.str_feels_like_fahrenheit, it.feelsLike)
-                }
                 tvTimezone.text = it.timezone
-
                 tcClock.timeZone = it.timezoneName
                 tcClock.visibility = View.VISIBLE
                 tcDate.timeZone = it.timezoneName

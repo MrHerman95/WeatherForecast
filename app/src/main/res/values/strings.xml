@@ -19,6 +19,13 @@
     <string name="str_temp_fahrenheit">%d\u00B0F</string>
     <string name="str_feels_like_fahrenheit">Feels Like %d\u00B0F</string>
 
+    <string name="str_cloudiness_value">%d%%</string>
+    <string name="str_humidity_value">%d%%</string>
+    <string name="str_precipitation_value">%.1f mm/h</string>
+    <string name="str_pressure_value">%d mmHg</string>
+    <string name="str_wind_speed_value">%.1f m/s</string>
+    <string name="str_wind_gust_value">%.1f m/s</string>
+
     <string name="str_settings_units">Measurement units</string>
     <string name="str_settings_temp">Temperature</string>
     <string name="str_settings_celsius">Celsius (\u00B0C)</string>

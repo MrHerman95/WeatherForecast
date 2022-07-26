@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit.CELSIUS
+import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit.FAHRENHEIT
 
 class HourlyForecastAdapter :
     ListAdapter<HourlyForecast, HourlyForecastAdapter.HourlyForecastViewHolder>(
@@ -32,16 +33,16 @@ class HourlyForecastAdapter :
 
     override fun onBindViewHolder(holder: HourlyForecastViewHolder, position: Int) {
         val hourForecastItem = getItem(position)
-        val temperature: String = if (hourForecastItem.tempUnit == CELSIUS) {
-            holder.view.context.getString(
+        val temperature: String = when (hourForecastItem.tempUnit) {
+            CELSIUS -> holder.view.context.getString(
                 R.string.str_temp_celsius,
                 hourForecastItem.temp
             )
-        } else {
-            holder.view.context.getString(
+            FAHRENHEIT -> holder.view.context.getString(
                 R.string.str_temp_fahrenheit,
                 hourForecastItem.temp
             )
+            else -> throw RuntimeException("Unknown temperature unit ${hourForecastItem.tempUnit}")
         }
 
         holder.tvDate.text = hourForecastItem.forecastDate

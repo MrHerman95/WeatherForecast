@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentWeatherForecastBinding
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
@@ -81,14 +82,21 @@ class WeatherForecastFragment : Fragment() {
 
     private fun updateTvWeatherParameters(item: HourlyForecast) {
         with(item) {
+            val windGustValue = windGust ?: windSpeed
+
             binding.tvWeatherCondMain.text = description
-            binding.tvCloudinessValue.text = cloudiness.toString()
-            binding.tvHumidityValue.text = humidity.toString()
-            binding.tvPressureValue.text = pressure.toString()
-            binding.tvWindSpeedValue.text = windSpeed.toString()
-            binding.tvWindGustValue.text = windGust.toString()
-            binding.tvWindDirValue.text = windDegree.toString()
-            binding.tvUviValue.text = uvi.toString()
+            binding.tvCloudinessValue.text =
+                requireContext().getString(R.string.str_cloudiness_value, cloudiness)
+            binding.tvHumidityValue.text =
+                requireContext().getString(R.string.str_humidity_value, humidity)
+            binding.tvPressureValue.text =
+                requireContext().getString(R.string.str_pressure_value, pressure)
+            binding.tvWindSpeedValue.text =
+                requireContext().getString(R.string.str_wind_speed_value, windSpeed)
+            binding.tvWindGustValue.text =
+                requireContext().getString(R.string.str_wind_gust_value, windGustValue)
+            binding.tvWindDirValue.text = windDirection
+            binding.tvUviValue.text = String.format("%.1f", uvi)
 
             var precipitation = 0.0
             if (rain != null) {
@@ -96,7 +104,8 @@ class WeatherForecastFragment : Fragment() {
             } else if (snow != null) {
                 precipitation = snow
             }
-            binding.tvPrecipitationValue.text = precipitation.toString()
+            binding.tvPrecipitationValue.text =
+                requireContext().getString(R.string.str_precipitation_value, precipitation)
         }
     }
 

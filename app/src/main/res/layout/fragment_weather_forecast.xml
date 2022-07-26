@@ -241,7 +241,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/str_wind_speed_ic_desc"
-        android:src="@drawable/ic_air" />
+        android:src="@drawable/ic_wind" />
 
     <TextView
         android:id="@+id/tv_wind_speed_value"
@@ -269,7 +269,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/str_wind_gust_ic_desc"
-        android:src="@drawable/ic_air" />
+        android:src="@drawable/ic_wind_gust" />
 
     <TextView
         android:id="@+id/tv_wind_gust"

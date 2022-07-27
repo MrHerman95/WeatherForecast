@@ -80,7 +80,7 @@
         android:contentDescription="@string/str_detect_loc_desc"
         android:src="@drawable/ic_location_detect"
         android:visibility="visible"
-        app:backgroundTint="@color/cyan_blue"
+        app:backgroundTint="@color/fab_color"
         app:borderWidth="0dp"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="@id/tv_search_location"

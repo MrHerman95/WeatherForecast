@@ -6,10 +6,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentWeatherForecastBinding
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.EAST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTH
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHEAST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHWEST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTH
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHEAST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHWEST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.WEST
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
 import com.hermanbocharov.weatherforecast.presentation.recyclerview.HourlyForecastAdapter
@@ -82,7 +91,10 @@ class WeatherForecastFragment : Fragment() {
 
     private fun updateTvWeatherParameters(item: HourlyForecast) {
         with(item) {
-            val windGustValue = windGust ?: windSpeed
+            var windGustValue = windGust ?: windSpeed
+            if (windGustValue < windSpeed) {
+                windGustValue = windSpeed
+            }
 
             binding.tvWeatherCondMain.text = description
             binding.tvCloudinessValue.text =
@@ -106,7 +118,49 @@ class WeatherForecastFragment : Fragment() {
             }
             binding.tvPrecipitationValue.text =
                 requireContext().getString(R.string.str_precipitation_value, precipitation)
+
+            updateIvWindDirection(windDirection)
+            updateIvHumidity(humidity)
         }
+    }
+
+    private fun updateIvWindDirection(direction: String) {
+        val drawableId = when (direction) {
+            NORTH -> R.drawable.ic_north
+            SOUTH -> R.drawable.ic_south
+            EAST -> R.drawable.ic_east
+            WEST -> R.drawable.ic_west
+            NORTHWEST -> R.drawable.ic_north_west
+            NORTHEAST -> R.drawable.ic_north_east
+            SOUTHWEST -> R.drawable.ic_south_west
+            SOUTHEAST -> R.drawable.ic_south_east
+            else -> throw RuntimeException("Unknown direction $direction")
+        }
+
+        binding.ivWindDir.setImageDrawable(
+            AppCompatResources.getDrawable(
+                requireContext(),
+                drawableId
+            )
+        )
+        binding.ivWindDir.visibility = View.VISIBLE
+    }
+
+    private fun updateIvHumidity(humidity: Int) {
+        val drawableId = when (humidity) {
+            in 0..29 -> R.drawable.ic_humidity_low
+            in 30..59 -> R.drawable.ic_humidity_mid
+            in 60..100 -> R.drawable.ic_humidity_high
+            else -> throw RuntimeException("Invalid humidity value $humidity")
+        }
+
+        binding.ivHumidity.setImageDrawable(
+            AppCompatResources.getDrawable(
+                requireContext(),
+                drawableId
+            )
+        )
+        binding.ivHumidity.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {

@@ -169,10 +169,12 @@ class OpenWeatherRepositoryImpl @Inject constructor(
             mapper.mapWeatherForecastDtoToCurrentWeatherEntity(forecast, locationId)
         )
 
+        hourlyForecastDao.deleteOldHourlyForecast(locationId)
         hourlyForecastDao.insertHourlyForecast(
             mapper.mapWeatherForecastDtoToHourlyForecastEntityList(forecast, locationId)
         )
 
+        dailyForecastDao.deleteOldDailyForecast(locationId)
         dailyForecastDao.insertDailyForecast(
             mapper.mapWeatherForecastDtoToDailyForecastEntityList(forecast, locationId)
         )

@@ -12,6 +12,8 @@ import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit.CELSIUS
 import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit.FAHRENHEIT
+import java.text.SimpleDateFormat
+import java.util.*
 
 class HourlyForecastAdapter :
     ListAdapter<HourlyForecast, HourlyForecastAdapter.HourlyForecastViewHolder>(
@@ -45,8 +47,10 @@ class HourlyForecastAdapter :
             else -> throw RuntimeException("Unknown temperature unit ${hourForecastItem.tempUnit}")
         }
 
-        holder.tvDate.text = hourForecastItem.forecastDate
-        holder.tvTime.text = hourForecastItem.forecastTime
+        holder.tvDate.text =
+            getDateFromTimestamp(hourForecastItem.forecastTime.toLong(), hourForecastItem.timezone)
+        holder.tvTime.text =
+            getTimeFromTimestamp(hourForecastItem.forecastTime.toLong(), hourForecastItem.timezone)
         holder.tvTemp.text = temperature
         holder.ivWeather.setImageDrawable(
             ResourcesCompat.getDrawable(
@@ -70,6 +74,18 @@ class HourlyForecastAdapter :
             false -> VIEW_TYPE_NOT_SELECTED
             true -> VIEW_TYPE_SELECTED
         }
+    }
+
+    private fun getDateFromTimestamp(timestamp: Long, timezone: String): String {
+        val formatter = SimpleDateFormat("MMM. d", Locale.ENGLISH)
+        formatter.timeZone = TimeZone.getTimeZone(timezone)
+        return formatter.format(Date(timestamp * 1000))
+    }
+
+    private fun getTimeFromTimestamp(timestamp: Long, timezone: String): String {
+        val formatter = SimpleDateFormat("h a", Locale.ENGLISH)
+        formatter.timeZone = TimeZone.getTimeZone(timezone)
+        return formatter.format(Date(timestamp * 1000))
     }
 
     companion object {

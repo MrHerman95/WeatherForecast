@@ -16,7 +16,6 @@ import com.hermanbocharov.weatherforecast.domain.entities.Direction.WEST
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.Location
 import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -175,14 +174,8 @@ class OpenWeatherMapper @Inject constructor() {
         for (hour in entityList) {
             hourlyForecast.add(
                 HourlyForecast(
-                    forecastDate = getDateFromTimestamp(
-                        hour.hourlyForecast.forecastTime.toLong(),
-                        hour.hourlyForecast.timezoneName
-                    ),
-                    forecastTime = getTimeFromTimestamp(
-                        hour.hourlyForecast.forecastTime.toLong(),
-                        hour.hourlyForecast.timezoneName
-                    ),
+                    forecastTime = hour.hourlyForecast.forecastTime,
+                    timezone = hour.hourlyForecast.timezoneName,
                     temp = hour.hourlyForecast.temp,
                     pressure = convertHPaToMmHg(hour.hourlyForecast.pressure),
                     humidity = hour.hourlyForecast.humidity,
@@ -238,17 +231,5 @@ class OpenWeatherMapper @Inject constructor() {
         }
 
         return String.format("UTC%s%02d:%02d", sign, abs(hours), abs(minutes))
-    }
-
-    private fun getDateFromTimestamp(timestamp: Long, timezone: String): String {
-        val formatter = SimpleDateFormat("MMM. d", Locale.ENGLISH)
-        formatter.timeZone = TimeZone.getTimeZone(timezone)
-        return formatter.format(Date(timestamp * 1000))
-    }
-
-    private fun getTimeFromTimestamp(timestamp: Long, timezone: String): String {
-        val formatter = SimpleDateFormat("h a", Locale.ENGLISH)
-        formatter.timeZone = TimeZone.getTimeZone(timezone)
-        return formatter.format(Date(timestamp * 1000))
     }
 }

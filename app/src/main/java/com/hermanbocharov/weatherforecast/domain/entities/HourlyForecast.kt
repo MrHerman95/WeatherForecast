@@ -1,8 +1,8 @@
 package com.hermanbocharov.weatherforecast.domain.entities
 
 data class HourlyForecast(
-    val forecastDate: String,
-    val forecastTime: String,
+    val forecastTime: Int,
+    val timezone: String,
     val temp: Int,
     val pressure: Int,
     val humidity: Int,

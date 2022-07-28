@@ -1,15 +1,18 @@
 package com.hermanbocharov.weatherforecast.data.mapper
 
-import com.hermanbocharov.weatherforecast.data.database.entities.CurrentWeatherEntity
-import com.hermanbocharov.weatherforecast.data.database.entities.CurrentWeatherFullData
-import com.hermanbocharov.weatherforecast.data.database.entities.LocationEntity
-import com.hermanbocharov.weatherforecast.data.database.entities.WeatherConditionEntity
+import com.hermanbocharov.weatherforecast.data.database.entities.*
 import com.hermanbocharov.weatherforecast.data.network.model.LocationDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherConditionDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherForecastDto
-import com.hermanbocharov.weatherforecast.domain.entities.CurrentWeather
-import com.hermanbocharov.weatherforecast.domain.entities.Location
-import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit
+import com.hermanbocharov.weatherforecast.domain.entities.*
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.EAST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTH
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHEAST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHWEST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTH
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHEAST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHWEST
+import com.hermanbocharov.weatherforecast.domain.entities.Direction.WEST
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -75,6 +78,63 @@ class OpenWeatherMapper @Inject constructor() {
             timezoneName = dto.timezoneName
         )
 
+    fun mapWeatherForecastDtoToHourlyForecastEntityList(
+        dto: WeatherForecastDto,
+        locationId: Int
+    ): List<HourlyForecastEntity> {
+        val hourlyForecast = mutableListOf<HourlyForecastEntity>()
+        for (hour in dto.hourly) {
+            val item = HourlyForecastEntity(
+                forecastTime = hour.forecastTime,
+                locationId = locationId,
+                temp = hour.temp.roundToInt(),
+                pressure = hour.pressure,
+                humidity = hour.humidity,
+                cloudiness = hour.clouds,
+                uvi = hour.uvi,
+                rain = hour.rain?.last1h,
+                snow = hour.snow?.last1h,
+                windSpeed = hour.windSpeed,
+                windDegree = hour.windDeg,
+                windGust = hour.windGust,
+                weatherConditionId = hour.weather[0].id,
+                timezoneName = dto.timezoneName
+            )
+            hourlyForecast.add(item)
+        }
+        return hourlyForecast
+    }
+
+    fun mapWeatherForecastDtoToDailyForecastEntityList(
+        dto: WeatherForecastDto,
+        locationId: Int
+    ): List<DailyForecastEntity> {
+        val dailyForecast = mutableListOf<DailyForecastEntity>()
+        for (day in dto.daily) {
+            val item = DailyForecastEntity(
+                forecastTime = day.forecastTime,
+                locationId = locationId,
+                sunrise = day.sunrise,
+                sunset = day.sunset,
+                tempMin = day.temp.min.roundToInt(),
+                tempMax = day.temp.max.roundToInt(),
+                pressure = day.pressure,
+                humidity = day.humidity,
+                cloudiness = day.clouds,
+                uvi = day.uvi,
+                rain = day.rainVolume,
+                snow = day.snowVolume,
+                windSpeed = day.windSpeed,
+                windDegree = day.windDeg,
+                windGust = day.windGust,
+                weatherConditionId = day.weather[0].id,
+                timezoneName = dto.timezoneName
+            )
+            dailyForecast.add(item)
+        }
+        return dailyForecast
+    }
+
     fun mapEntityToCurrentWeatherDomain(
         entity: CurrentWeatherFullData,
         tempUnit: Int
@@ -102,12 +162,93 @@ class OpenWeatherMapper @Inject constructor() {
         )
     }
 
+    fun mapHourlyForecastFullDataToDomain(
+        entityList: List<HourlyForecastFullData>,
+        tempUnit: Int
+    ): List<HourlyForecast> {
+        val hourlyForecast = mutableListOf<HourlyForecast>()
+
+        for (hour in entityList) {
+            var temperature = hour.hourlyForecast.temp
+            if (tempUnit == TemperatureUnit.FAHRENHEIT) {
+                temperature = convertCelsiusToFahrenheit(temperature)
+            }
+
+            hourlyForecast.add(
+                HourlyForecast(
+                    forecastTime = hour.hourlyForecast.forecastTime,
+                    timezone = hour.hourlyForecast.timezoneName,
+                    temp = temperature,
+                    pressure = convertHPaToMmHg(hour.hourlyForecast.pressure),
+                    humidity = hour.hourlyForecast.humidity,
+                    cloudiness = hour.hourlyForecast.cloudiness,
+                    uvi = hour.hourlyForecast.uvi,
+                    rain = hour.hourlyForecast.rain,
+                    snow = hour.hourlyForecast.snow,
+                    windSpeed = hour.hourlyForecast.windSpeed,
+                    windDirection = convertWindDegreeToDirection(hour.hourlyForecast.windDegree),
+                    windGust = hour.hourlyForecast.windGust,
+                    tempUnit = tempUnit,
+                    cityName = hour.location.name,
+                    description = hour.weatherCondition.main
+                )
+            )
+        }
+        return hourlyForecast
+    }
+
+    fun mapDailyForecastFullDataToDomain(
+        entityList: List<DailyForecastFullData>,
+        tempUnit: Int
+    ): List<DailyForecast> {
+        val dailyForecast = mutableListOf<DailyForecast>()
+
+        for (day in entityList) {
+            var temperatureMin = day.dailyForecast.tempMin
+            var temperatureMax = day.dailyForecast.tempMax
+            if (tempUnit == TemperatureUnit.FAHRENHEIT) {
+                temperatureMin = convertCelsiusToFahrenheit(temperatureMin)
+                temperatureMax = convertCelsiusToFahrenheit(temperatureMax)
+            }
+
+            dailyForecast.add(
+                DailyForecast(
+                    forecastTime = day.dailyForecast.forecastTime,
+                    timezone = day.dailyForecast.timezoneName,
+                    minTemp = temperatureMin,
+                    maxTemp = temperatureMax,
+                    sunriseTime = day.dailyForecast.sunrise,
+                    sunsetTime = day.dailyForecast.sunset,
+                    tempUnit = tempUnit
+                )
+            )
+        }
+        return dailyForecast
+    }
+
     private fun convertCountryCodeToName(code: String): String {
         return Locale("", code).displayCountry
     }
 
     private fun convertCelsiusToFahrenheit(celsius: Int): Int {
         return (celsius * 1.8).roundToInt() + 32
+    }
+
+    private fun convertHPaToMmHg(pressure: Int): Int {
+        return (pressure / 1.333).roundToInt()
+    }
+
+    private fun convertWindDegreeToDirection(degree: Int): String {
+        return when (degree) {
+            in 24..68 -> NORTHEAST
+            in 69..113 -> EAST
+            in 114..158 -> SOUTHEAST
+            in 159..203 -> SOUTH
+            in 204..248 -> SOUTHWEST
+            in 249..293 -> WEST
+            in 294..336 -> NORTHWEST
+            else -> NORTH
+        }
     }
 
     private fun convertTimezoneOffsetToTimezone(offset: Int): String {

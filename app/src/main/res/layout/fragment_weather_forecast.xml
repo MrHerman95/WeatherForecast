@@ -5,15 +5,480 @@
     android:id="@+id/fragment_weather_forecast"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.fragments.WeatherForecastFragment" >
+    tools:context=".presentation.fragments.WeatherForecastFragment">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_hourly_forecast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fragment Weather Forecast"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto_bold"
+        android:maxLines="1"
+        android:text="@string/str_hourly_forecast"
+        android:textColor="@color/white"
+        android:textSize="21sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_city_forecast"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="marquee"
+        android:fontFamily="@font/roboto_bold"
+        android:gravity="end"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="21sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_hourly_forecast"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/tv_hourly_forecast"
+        app:layout_constraintTop_toTopOf="@+id/tv_hourly_forecast"
+        tools:text="@string/str_tools_city"
+        tools:textColor="@color/black" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_hourly_forecast"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:fadingEdgeLength="16dp"
+        android:orientation="horizontal"
+        android:requiresFadingEdge="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_hourly_forecast"
+        tools:listitem="@layout/item_hourly_selected" />
+
+    <TextView
+        android:id="@+id/tv_weather_cond_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_hourly_forecast"
+        tools:text="@string/str_tools_weather_cond_main"
+        tools:textColor="@color/black" />
+
+    <ImageView
+        android:id="@+id/iv_humidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/str_humidity_ic_desc"
+        android:src="@drawable/ic_humidity_mid"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tv_humidity_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        tools:text="@string/str_tools_humidity_value"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_humidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/str_humidity"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        tools:textColor="@color/black" />
+
+    <ImageView
+        android:id="@+id/iv_precipitation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/str_precipitation_ic_desc"
+        android:src="@drawable/ic_weather_snowy" />
+
+    <TextView
+        android:id="@+id/tv_precipitation_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        tools:text="@string/str_tools_precipitation_value"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_precipitation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/str_precipitation"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        tools:textColor="@color/black" />
+
+    <ImageView
+        android:id="@+id/iv_cloudiness"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/str_cloudiness_ic_desc"
+        android:src="@drawable/ic_cloud" />
+
+    <TextView
+        android:id="@+id/tv_cloudiness"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/str_cloudiness"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_cloudiness_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        tools:text="@string/str_tools_cloudiness_value"
+        tools:textColor="@color/black" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_cloud_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:constraint_referenced_ids="tv_cloudiness,tv_cloudiness_value" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_cloud_full"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:constraint_referenced_ids="iv_cloudiness,flow_cloud_tv"
+        app:layout_constraintEnd_toStartOf="@+id/flow_humidity_full"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_weather_cond_main" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_humidity_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:constraint_referenced_ids="tv_humidity,tv_humidity_value" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_humidity_full"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:constraint_referenced_ids="iv_humidity,flow_humidity_tv"
+        app:layout_constraintEnd_toStartOf="@+id/flow_precipitation_full"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/flow_cloud_full"
+        app:layout_constraintTop_toBottomOf="@+id/tv_weather_cond_main" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_precipitation_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:constraint_referenced_ids="tv_precipitation,tv_precipitation_value" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_precipitation_full"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:constraint_referenced_ids="iv_precipitation,flow_precipitation_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/flow_humidity_full"
+        app:layout_constraintTop_toBottomOf="@+id/tv_weather_cond_main" />
+
+    <ImageView
+        android:id="@+id/iv_pressure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/str_pressure_ic_desc"
+        android:src="@drawable/ic_pressure" />
+
+    <TextView
+        android:id="@+id/tv_pressure_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        tools:text="@string/str_tools_pressure_value"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_pressure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/str_pressure"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        tools:textColor="@color/black" />
+
+    <ImageView
+        android:id="@+id/iv_wind_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/str_wind_speed_ic_desc"
+        android:src="@drawable/ic_wind" />
+
+    <TextView
+        android:id="@+id/tv_wind_speed_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        tools:text="@string/str_tools_wind_speed_value"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_wind_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/str_wind_speed"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        tools:textColor="@color/black" />
+
+    <ImageView
+        android:id="@+id/iv_wind_gust"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/str_wind_gust_ic_desc"
+        android:src="@drawable/ic_wind_gust" />
+
+    <TextView
+        android:id="@+id/tv_wind_gust"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/str_wind_gust"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_wind_gust_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        tools:text="@string/str_tools_wind_gust_value"
+        tools:textColor="@color/black" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_pressure_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:constraint_referenced_ids="tv_pressure,tv_pressure_value" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_pressure_full"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        app:constraint_referenced_ids="iv_pressure,flow_pressure_tv"
+        app:layout_constraintEnd_toStartOf="@+id/flow_wind_speed_full"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/flow_cloud_full" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_wind_speed_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:constraint_referenced_ids="tv_wind_speed,tv_wind_speed_value" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_wind_speed_full"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        app:constraint_referenced_ids="iv_wind_speed,flow_wind_speed_tv"
+        app:layout_constraintEnd_toStartOf="@+id/flow_wind_gust_full"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/flow_pressure_full"
+        app:layout_constraintTop_toBottomOf="@id/flow_cloud_full" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_wind_gust_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:constraint_referenced_ids="tv_wind_gust,tv_wind_gust_value" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_wind_gust_full"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        app:constraint_referenced_ids="iv_wind_gust,flow_wind_gust_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/flow_wind_speed_full"
+        app:layout_constraintTop_toBottomOf="@id/flow_cloud_full" />
+
+    <ImageView
+        android:id="@+id/iv_wind_dir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/str_wind_dir_ic_desc"
+        android:src="@drawable/ic_north_east"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tv_wind_dir_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        tools:text="@string/str_tools_wind_dir_value"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_wind_dir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/str_wind_dir"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        tools:textColor="@color/black" />
+
+    <ImageView
+        android:id="@+id/iv_uvi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/str_uvi_ic_desc"
+        android:src="@drawable/ic_sun" />
+
+    <TextView
+        android:id="@+id/tv_uvi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/str_uvi"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_uvi_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        tools:text="@string/str_tools_uvi_value"
+        tools:textColor="@color/black" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_wind_dir_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:constraint_referenced_ids="tv_wind_dir,tv_wind_dir_value" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_wind_dir_full"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        app:constraint_referenced_ids="iv_wind_dir,flow_wind_dir_tv"
+        app:layout_constraintEnd_toStartOf="@+id/flow_uvi_full"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/flow_pressure_full" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_uvi_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:constraint_referenced_ids="tv_uvi,tv_uvi_value" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_uvi_full"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        app:constraint_referenced_ids="iv_uvi,flow_uvi_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/flow_wind_dir_full"
+        app:layout_constraintTop_toBottomOf="@id/flow_pressure_full" />
+
+    <TextView
+        android:id="@+id/tv_daily_forecast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/roboto_bold"
+        android:maxLines="1"
+        android:text="@string/str_daily_forecast"
+        android:textColor="@color/white"
+        android:textSize="21sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flow_wind_dir_full"
+        tools:textColor="@color/black" />
+
+    <com.hermanbocharov.weatherforecast.presentation.recyclerview.FadingEdgeRecyclerView
+        android:id="@+id/rv_daily_forecast"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/recycler_view_bg"
+        android:clipToPadding="false"
+        android:fadingEdgeLength="16dp"
+        android:orientation="vertical"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:requiresFadingEdge="vertical"
+        android:visibility="invisible"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_daily_forecast"
+        tools:listitem="@layout/item_daily"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

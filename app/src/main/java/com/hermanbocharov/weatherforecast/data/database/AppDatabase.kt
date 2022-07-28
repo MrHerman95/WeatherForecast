@@ -4,16 +4,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherDao
-import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherFullDataDao
-import com.hermanbocharov.weatherforecast.data.database.dao.LocationDao
-import com.hermanbocharov.weatherforecast.data.database.dao.WeatherConditionDao
-import com.hermanbocharov.weatherforecast.data.database.entities.CurrentWeatherEntity
-import com.hermanbocharov.weatherforecast.data.database.entities.LocationEntity
-import com.hermanbocharov.weatherforecast.data.database.entities.WeatherConditionEntity
+import com.hermanbocharov.weatherforecast.data.database.dao.*
+import com.hermanbocharov.weatherforecast.data.database.entities.*
 
 @Database(
-    entities = [LocationEntity::class, WeatherConditionEntity::class, CurrentWeatherEntity::class],
+    entities = [
+        LocationEntity::class,
+        WeatherConditionEntity::class,
+        CurrentWeatherEntity::class,
+        HourlyForecastEntity::class,
+        DailyForecastEntity::class
+    ],
     version = 1,
     exportSchema = false
 )
@@ -45,5 +46,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun locationDao(): LocationDao
     abstract fun weatherConditionDao(): WeatherConditionDao
     abstract fun currentDao(): CurrentWeatherDao
+    abstract fun hourlyDao(): HourlyForecastDao
+    abstract fun dailyDao(): DailyForecastDao
     abstract fun currentWeatherFullDataDao(): CurrentWeatherFullDataDao
+    abstract fun hourlyForecastFullDataDao(): HourlyForecastFullDataDao
+    abstract fun dailyForecastFullDataDao(): DailyForecastFullDataDao
 }

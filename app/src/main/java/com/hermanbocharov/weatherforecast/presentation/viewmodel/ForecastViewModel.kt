@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.hermanbocharov.weatherforecast.domain.entities.DailyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
+import com.hermanbocharov.weatherforecast.domain.usecases.GetDailyForecastUseCase
 import com.hermanbocharov.weatherforecast.domain.usecases.GetHourlyForecastUseCase
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -12,7 +14,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 class ForecastViewModel @Inject constructor(
-    private val getHourlyForecastUseCase: GetHourlyForecastUseCase
+    private val getHourlyForecastUseCase: GetHourlyForecastUseCase,
+    private val getDailyForecastUseCase: GetDailyForecastUseCase
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -21,8 +24,13 @@ class ForecastViewModel @Inject constructor(
     val hourlyForecast: LiveData<List<HourlyForecast>>
         get() = _hourlyForecast
 
+    private val _dailyForecast = MutableLiveData<List<DailyForecast>>()
+    val dailyForecast: LiveData<List<DailyForecast>>
+        get() = _dailyForecast
+
     init {
         getHourlyForecast()
+        getDailyForecast()
     }
 
     private fun getHourlyForecast() {
@@ -34,6 +42,19 @@ class ForecastViewModel @Inject constructor(
                 _hourlyForecast.value = it
             }, {
                 Log.d("TEST_OF_LOADING_DATA", "getHourlyForecast() ${it.message}")
+            })
+
+        compositeDisposable.add(disposable)
+    }
+
+    private fun getDailyForecast() {
+        val disposable = getDailyForecastUseCase()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _dailyForecast.value = it
+            }, {
+                Log.d("TEST_OF_LOADING_DATA", "getDailyForecast() ${it.message}")
             })
 
         compositeDisposable.add(disposable)

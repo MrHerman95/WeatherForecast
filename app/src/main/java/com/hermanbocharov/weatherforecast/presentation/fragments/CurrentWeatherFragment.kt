@@ -105,6 +105,7 @@ class CurrentWeatherFragment : Fragment() {
                 tcClock.visibility = View.VISIBLE
                 tcDate.timeZone = it.timezoneName
                 tcDate.visibility = View.VISIBLE
+                ivWeatherCondition.visibility = View.VISIBLE
             }
         }
     }

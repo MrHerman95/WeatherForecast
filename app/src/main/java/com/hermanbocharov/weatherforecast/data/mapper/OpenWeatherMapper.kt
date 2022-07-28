@@ -4,7 +4,7 @@ import com.hermanbocharov.weatherforecast.data.database.entities.*
 import com.hermanbocharov.weatherforecast.data.network.model.LocationDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherConditionDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherForecastDto
-import com.hermanbocharov.weatherforecast.domain.entities.CurrentWeather
+import com.hermanbocharov.weatherforecast.domain.entities.*
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.EAST
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTH
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHEAST
@@ -13,9 +13,6 @@ import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTH
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHEAST
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHWEST
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.WEST
-import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
-import com.hermanbocharov.weatherforecast.domain.entities.Location
-import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -131,7 +128,7 @@ class OpenWeatherMapper @Inject constructor() {
                 windDegree = day.windDeg,
                 windGust = day.windGust,
                 weatherConditionId = day.weather[0].id,
-                timezoneOffset = dto.timezoneOffset
+                timezoneName = dto.timezoneName
             )
             dailyForecast.add(item)
         }
@@ -172,11 +169,16 @@ class OpenWeatherMapper @Inject constructor() {
         val hourlyForecast = mutableListOf<HourlyForecast>()
 
         for (hour in entityList) {
+            var temperature = hour.hourlyForecast.temp
+            if (tempUnit == TemperatureUnit.FAHRENHEIT) {
+                temperature = convertCelsiusToFahrenheit(temperature)
+            }
+
             hourlyForecast.add(
                 HourlyForecast(
                     forecastTime = hour.hourlyForecast.forecastTime,
                     timezone = hour.hourlyForecast.timezoneName,
-                    temp = hour.hourlyForecast.temp,
+                    temp = temperature,
                     pressure = convertHPaToMmHg(hour.hourlyForecast.pressure),
                     humidity = hour.hourlyForecast.humidity,
                     cloudiness = hour.hourlyForecast.cloudiness,
@@ -192,8 +194,36 @@ class OpenWeatherMapper @Inject constructor() {
                 )
             )
         }
-
         return hourlyForecast
+    }
+
+    fun mapDailyForecastFullDataToDomain(
+        entityList: List<DailyForecastFullData>,
+        tempUnit: Int
+    ): List<DailyForecast> {
+        val dailyForecast = mutableListOf<DailyForecast>()
+
+        for (day in entityList) {
+            var temperatureMin = day.dailyForecast.tempMin
+            var temperatureMax = day.dailyForecast.tempMax
+            if (tempUnit == TemperatureUnit.FAHRENHEIT) {
+                temperatureMin = convertCelsiusToFahrenheit(temperatureMin)
+                temperatureMax = convertCelsiusToFahrenheit(temperatureMax)
+            }
+
+            dailyForecast.add(
+                DailyForecast(
+                    forecastTime = day.dailyForecast.forecastTime,
+                    timezone = day.dailyForecast.timezoneName,
+                    minTemp = temperatureMin,
+                    maxTemp = temperatureMax,
+                    sunriseTime = day.dailyForecast.sunrise,
+                    sunsetTime = day.dailyForecast.sunset,
+                    tempUnit = tempUnit
+                )
+            )
+        }
+        return dailyForecast
     }
 
     private fun convertCountryCodeToName(code: String): String {

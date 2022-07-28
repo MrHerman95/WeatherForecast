@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_daily_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/str_tools_date_day_forecast"
+        tools:textColor="@color/black" />
+
+    <ImageView
+        android:id="@+id/iv_sunrise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:contentDescription="@string/str_sunrise_ic_desc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_daily_date"
+        app:srcCompat="@drawable/ic_sunrise" />
+
+    <TextView
+        android:id="@+id/tv_sunrise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/str_sunrise"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_sunrise_time"
+        app:layout_constraintStart_toStartOf="@+id/tv_sunrise_time"
+        app:layout_constraintTop_toBottomOf="@+id/tv_daily_date"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_sunrise_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/str_tools_time"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@+id/iv_sunrise"
+        app:layout_constraintTop_toBottomOf="@+id/tv_sunrise"
+        tools:text="@string/str_tools_time"
+        tools:textColor="@color/black" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_sunrise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="tv_sunrise,tv_sunrise_time" />
+
+    <ImageView
+        android:id="@+id/iv_sunset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:contentDescription="@string/str_sunset_ic_desc"
+        app:layout_constraintStart_toStartOf="@id/barrier_sunrise"
+        app:layout_constraintTop_toBottomOf="@+id/tv_daily_date"
+        app:srcCompat="@drawable/ic_sunset" />
+
+    <TextView
+        android:id="@+id/tv_sunset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/str_sunset"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_sunset_time"
+        app:layout_constraintStart_toEndOf="@+id/iv_sunset"
+        app:layout_constraintTop_toBottomOf="@+id/tv_daily_date"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_sunset_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/str_tools_time"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@+id/iv_sunset"
+        app:layout_constraintTop_toBottomOf="@+id/tv_sunset"
+        tools:text="@string/str_tools_time"
+        tools:textColor="@color/black" />
+
+    <ImageView
+        android:id="@+id/iv_daily_weather"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/str_weather_ic_desc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_daily_iv"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_test_small_3d" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_daily_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <TextView
+        android:id="@+id/tv_max_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_daily_iv"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/str_tools_temperature"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_min_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_daily_iv"
+        app:layout_constraintTop_toBottomOf="@+id/tv_max_temp"
+        tools:text="@string/str_tools_temperature"
+        tools:textColor="@color/black" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_divider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="iv_sunrise,tv_sunrise_time,iv_sunset,tv_sunset_time,tv_min_temp,iv_daily_weather" />
+
+    <ImageView
+        android:id="@+id/iv_divider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/str_divider_desc"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/barrier_divider"
+        app:srcCompat="@drawable/divider" />
+</androidx.constraintlayout.widget.ConstraintLayout>

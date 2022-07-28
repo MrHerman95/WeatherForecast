@@ -21,10 +21,15 @@ import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHWEST
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.WEST
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
+import com.hermanbocharov.weatherforecast.presentation.recyclerview.DailyForecastAdapter
 import com.hermanbocharov.weatherforecast.presentation.recyclerview.HourlyForecastAdapter
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.ForecastViewModel
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.ForecastViewModel.Companion.DEFAULT_SELECTED_ITEM_POS
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class WeatherForecastFragment : Fragment() {
@@ -36,6 +41,8 @@ class WeatherForecastFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    private lateinit var disposable: Disposable
+
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[ForecastViewModel::class.java]
     }
@@ -46,6 +53,10 @@ class WeatherForecastFragment : Fragment() {
 
     private val hourlyForecastAdapter by lazy {
         HourlyForecastAdapter()
+    }
+
+    private val dailyForecastAdapter by lazy {
+        DailyForecastAdapter()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +81,7 @@ class WeatherForecastFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeViewModel()
+        postDelayTvCityAnimation()
     }
 
     private fun observeViewModel() {
@@ -78,10 +90,16 @@ class WeatherForecastFragment : Fragment() {
             binding.tvCityForecast.text = it[DEFAULT_SELECTED_ITEM_POS].cityName
             updateTvWeatherParameters(it[DEFAULT_SELECTED_ITEM_POS])
         }
+
+        viewModel.dailyForecast.observe(viewLifecycleOwner) {
+            dailyForecastAdapter.submitList(it)
+            binding.rvDailyForecast.visibility = View.VISIBLE
+        }
     }
 
     private fun setupRecyclerView() {
         binding.rvHourlyForecast.adapter = hourlyForecastAdapter
+        binding.rvDailyForecast.adapter = dailyForecastAdapter
 
         hourlyForecastAdapter.onHourForecastClickListener = {
             it.isSelected = true
@@ -163,8 +181,17 @@ class WeatherForecastFragment : Fragment() {
         binding.ivHumidity.visibility = View.VISIBLE
     }
 
+    private fun postDelayTvCityAnimation() {
+        disposable = Observable.timer(2000, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.tvCityForecast.isSelected = true
+            }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        disposable.dispose()
         _binding = null
     }
 

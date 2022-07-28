@@ -41,6 +41,10 @@
     <string name="str_wind_dir">Wind Direction</string>
     <string name="str_uvi">UV index</string>
 
+    <string name="str_daily_forecast">Daily forecast</string>
+    <string name="str_sunrise">Sunrise</string>
+    <string name="str_sunset">Sunset</string>
+
     <string name="str_earth_desc">This is just a picture of the planet Earth</string>
     <string name="str_detect_loc_desc">Detect your location automatically</string>
     <string name="str_ic_search_desc">Press to input your location</string>
@@ -56,6 +60,8 @@
     <string name="str_wind_gust_ic_desc">Wind gusts parameter</string>
     <string name="str_wind_dir_ic_desc">Wind direction parameter</string>
     <string name="str_uvi_ic_desc">Ultraviolet index parameter</string>
+    <string name="str_sunrise_ic_desc">Sunrise time</string>
+    <string name="str_sunset_ic_desc">Sunset time</string>
 
     <string name="str_tools_city">Indianapolis</string>
     <string name="str_tools_timezone">UTC+3:30</string>
@@ -78,4 +84,6 @@
     <string name="str_tools_wind_gust_value">9 m/s</string>
     <string name="str_tools_wind_dir_value">SW</string>
     <string name="str_tools_uvi_value">3</string>
+    <string name="str_tools_date_day_forecast">Sun, Sept. 11</string>
+
 </resources>

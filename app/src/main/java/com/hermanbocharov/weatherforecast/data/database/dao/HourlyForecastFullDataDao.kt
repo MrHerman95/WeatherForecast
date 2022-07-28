@@ -13,6 +13,6 @@ interface HourlyForecastFullDataDao {
     fun getHourlyForecastFullData(locationId: Int): Single<List<HourlyForecastFullData>>
 
     companion object {
-        private const val MAX_HOURS_FORECAST = 24
+        private const val MAX_HOURS_FORECAST = 48
     }
 }

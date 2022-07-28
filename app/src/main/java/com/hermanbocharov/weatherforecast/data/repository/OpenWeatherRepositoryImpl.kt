@@ -9,6 +9,7 @@ import com.hermanbocharov.weatherforecast.data.network.model.FullWeatherInfoDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherForecastDto
 import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
 import com.hermanbocharov.weatherforecast.domain.entities.CurrentWeather
+import com.hermanbocharov.weatherforecast.domain.entities.DailyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.Location
 import com.hermanbocharov.weatherforecast.domain.repository.OpenWeatherRepository
@@ -56,6 +57,11 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     override fun getHourlyForecast(): Single<List<HourlyForecast>> {
         return hourlyForecastFullDataDao.getHourlyForecastFullData(getCurrentLocationId())
             .map { mapper.mapHourlyForecastFullDataToDomain(it, getTemperatureUnit()) }
+    }
+
+    override fun getDailyForecast(): Single<List<DailyForecast>> {
+        return dailyForecastFullDataDao.getDailyForecastFullData(getCurrentLocationId())
+            .map { mapper.mapDailyForecastFullDataToDomain(it, getTemperatureUnit()) }
     }
 
     override fun loadWeatherForecastCurLoc(): Single<Unit> {

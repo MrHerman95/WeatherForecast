@@ -1,5 +1,7 @@
 package com.hermanbocharov.weatherforecast.presentation.recyclerview
 
+import android.content.Context
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,10 +49,15 @@ class HourlyForecastAdapter :
             else -> throw RuntimeException("Unknown temperature unit ${hourForecastItem.tempUnit}")
         }
 
-        holder.tvDate.text =
-            getDateFromTimestamp(hourForecastItem.forecastTime.toLong(), hourForecastItem.timezone)
-        holder.tvTime.text =
-            getTimeFromTimestamp(hourForecastItem.forecastTime.toLong(), hourForecastItem.timezone)
+        holder.tvDate.text = getDateFromTimestamp(
+            hourForecastItem.forecastTime.toLong(),
+            hourForecastItem.timezone
+        )
+        holder.tvTime.text = getTimeFromTimestamp(
+            holder.view.context,
+            hourForecastItem.forecastTime.toLong(),
+            hourForecastItem.timezone
+        )
         holder.tvTemp.text = temperature
         holder.ivWeather.setImageDrawable(
             ResourcesCompat.getDrawable(
@@ -82,8 +89,12 @@ class HourlyForecastAdapter :
         return formatter.format(Date(timestamp * 1000))
     }
 
-    private fun getTimeFromTimestamp(timestamp: Long, timezone: String): String {
-        val formatter = SimpleDateFormat("h a", Locale.ENGLISH)
+    private fun getTimeFromTimestamp(context: Context, timestamp: Long, timezone: String): String {
+        val formatter = if (DateFormat.is24HourFormat(context)) {
+            SimpleDateFormat("HH:mm", Locale.ENGLISH)
+        } else {
+            SimpleDateFormat("h a", Locale.ENGLISH)
+        }
         formatter.timeZone = TimeZone.getTimeZone(timezone)
         return formatter.format(Date(timestamp * 1000))
     }

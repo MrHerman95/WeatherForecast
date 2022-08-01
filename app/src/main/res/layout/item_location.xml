@@ -16,7 +16,7 @@
         android:maxLines="1"
         android:paddingTop="8dp"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="18sp"
         tools:text="@string/str_tools_item_location"
         tools:textColor="@color/black" />
 

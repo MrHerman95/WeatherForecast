@@ -117,6 +117,8 @@ class LocationFragment : Fragment() {
 
         binding.searchViewFlow.setOnClickListener {
             if (!isSearchMode) {
+                binding.tvLocationInfo.text =
+                    requireContext().getString(R.string.str_search_hint_tv)
                 searchModeOn()
             }
         }
@@ -133,8 +135,8 @@ class LocationFragment : Fragment() {
                     animateImageViewPressed(iv)
                 }
                 MotionEvent.ACTION_UP -> {
-                    animateImageViewUnpressed(iv)
                     searchModeOff()
+                    animateImageViewUnpressed(iv)
                 }
                 MotionEvent.ACTION_CANCEL -> {
                     animateImageViewUnpressed(iv)
@@ -167,6 +169,10 @@ class LocationFragment : Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 if (binding.etLocName.text.isNotBlank()) {
+                    binding.ivLocationSearch.visibility = View.GONE
+                    binding.tvLocationInfo.visibility = View.GONE
+                    binding.rvLocation.visibility = View.GONE
+                    binding.pbLocationSearch.visibility = View.VISIBLE
                     viewModel.getListOfCities(city)
                 }
             }
@@ -203,12 +209,21 @@ class LocationFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.listOfCities.observe(viewLifecycleOwner) {
-            locationAdapter.submitList(it)
-            if (it.isNotEmpty() && binding.ivRecyclerDiv.visibility != View.VISIBLE) {
-                binding.ivRecyclerDiv.visibility = View.VISIBLE
-                binding.recyclerViewFlow.background =
-                    AppCompatResources.getDrawable(requireContext(), R.drawable.recycler_view_bg)
+            if (!isSearchMode) {
+                return@observe
             }
+
+            locationAdapter.submitList(it)
+            if (it.isNotEmpty()) {
+                binding.ivLocationSearch.visibility = View.GONE
+                binding.tvLocationInfo.visibility = View.GONE
+                binding.rvLocation.visibility = View.VISIBLE
+            } else {
+                binding.ivLocationSearch.visibility = View.VISIBLE
+                binding.tvLocationInfo.text = requireContext().getString(R.string.str_nothing_found)
+                binding.tvLocationInfo.visibility = View.VISIBLE
+            }
+            binding.pbLocationSearch.visibility = View.GONE
         }
 
         viewModel.currentLocation.observe(viewLifecycleOwner) {
@@ -238,6 +253,7 @@ class LocationFragment : Fragment() {
         constraintSet.applyTo(binding.fragmentLocation)
 
         hideKeyboard()
+        binding.pbLocationSearch.visibility = View.GONE
         binding.etLocName.visibility = View.INVISIBLE
         binding.ivClearEt.visibility = View.INVISIBLE
         binding.searchViewFlow.background =
@@ -267,9 +283,8 @@ class LocationFragment : Fragment() {
         }
 
         binding.searchViewFlow.background = null
-        binding.recyclerViewFlow.background = null
+        binding.pbLocationSearch.visibility = View.GONE
         binding.ivClearEt.visibility = View.INVISIBLE
-        binding.ivRecyclerDiv.visibility = View.GONE
         binding.ivCancelSearch.visibility = View.VISIBLE
     }
 

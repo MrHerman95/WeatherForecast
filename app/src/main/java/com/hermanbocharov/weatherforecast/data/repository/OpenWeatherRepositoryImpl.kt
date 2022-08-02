@@ -114,8 +114,9 @@ class OpenWeatherRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun getListOfCities(city: String): Single<List<Location>> {
-        return apiService.getListOfCities(city)
+    override fun getListOfCities(city: String, country: String): Single<List<Location>> {
+        val cityCountry = "$city,$country"
+        return apiService.getListOfCities(cityCountry)
             .map {
                 it.map { mapper.mapDtoToLocationDomain(it) }
             }

@@ -35,8 +35,8 @@ class LocationViewModel @Inject constructor(
         getCurrentLocation()
     }
 
-    fun getListOfCities(city: String) {
-        val disposable = getListOfCitiesUseCase(city)
+    fun getListOfCities(city: String, country: String) {
+        val disposable = getListOfCitiesUseCase(city, country)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({

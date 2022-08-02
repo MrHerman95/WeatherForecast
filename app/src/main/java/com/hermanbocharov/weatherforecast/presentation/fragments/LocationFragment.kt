@@ -171,7 +171,8 @@ class LocationFragment : Fragment() {
         binding.etLocName.setOnEditorActionListener { textView, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 compositeDisposable.clear()
-                updateListOfCities(textView.text.toString())
+                val (city, country) = getPairCityCountry(textView.text.toString())
+                updateListOfCities(city, country)
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
@@ -183,20 +184,26 @@ class LocationFragment : Fragment() {
         val disposable = Observable.timer(1000, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                updateListOfCities(input)
+                val (city, country) = getPairCityCountry(input)
+                updateListOfCities(city, country)
             }
         compositeDisposable.add(disposable)
     }
 
-    private fun updateListOfCities(city: String) {
-        val cityTrimmed = city.trim()
-        if (binding.etLocName.text.isNotBlank() && cityTrimmed != prevQuery) {
-            prevQuery = cityTrimmed
+    private fun getPairCityCountry(cityCountry: String): Pair<String, String> {
+        val city = cityCountry.substringBefore(',').trim()
+        val country = cityCountry.substringAfterLast(',', "").trim()
+        return city to country
+    }
+
+    private fun updateListOfCities(city: String, country: String) {
+        if (binding.etLocName.text.isNotBlank() && "$city,$country" != prevQuery) {
+            prevQuery = "$city,$country"
             binding.ivLocationSearch.visibility = View.GONE
             binding.tvLocationInfo.visibility = View.GONE
             binding.rvLocation.visibility = View.GONE
             binding.pbLocationSearch.visibility = View.VISIBLE
-            viewModel.getListOfCities(city)
+            viewModel.getListOfCities(city, country)
         }
     }
 

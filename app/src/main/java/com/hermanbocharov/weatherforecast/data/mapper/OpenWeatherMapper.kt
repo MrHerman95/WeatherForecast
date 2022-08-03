@@ -1,6 +1,7 @@
 package com.hermanbocharov.weatherforecast.data.mapper
 
 import com.hermanbocharov.weatherforecast.data.database.entities.*
+import com.hermanbocharov.weatherforecast.data.geolocation.CountriesISO
 import com.hermanbocharov.weatherforecast.data.network.model.LocationDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherConditionDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherForecastDto
@@ -224,6 +225,11 @@ class OpenWeatherMapper @Inject constructor() {
             )
         }
         return dailyForecast
+    }
+
+    fun mapCountryNameToISOCode(name: String): String {
+        val countryName = name.lowercase().removePrefix("the ")
+        return CountriesISO.countryNameISO[countryName] ?: ""
     }
 
     private fun convertCountryCodeToName(code: String): String {

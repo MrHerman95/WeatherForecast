@@ -115,7 +115,13 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     }
 
     override fun getListOfCities(city: String, country: String): Single<List<Location>> {
-        val cityCountry = "$city,$country"
+        val countryISO = when {
+            country.length == ISO_LENGTH -> country
+            country.length >= MIN_COUNTRY_NAME_LENGTH -> mapper.mapCountryNameToISOCode(country)
+            else -> ""
+        }
+        val cityCountry = "$city,$countryISO"
+
         return apiService.getListOfCities(cityCountry)
             .map {
                 it.map { mapper.mapDtoToLocationDomain(it) }
@@ -189,5 +195,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
 
     companion object {
         private const val UPDATE_FREQUENCY = 1 * 60 /* in seconds */
+        private const val ISO_LENGTH = 2
+        private const val MIN_COUNTRY_NAME_LENGTH = 3
     }
 }

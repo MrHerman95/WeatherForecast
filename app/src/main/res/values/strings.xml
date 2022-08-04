@@ -7,7 +7,7 @@
     <string name="str_weather_forecast">Forecast</string>
 
     <string name="str_location_full">%1$s, %2$s, %3$s</string>
-    <string name="str_location_without_state">%1$s, %2$s</string>
+    <string name="str_location_partial">%1$s, %2$s</string>
     <string name="str_location_search_hint">e.g. Paris, France</string>
     <string name="str_current_location">Current location</string>
     <string name="str_undefined_location">Undefined</string>
@@ -77,7 +77,8 @@
     <string name="str_tools_weather_cond_main">Rain</string>
     <string name="str_tools_temperature">25\u00B0C</string>
     <string name="str_tools_feels_like">Feels Like 23\u00B0C</string>
-    <string name="str_tools_item_location">Lviv, Lviv Oblast, Ukraine</string>
+    <string name="str_tools_item_loc_city_state">Lviv, Lviv Oblast</string>
+    <string name="str_tools_item_loc_country">Ukraine</string>
     <string name="str_tools_location_name">Odesa, Ukraine</string>
     <string name="str_tools_humidity_value">100%</string>
     <string name="str_tools_cloudiness_value">0%</string>

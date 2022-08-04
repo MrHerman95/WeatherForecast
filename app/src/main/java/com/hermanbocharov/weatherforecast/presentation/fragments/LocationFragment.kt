@@ -7,14 +7,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -24,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.transition.*
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentLocationBinding
-import com.hermanbocharov.weatherforecast.domain.entities.Location
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
 import com.hermanbocharov.weatherforecast.presentation.recyclerview.LocationAdapter
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.LocationViewModel
@@ -111,6 +108,25 @@ class LocationFragment : Fragment() {
             binding.tvLocationName.isSelected = false
             viewModel.addNewLocation(it)
             searchModeOff()
+        }
+
+        locationAdapter.onLocationLongClickListener = {
+            val locationName = when (it.state) {
+                null -> requireContext().getString(
+                    R.string.str_location_partial,
+                    it.name,
+                    it.country
+                )
+                else -> requireContext().getString(
+                    R.string.str_location_full,
+                    it.name,
+                    it.state,
+                    it.country
+                )
+            }
+            val toast = Toast.makeText(requireContext(), locationName, Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL , 0, 16)
+            toast.show()
         }
     }
 
@@ -247,6 +263,7 @@ class LocationFragment : Fragment() {
                 binding.tvLocationInfo.visibility = View.GONE
                 binding.rvLocation.visibility = View.VISIBLE
             } else {
+                binding.rvLocation.visibility = View.INVISIBLE
                 binding.ivLocationSearch.visibility = View.VISIBLE
                 binding.tvLocationInfo.text = requireContext().getString(R.string.str_nothing_found)
                 binding.tvLocationInfo.visibility = View.VISIBLE
@@ -266,7 +283,7 @@ class LocationFragment : Fragment() {
 
     private fun searchModeOff() {
         isSearchMode = false
-        locationAdapter.submitList(listOf<Location>())
+        locationAdapter.submitList(null)
         binding.rvLocation.visibility = View.GONE
 
         constraintSet.clone(requireContext(), R.layout.fragment_location)

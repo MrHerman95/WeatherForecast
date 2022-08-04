@@ -14,6 +14,7 @@ class LocationAdapter : ListAdapter<Location, LocationAdapter.LocationViewHolder
 ) {
 
     var onLocationClickListener: ((Location) -> Unit)? = null
+    var onLocationLongClickListener: ((Location) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -28,26 +29,29 @@ class LocationAdapter : ListAdapter<Location, LocationAdapter.LocationViewHolder
         val locationItem = getItem(position)
 
         if (locationItem.state.isNullOrBlank()) {
-            holder.tvLocation.text = holder.view.context.getString(
-                R.string.str_location_without_state,
-                locationItem.name,
-                locationItem.country
-            )
+            holder.tvLocCityState.text = locationItem.name
         } else {
-            holder.tvLocation.text = holder.view.context.getString(
-                R.string.str_location_full,
+            holder.tvLocCityState.text = holder.view.context.getString(
+                R.string.str_location_partial,
                 locationItem.name,
-                locationItem.state,
-                locationItem.country
+                locationItem.state
             )
         }
+
+        holder.tvLocCountry.text = locationItem.country
 
         holder.view.setOnClickListener {
             onLocationClickListener?.invoke(locationItem)
         }
+
+        holder.view.setOnLongClickListener {
+            onLocationLongClickListener?.invoke(locationItem)
+            true
+        }
     }
 
     class LocationViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val tvLocation: TextView = view.findViewById(R.id.tv_location_item)
+        val tvLocCityState: TextView = view.findViewById(R.id.tv_loc_city_state_item)
+        val tvLocCountry: TextView = view.findViewById(R.id.tv_loc_country_item)
     }
 }

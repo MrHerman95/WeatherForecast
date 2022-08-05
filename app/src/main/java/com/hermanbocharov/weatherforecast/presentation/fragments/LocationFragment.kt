@@ -113,7 +113,7 @@ class LocationFragment : Fragment() {
         locationAdapter.onLocationLongClickListener = {
             val locationName = when (it.state) {
                 null -> requireContext().getString(
-                    R.string.str_location_partial,
+                    R.string.str_location_city_country,
                     it.name,
                     it.country
                 )
@@ -125,7 +125,7 @@ class LocationFragment : Fragment() {
                 )
             }
             val toast = Toast.makeText(requireContext(), locationName, Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL , 0, 16)
+            toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL , 0, 32)
             toast.show()
         }
     }

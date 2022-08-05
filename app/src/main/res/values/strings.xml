@@ -7,14 +7,14 @@
     <string name="str_weather_forecast">Forecast</string>
 
     <string name="str_location_full">%1$s, %2$s, %3$s</string>
-    <string name="str_location_partial">%1$s, %2$s</string>
+    <string name="str_location_city_country">%1$s, %2$s</string>
     <string name="str_location_search_hint">e.g. Paris, France</string>
     <string name="str_current_location">Current location</string>
     <string name="str_undefined_location">Undefined</string>
     <string name="str_search_location">Search location</string>
     <string name="str_location_name">%1$s, %2$s</string>
     <string name="str_nothing_found">No cities found :(</string>
-    <string name="str_search_hint_tv">Please enter a city and a country (or a country code, e.g. \'FR\') separated by comma</string>
+    <string name="str_search_hint_tv">Please enter a\u00A0city and a\u00A0country (or a\u00A0country code, e.g.\u00A0\'FR\') separated by a\u00A0comma</string>
 
     <string name="str_temp_celsius">%d\u00B0C</string>
     <string name="str_feels_like_celsius">Feels Like %d\u00B0C</string>
@@ -77,8 +77,8 @@
     <string name="str_tools_weather_cond_main">Rain</string>
     <string name="str_tools_temperature">25\u00B0C</string>
     <string name="str_tools_feels_like">Feels Like 23\u00B0C</string>
-    <string name="str_tools_item_loc_city_state">Lviv, Lviv Oblast</string>
-    <string name="str_tools_item_loc_country">Ukraine</string>
+    <string name="str_tools_item_loc_city_country">Lviv, Ukraine</string>
+    <string name="str_tools_item_loc_state">Lviv Oblast</string>
     <string name="str_tools_location_name">Odesa, Ukraine</string>
     <string name="str_tools_humidity_value">100%</string>
     <string name="str_tools_cloudiness_value">0%</string>

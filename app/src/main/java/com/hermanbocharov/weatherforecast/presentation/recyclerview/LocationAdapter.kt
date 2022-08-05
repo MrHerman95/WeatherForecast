@@ -28,17 +28,17 @@ class LocationAdapter : ListAdapter<Location, LocationAdapter.LocationViewHolder
     override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
         val locationItem = getItem(position)
 
-        if (locationItem.state.isNullOrBlank()) {
-            holder.tvLocCityState.text = locationItem.name
-        } else {
-            holder.tvLocCityState.text = holder.view.context.getString(
-                R.string.str_location_partial,
-                locationItem.name,
-                locationItem.state
-            )
-        }
+        holder.tvLocCityCountry.text = holder.view.context.getString(
+            R.string.str_location_city_country,
+            locationItem.name,
+            locationItem.country
+        )
 
-        holder.tvLocCountry.text = locationItem.country
+        if (locationItem.state.isNullOrBlank()) {
+            holder.tvLocState.text = "-"
+        } else {
+            holder.tvLocState.text = locationItem.state
+        }
 
         holder.view.setOnClickListener {
             onLocationClickListener?.invoke(locationItem)
@@ -51,7 +51,7 @@ class LocationAdapter : ListAdapter<Location, LocationAdapter.LocationViewHolder
     }
 
     class LocationViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val tvLocCityState: TextView = view.findViewById(R.id.tv_loc_city_state_item)
-        val tvLocCountry: TextView = view.findViewById(R.id.tv_loc_country_item)
+        val tvLocCityCountry: TextView = view.findViewById(R.id.tv_loc_city_country_item)
+        val tvLocState: TextView = view.findViewById(R.id.tv_loc_state_item)
     }
 }

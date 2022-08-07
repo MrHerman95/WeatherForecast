@@ -10,8 +10,9 @@
     <string name="str_location_city_country">%1$s, %2$s</string>
     <string name="str_location_search_hint">e.g. Paris, France</string>
     <string name="str_current_location">Current location</string>
+    <string name="str_recent_locations">Recent locations</string>
     <string name="str_undefined_location">Undefined</string>
-    <string name="str_search_location">Search location</string>
+    <string name="str_search_location">Search</string>
     <string name="str_location_name">%1$s, %2$s</string>
     <string name="str_nothing_found">No cities found :(</string>
     <string name="str_search_hint_tv">Please enter a\u00A0city and a\u00A0country (or a\u00A0country code, e.g.\u00A0\'FR\') separated by a\u00A0comma</string>
@@ -65,6 +66,7 @@
     <string name="str_sunrise_ic_desc">Sunrise time</string>
     <string name="str_sunset_ic_desc">Sunset time</string>
     <string name="str_location_city_desc">Here will be the list of the locations</string>
+    <string name="str_pin_location_desc">Pin recent location</string>
 
     <string name="str_tools_city">Indianapolis</string>
     <string name="str_tools_timezone">UTC+3:30</string>

@@ -22,8 +22,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.transition.*
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentLocationBinding
+import com.hermanbocharov.weatherforecast.domain.entities.Location
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
-import com.hermanbocharov.weatherforecast.presentation.recyclerview.LocationAdapter
+import com.hermanbocharov.weatherforecast.presentation.recyclerview.RecentLocationAdapter
+import com.hermanbocharov.weatherforecast.presentation.recyclerview.SearchLocationAdapter
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.LocationViewModel
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -58,8 +60,12 @@ class LocationFragment : Fragment() {
         requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     }
 
-    private val locationAdapter by lazy {
-        LocationAdapter()
+    private val searchLocationAdapter by lazy {
+        SearchLocationAdapter()
+    }
+
+    private val recentLocationAdapter by lazy {
+        RecentLocationAdapter()
     }
 
     private val compositeDisposable = CompositeDisposable()
@@ -86,6 +92,7 @@ class LocationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRecentRecyclerView()
         setupSearchModeView()
         observeViewModel()
 
@@ -100,17 +107,17 @@ class LocationFragment : Fragment() {
         _binding = null
     }
 
-    private fun setupRecyclerView() {
-        binding.rvLocation.adapter = locationAdapter
-        binding.rvLocation.itemAnimator = null
+    private fun setupSearchRecyclerView() {
+        binding.rvSearchLocation.adapter = searchLocationAdapter
+        binding.rvSearchLocation.itemAnimator = null
 
-        locationAdapter.onLocationClickListener = {
+        searchLocationAdapter.onSearchLocationClickListener = {
             binding.tvLocationName.isSelected = false
             viewModel.addNewLocation(it)
             searchModeOff()
         }
 
-        locationAdapter.onLocationLongClickListener = {
+        searchLocationAdapter.onSearchLocationLongClickListener = {
             val locationName = when (it.state) {
                 null -> requireContext().getString(
                     R.string.str_location_city_country,
@@ -125,14 +132,29 @@ class LocationFragment : Fragment() {
                 )
             }
             val toast = Toast.makeText(requireContext(), locationName, Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL , 0, 32)
+            toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 32)
             toast.show()
         }
     }
 
+    private fun setupRecentRecyclerView() {
+        binding.rvRecentLocations.adapter = recentLocationAdapter
+        recentLocationAdapter.submitList(
+            listOf(
+                Location("Odesa", 1.0, 1.0, "Ukraine", null),
+                Location("Horqin Right Front Banner", 2.0, 1.0, "China", null),
+                Location("Odesa", 1.0, 1.0, "Ukraine", null),
+                Location("Gasselternijveenschemond", 2.0, 1.0, "Netherlands", null),
+                Location("Odesa", 1.0, 1.0, "Ukraine", null),
+                Location("Odesa", 1.0, 1.0, "Ukraine", null),
+                Location("Los Angeles", 3.0, 1.0, "United States", "California")
+            )
+        )
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun setupSearchModeView() {
-        setupRecyclerView()
+        setupSearchRecyclerView()
         addSearchEditTextListeners()
 
         binding.searchViewFlow.setOnClickListener {
@@ -217,7 +239,7 @@ class LocationFragment : Fragment() {
             prevQuery = "$city,$country"
             binding.ivLocationSearch.visibility = View.GONE
             binding.tvLocationInfo.visibility = View.GONE
-            binding.rvLocation.visibility = View.GONE
+            binding.rvSearchLocation.visibility = View.GONE
             binding.pbLocationSearch.visibility = View.VISIBLE
             viewModel.getListOfCities(city, country)
         }
@@ -257,13 +279,13 @@ class LocationFragment : Fragment() {
                 return@observe
             }
 
-            locationAdapter.submitList(it)
+            searchLocationAdapter.submitList(it)
             if (it.isNotEmpty()) {
                 binding.ivLocationSearch.visibility = View.GONE
                 binding.tvLocationInfo.visibility = View.GONE
-                binding.rvLocation.visibility = View.VISIBLE
+                binding.rvSearchLocation.visibility = View.VISIBLE
             } else {
-                binding.rvLocation.visibility = View.INVISIBLE
+                binding.rvSearchLocation.visibility = View.INVISIBLE
                 binding.ivLocationSearch.visibility = View.VISIBLE
                 binding.tvLocationInfo.text = requireContext().getString(R.string.str_nothing_found)
                 binding.tvLocationInfo.visibility = View.VISIBLE
@@ -283,8 +305,8 @@ class LocationFragment : Fragment() {
 
     private fun searchModeOff() {
         isSearchMode = false
-        locationAdapter.submitList(null)
-        binding.rvLocation.visibility = View.GONE
+        searchLocationAdapter.submitList(null)
+        binding.rvSearchLocation.visibility = View.GONE
 
         constraintSet.clone(requireContext(), R.layout.fragment_location)
         val transitionMove: Transition = ChangeBounds()

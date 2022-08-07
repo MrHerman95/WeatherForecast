@@ -9,23 +9,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.domain.entities.Location
 
-class LocationAdapter : ListAdapter<Location, LocationAdapter.LocationViewHolder>(
+class SearchLocationAdapter : ListAdapter<Location, SearchLocationAdapter.SearchLocationViewHolder>(
     LocationDiffCallback()
 ) {
 
-    var onLocationClickListener: ((Location) -> Unit)? = null
-    var onLocationLongClickListener: ((Location) -> Unit)? = null
+    var onSearchLocationClickListener: ((Location) -> Unit)? = null
+    var onSearchLocationLongClickListener: ((Location) -> Unit)? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchLocationViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.item_location,
             parent,
             false
         )
-        return LocationViewHolder(view)
+        return SearchLocationViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SearchLocationViewHolder, position: Int) {
         val locationItem = getItem(position)
 
         holder.tvLocCityCountry.text = holder.view.context.getString(
@@ -41,16 +41,16 @@ class LocationAdapter : ListAdapter<Location, LocationAdapter.LocationViewHolder
         }
 
         holder.view.setOnClickListener {
-            onLocationClickListener?.invoke(locationItem)
+            onSearchLocationClickListener?.invoke(locationItem)
         }
 
         holder.view.setOnLongClickListener {
-            onLocationLongClickListener?.invoke(locationItem)
+            onSearchLocationLongClickListener?.invoke(locationItem)
             true
         }
     }
 
-    class LocationViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    class SearchLocationViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val tvLocCityCountry: TextView = view.findViewById(R.id.tv_loc_city_country_item)
         val tvLocState: TextView = view.findViewById(R.id.tv_loc_state_item)
     }

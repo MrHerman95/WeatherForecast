@@ -29,7 +29,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_recent_location"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_recent_location"
-        app:srcCompat="@drawable/ic_not_pinned" />
+        app:srcCompat="@drawable/ic_pinned" />
 
 
     <ImageView

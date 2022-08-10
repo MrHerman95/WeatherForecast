@@ -118,38 +118,43 @@ class LocationFragment : Fragment() {
         }
 
         searchLocationAdapter.onSearchLocationLongClickListener = {
-            val locationName = when (it.state) {
-                null -> requireContext().getString(
-                    R.string.str_location_city_country,
-                    it.name,
-                    it.country
-                )
-                else -> requireContext().getString(
-                    R.string.str_location_full,
-                    it.name,
-                    it.state,
-                    it.country
-                )
-            }
-            val toast = Toast.makeText(requireContext(), locationName, Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 32)
-            toast.show()
+            showFullLocationNameToast(it)
         }
     }
 
     private fun setupRecentRecyclerView() {
         binding.rvRecentLocations.adapter = recentLocationAdapter
-        recentLocationAdapter.submitList(
-            listOf(
-                Location("Odesa", 1.0, 1.0, "Ukraine", null),
-                Location("Horqin Right Front Banner", 2.0, 1.0, "China", null),
-                Location("Odesa", 1.0, 1.0, "Ukraine", null),
-                Location("Gasselternijveenschemond", 2.0, 1.0, "Netherlands", null),
-                Location("Odesa", 1.0, 1.0, "Ukraine", null),
-                Location("Odesa", 1.0, 1.0, "Ukraine", null),
-                Location("Los Angeles", 3.0, 1.0, "United States", "California")
+
+        recentLocationAdapter.onPinLocationClickListener = {
+            viewModel.changePinnedState(it)
+        }
+
+        recentLocationAdapter.onRecentLocationClickListener = {
+            viewModel.selectLocation(it)
+        }
+
+        recentLocationAdapter.onRecentLocationLongClickListener = {
+            showFullLocationNameToast(it)
+        }
+    }
+
+    private fun showFullLocationNameToast(location: Location) {
+        val locationName = when (location.state) {
+            null -> requireContext().getString(
+                R.string.str_location_city_country,
+                location.name,
+                location.country
             )
-        )
+            else -> requireContext().getString(
+                R.string.str_location_full,
+                location.name,
+                location.state,
+                location.country
+            )
+        }
+        val toast = Toast.makeText(requireContext(), locationName, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 32)
+        toast.show()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -241,7 +246,7 @@ class LocationFragment : Fragment() {
             binding.tvLocationInfo.visibility = View.GONE
             binding.rvSearchLocation.visibility = View.GONE
             binding.pbLocationSearch.visibility = View.VISIBLE
-            viewModel.getListOfCities(city, country)
+            viewModel.getListOfCitiesSearch(city, country)
         }
     }
 
@@ -274,7 +279,7 @@ class LocationFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.listOfCities.observe(viewLifecycleOwner) {
+        viewModel.listOfCitiesSearch.observe(viewLifecycleOwner) {
             if (!isSearchMode) {
                 return@observe
             }
@@ -291,6 +296,12 @@ class LocationFragment : Fragment() {
                 binding.tvLocationInfo.visibility = View.VISIBLE
             }
             binding.pbLocationSearch.visibility = View.GONE
+        }
+
+        viewModel.listOfRecentCities.observe(viewLifecycleOwner) {
+            recentLocationAdapter.submitList(it) {
+                //binding.rvRecentLocations.scrollToPosition(0)
+            }
         }
 
         viewModel.currentLocation.observe(viewLifecycleOwner) {

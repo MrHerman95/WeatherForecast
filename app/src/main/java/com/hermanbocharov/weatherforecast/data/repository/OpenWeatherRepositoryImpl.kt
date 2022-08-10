@@ -13,7 +13,9 @@ import com.hermanbocharov.weatherforecast.domain.entities.DailyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.Location
 import com.hermanbocharov.weatherforecast.domain.repository.OpenWeatherRepository
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -114,7 +116,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun getListOfCities(city: String, country: String): Single<List<Location>> {
+    override fun getListOfCitiesSearch(city: String, country: String): Single<List<Location>> {
         val countryISO = when {
             country.length == ISO_LENGTH -> country
             country.length >= MIN_COUNTRY_NAME_LENGTH -> mapper.mapCountryNameToISOCode(country)
@@ -125,6 +127,13 @@ class OpenWeatherRepositoryImpl @Inject constructor(
         return apiService.getListOfCities(cityCountry)
             .map {
                 it.map { mapper.mapDtoToLocationDomain(it) }
+            }
+    }
+
+    override fun getListOfRecentCities(): Single<List<Location>> {
+        return locationDao.getListOfRecentCities()
+            .map {
+                it.map { mapper.mapEntityToLocationDomain(it) }
             }
     }
 
@@ -152,6 +161,15 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 prefs.saveCurrentLocationId(it.toInt())
                 loadWeatherForecastCurLoc()
             }
+    }
+
+    override fun changeLocationPinnedState(location: Location): Single<Long> {
+        return locationDao.insertLocation(mapper.mapLocationDomainToEntity(location))
+    }
+
+    override fun selectLocation(location: Location): Single<Unit> {
+        prefs.saveCurrentLocationId(location.id)
+        return loadWeatherForecastCurLoc()
     }
 
     private fun insertAllWeatherConditions(forecast: WeatherForecastDto) {

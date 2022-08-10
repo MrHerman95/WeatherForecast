@@ -1,9 +1,6 @@
 package com.hermanbocharov.weatherforecast.data.database.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.hermanbocharov.weatherforecast.data.database.entities.LocationEntity
 import io.reactivex.rxjava3.core.Single
 
@@ -14,4 +11,10 @@ interface LocationDao {
 
     @Query("SELECT * FROM location WHERE id=:locationId LIMIT 1")
     fun getLocation(locationId: Int): Single<LocationEntity>
+
+    @Query("SELECT * FROM location ORDER BY isPinned DESC, id DESC LIMIT 5")
+    fun getListOfRecentCities(): Single<List<LocationEntity>>
+
+    @Update
+    fun updateLocation(location: LocationEntity): Single<Unit>
 }

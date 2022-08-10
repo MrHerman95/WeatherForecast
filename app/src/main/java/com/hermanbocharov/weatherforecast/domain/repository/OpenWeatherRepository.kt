@@ -12,9 +12,12 @@ interface OpenWeatherRepository {
     fun getDailyForecast(): Single<List<DailyForecast>>
     fun loadWeatherForecastGpsLoc(): Single<Unit>
     fun loadWeatherForecastCurLoc(): Single<Unit>
-    fun getListOfCities(city: String, country: String): Single<List<Location>>
+    fun getListOfCitiesSearch(city: String, country: String): Single<List<Location>>
+    fun getListOfRecentCities(): Single<List<Location>>
     fun getCurrentLocation(): Single<Location>
     fun addNewLocation(location: Location): Single<Unit>
+    fun changeLocationPinnedState(location: Location): Single<Long>
+    fun selectLocation(location: Location): Single<Unit>
     fun getCurrentLocationId(): Int
     fun getTemperatureUnit(): Int
     fun saveTemperatureUnit(unitId: Int)

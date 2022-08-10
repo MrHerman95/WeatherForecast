@@ -44,21 +44,25 @@ class OpenWeatherMapper @Inject constructor() {
 
     fun mapEntityToLocationDomain(entity: LocationEntity): Location {
         return Location(
+            id = entity.id,
             name = entity.name,
             lat = entity.lat,
             lon = entity.lon,
             country = entity.country,
-            state = entity.state
+            state = entity.state,
+            isPinned = entity.isPinned
         )
     }
 
     fun mapLocationDomainToEntity(domain: Location): LocationEntity {
         return LocationEntity(
+            id = domain.id,
             name = domain.name,
             lat = domain.lat,
             lon = domain.lon,
             country = domain.country,
-            state = domain.state
+            state = domain.state,
+            isPinned = domain.isPinned
         )
     }
 

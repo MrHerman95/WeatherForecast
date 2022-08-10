@@ -9,12 +9,12 @@ import androidx.room.PrimaryKey
     indices = [Index(value = ["lat", "lon"], unique = true)]
 )
 data class LocationEntity(
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0,
     val name: String,
     val lat: Double,
     val lon: Double,
     val country: String,
-    val state: String?
-) {
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
-}
+    val state: String?,
+    val isPinned: Boolean = false
+)

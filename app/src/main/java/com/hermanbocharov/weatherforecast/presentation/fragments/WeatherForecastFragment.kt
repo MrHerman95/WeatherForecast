@@ -129,13 +129,23 @@ class WeatherForecastFragment : Fragment() {
             binding.tvUviValue.text = String.format("%.1f", uvi)
 
             var precipitation = 0.0
+            var precipitationIconId = R.drawable.ic_weather_snowy
             if (rain != null) {
-                precipitation = rain
-            } else if (snow != null) {
-                precipitation = snow
+                precipitation += rain
+                precipitationIconId = R.drawable.ic_weather_raining
+            }
+            if (snow != null) {
+                precipitation += snow
+                precipitationIconId = R.drawable.ic_weather_snowy
             }
             binding.tvPrecipitationValue.text =
                 requireContext().getString(R.string.str_precipitation_value, precipitation)
+            binding.ivPrecipitation.setImageDrawable(
+                AppCompatResources.getDrawable(
+                    requireContext(),
+                    precipitationIconId
+                )
+            )
 
             updateIvWindDirection(windDirection)
             updateIvHumidity(humidity)
@@ -161,7 +171,6 @@ class WeatherForecastFragment : Fragment() {
                 drawableId
             )
         )
-        binding.ivWindDir.visibility = View.VISIBLE
     }
 
     private fun updateIvHumidity(humidity: Int) {
@@ -178,7 +187,6 @@ class WeatherForecastFragment : Fragment() {
                 drawableId
             )
         )
-        binding.ivHumidity.visibility = View.VISIBLE
     }
 
     private fun postDelayTvCityAnimation() {

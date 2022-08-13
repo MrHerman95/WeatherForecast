@@ -84,21 +84,21 @@ class OpenWeatherMapper @Inject constructor() {
         locationId: Int
     ): List<HourlyForecastEntity> {
         val hourlyForecast = mutableListOf<HourlyForecastEntity>()
-        for (hour in dto.hourly) {
+        for (i in 0 until dto.hourly.size step 2) {
             val item = HourlyForecastEntity(
-                forecastTime = hour.forecastTime,
+                forecastTime = dto.hourly[i].forecastTime,
                 locationId = locationId,
-                temp = hour.temp.roundToInt(),
-                pressure = hour.pressure,
-                humidity = hour.humidity,
-                cloudiness = hour.clouds,
-                uvi = hour.uvi,
-                rain = hour.rain?.last1h,
-                snow = hour.snow?.last1h,
-                windSpeed = hour.windSpeed,
-                windDegree = hour.windDeg,
-                windGust = hour.windGust,
-                weatherConditionId = hour.weather[0].id,
+                temp = dto.hourly[i].temp.roundToInt(),
+                pressure = dto.hourly[i].pressure,
+                humidity = dto.hourly[i].humidity,
+                cloudiness = dto.hourly[i].clouds,
+                uvi = dto.hourly[i].uvi,
+                rain = dto.hourly[i].rain?.last1h,
+                snow = dto.hourly[i].snow?.last1h,
+                windSpeed = dto.hourly[i].windSpeed,
+                windDegree = dto.hourly[i].windDeg,
+                windGust = dto.hourly[i].windGust,
+                weatherConditionId = dto.hourly[i].weather[0].id,
                 timezoneName = dto.timezoneName
             )
             hourlyForecast.add(item)

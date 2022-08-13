@@ -6,18 +6,35 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tv_location_item"
+        android:id="@+id/tv_loc_city_country_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
-        android:fontFamily="@font/roboto_regular"
+        android:fontFamily="@font/roboto_bold"
+        android:includeFontPadding="false"
         android:maxLines="1"
-        android:paddingTop="8dp"
+        android:paddingTop="4dp"
         android:textColor="@color/white"
-        android:textSize="20sp"
-        tools:text="@string/str_tools_item_location"
+        android:textSize="16sp"
+        tools:text="@string/str_tools_item_loc_city_country"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_loc_state_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/roboto_regular"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:paddingBottom="4dp"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        tools:text="@string/str_tools_item_loc_state"
         tools:textColor="@color/black" />
 
 </LinearLayout>

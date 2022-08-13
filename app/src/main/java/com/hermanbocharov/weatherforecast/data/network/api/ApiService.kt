@@ -28,7 +28,7 @@ interface ApiService {
 
     @GET("geo/1.0/direct")
     fun getListOfCities(
-        @Query(QUERY_PARAM_GEOCODING) city: String,
+        @Query(QUERY_PARAM_GEOCODING) cityCountry: String,
         @Query(QUERY_PARAM_LIMIT) limit: Int = 5,
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY
     ): Single<List<LocationDto>>

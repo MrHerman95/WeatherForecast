@@ -7,13 +7,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.AnticipateOvershootInterpolator
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -23,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.transition.*
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentLocationBinding
-import com.hermanbocharov.weatherforecast.domain.entities.Location
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
 import com.hermanbocharov.weatherforecast.presentation.recyclerview.LocationAdapter
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.LocationViewModel
@@ -33,6 +31,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.math.sqrt
 
 
 class LocationFragment : Fragment() {
@@ -66,6 +65,8 @@ class LocationFragment : Fragment() {
 
     private val compositeDisposable = CompositeDisposable()
     private var isSearchMode = false
+    private var prevQuery = ""
+    private var isMotionEventCanceled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +93,11 @@ class LocationFragment : Fragment() {
 
         binding.fabDetect.setOnClickListener {
             viewModel.detectLocation()
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.str_detecting_location),
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -103,20 +109,43 @@ class LocationFragment : Fragment() {
 
     private fun setupRecyclerView() {
         binding.rvLocation.adapter = locationAdapter
+        binding.rvLocation.itemAnimator = null
 
         locationAdapter.onLocationClickListener = {
             binding.tvLocationName.isSelected = false
             viewModel.addNewLocation(it)
             searchModeOff()
         }
+
+        locationAdapter.onLocationLongClickListener = {
+            val locationName = when (it.state) {
+                null -> requireContext().getString(
+                    R.string.str_location_city_country,
+                    it.name,
+                    it.country
+                )
+                else -> requireContext().getString(
+                    R.string.str_location_full,
+                    it.name,
+                    it.state,
+                    it.country
+                )
+            }
+            val toast = Toast.makeText(requireContext(), locationName, Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 32)
+            toast.show()
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupSearchModeView() {
         setupRecyclerView()
+        addSearchEditTextListeners()
 
         binding.searchViewFlow.setOnClickListener {
             if (!isSearchMode) {
+                binding.tvLocationInfo.text =
+                    requireContext().getString(R.string.str_search_hint_tv)
                 searchModeOn()
             }
         }
@@ -131,18 +160,42 @@ class LocationFragment : Fragment() {
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
                     animateImageViewPressed(iv)
+                    isMotionEventCanceled = false
                 }
                 MotionEvent.ACTION_UP -> {
-                    animateImageViewUnpressed(iv)
+                    if (isMotionEventCanceled) {
+                        return@setOnTouchListener false
+                    }
                     searchModeOff()
+                    animateImageViewUnpressed(iv)
                 }
                 MotionEvent.ACTION_CANCEL -> {
                     animateImageViewUnpressed(iv)
+                    isMotionEventCanceled = true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if (isMotionEventCanceled) {
+                        return@setOnTouchListener false
+                    }
+                    val distance = getMoveDistance(iv.width / 2f, iv.height / 2f, motionEvent)
+                    if (distance > ACTION_CANCEL_TRIGGER_DISTANCE) {
+                        motionEvent.action = MotionEvent.ACTION_CANCEL
+                        iv.dispatchTouchEvent(motionEvent)
+                    }
                 }
             }
+
             return@setOnTouchListener true
         }
+    }
 
+    private fun getMoveDistance(startX: Float, startY: Float, ev: MotionEvent): Float {
+        val dx = ev.x - startX
+        val dy = ev.y - startY
+        return sqrt(dx * dx + dy * dy)
+    }
+
+    private fun addSearchEditTextListeners() {
         binding.etLocName.addTextChangedListener(object : TextWatcher {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -154,23 +207,49 @@ class LocationFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                updateListOfCities(s.toString())
+                processInput(s.toString())
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         })
+
+        binding.etLocName.setOnEditorActionListener { textView, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                compositeDisposable.clear()
+                val (city, country) = getPairCityCountry(textView.text.toString())
+                updateListOfCities(city, country)
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
     }
 
-    private fun updateListOfCities(city: String) {
+    private fun processInput(input: String) {
         compositeDisposable.clear()
         val disposable = Observable.timer(1000, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                if (binding.etLocName.text.isNotBlank()) {
-                    viewModel.getListOfCities(city)
-                }
+                val (city, country) = getPairCityCountry(input)
+                updateListOfCities(city, country)
             }
         compositeDisposable.add(disposable)
+    }
+
+    private fun getPairCityCountry(cityCountry: String): Pair<String, String> {
+        val city = cityCountry.substringBefore(',').trim()
+        val country = cityCountry.substringAfterLast(',', "").trim()
+        return city to country
+    }
+
+    private fun updateListOfCities(city: String, country: String) {
+        if (binding.etLocName.text.isNotBlank() && "$city,$country" != prevQuery) {
+            prevQuery = "$city,$country"
+            binding.ivLocationSearch.visibility = View.GONE
+            binding.tvLocationInfo.visibility = View.GONE
+            binding.rvLocation.visibility = View.GONE
+            binding.pbLocationSearch.visibility = View.VISIBLE
+            viewModel.getListOfCities(city, country)
+        }
     }
 
     private fun showClearEditTextIcon() {
@@ -203,12 +282,22 @@ class LocationFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.listOfCities.observe(viewLifecycleOwner) {
-            locationAdapter.submitList(it)
-            if (it.isNotEmpty() && binding.ivRecyclerDiv.visibility != View.VISIBLE) {
-                binding.ivRecyclerDiv.visibility = View.VISIBLE
-                binding.recyclerViewFlow.background =
-                    AppCompatResources.getDrawable(requireContext(), R.drawable.recycler_view_bg)
+            if (!isSearchMode) {
+                return@observe
             }
+
+            locationAdapter.submitList(it)
+            if (it.isNotEmpty()) {
+                binding.ivLocationSearch.visibility = View.GONE
+                binding.tvLocationInfo.visibility = View.GONE
+                binding.rvLocation.visibility = View.VISIBLE
+            } else {
+                binding.rvLocation.visibility = View.INVISIBLE
+                binding.ivLocationSearch.visibility = View.VISIBLE
+                binding.tvLocationInfo.text = requireContext().getString(R.string.str_nothing_found)
+                binding.tvLocationInfo.visibility = View.VISIBLE
+            }
+            binding.pbLocationSearch.visibility = View.GONE
         }
 
         viewModel.currentLocation.observe(viewLifecycleOwner) {
@@ -219,10 +308,31 @@ class LocationFragment : Fragment() {
             )
             postDelayTvLocationNameAnimation()
         }
+
+        viewModel.isLocationDetectSuccess.observe(viewLifecycleOwner) {
+            when (it) {
+                true -> {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.str_detect_location_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                false -> {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.str_detect_location_failure),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
     }
 
     private fun searchModeOff() {
         isSearchMode = false
+        locationAdapter.submitList(null)
+        binding.rvLocation.visibility = View.GONE
 
         constraintSet.clone(requireContext(), R.layout.fragment_location)
         val transitionMove: Transition = ChangeBounds()
@@ -238,12 +348,13 @@ class LocationFragment : Fragment() {
         constraintSet.applyTo(binding.fragmentLocation)
 
         hideKeyboard()
+        binding.pbLocationSearch.visibility = View.GONE
         binding.etLocName.visibility = View.INVISIBLE
         binding.ivClearEt.visibility = View.INVISIBLE
         binding.searchViewFlow.background =
             AppCompatResources.getDrawable(requireContext(), R.drawable.search_view_bg)
         binding.etLocName.text.clear()
-        locationAdapter.submitList(listOf<Location>())
+        prevQuery = ""
     }
 
     private fun searchModeOn() {
@@ -267,9 +378,8 @@ class LocationFragment : Fragment() {
         }
 
         binding.searchViewFlow.background = null
-        binding.recyclerViewFlow.background = null
+        binding.pbLocationSearch.visibility = View.GONE
         binding.ivClearEt.visibility = View.INVISIBLE
-        binding.ivRecyclerDiv.visibility = View.GONE
         binding.ivCancelSearch.visibility = View.VISIBLE
     }
 
@@ -291,7 +401,8 @@ class LocationFragment : Fragment() {
     }
 
     companion object {
-
         fun newInstance() = LocationFragment()
+
+        private const val ACTION_CANCEL_TRIGGER_DISTANCE = 250
     }
 }

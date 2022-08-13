@@ -12,6 +12,7 @@ import com.hermanbocharov.weatherforecast.domain.usecases.LoadWeatherForecastGps
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class LocationViewModel @Inject constructor(
@@ -30,6 +31,10 @@ class LocationViewModel @Inject constructor(
     private val _currentLocation = MutableLiveData<Location>()
     val currentLocation: LiveData<Location>
         get() = _currentLocation
+
+    private val _isLocationDetectSuccess = MutableLiveData<Boolean>()
+    val isLocationDetectSuccess: LiveData<Boolean>
+        get() = _isLocationDetectSuccess
 
     init {
         getCurrentLocation()
@@ -65,12 +70,16 @@ class LocationViewModel @Inject constructor(
     fun detectLocation() {
         val disposable = loadWeatherForecastGpsLocUseCase()
             .flatMap { getCurrentLocationUseCase() }
+            .delaySubscription(DETECT_LOCATION_DELAY, TimeUnit.MILLISECONDS)
+            .retry(DETECT_LOCATION_RETRY_TIMES)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 _currentLocation.value = it
+                _isLocationDetectSuccess.value = true
             }, {
                 Log.d("TEST_OF_LOADING_DATA", "detectLocation() ${it.message}")
+                _isLocationDetectSuccess.value = false
             })
 
         compositeDisposable.add(disposable)
@@ -92,5 +101,10 @@ class LocationViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.dispose()
+    }
+
+    companion object {
+        private const val DETECT_LOCATION_DELAY = 1000L
+        private const val DETECT_LOCATION_RETRY_TIMES = 3L
     }
 }

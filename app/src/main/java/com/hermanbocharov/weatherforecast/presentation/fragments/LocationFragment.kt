@@ -31,6 +31,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.math.sqrt
 
 
 class LocationFragment : Fragment() {
@@ -65,6 +66,7 @@ class LocationFragment : Fragment() {
     private val compositeDisposable = CompositeDisposable()
     private var isSearchMode = false
     private var prevQuery = ""
+    private var isMotionEventCanceled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,6 +93,11 @@ class LocationFragment : Fragment() {
 
         binding.fabDetect.setOnClickListener {
             viewModel.detectLocation()
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.str_detecting_location),
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -125,7 +132,7 @@ class LocationFragment : Fragment() {
                 )
             }
             val toast = Toast.makeText(requireContext(), locationName, Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL , 0, 32)
+            toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 32)
             toast.show()
         }
     }
@@ -153,17 +160,39 @@ class LocationFragment : Fragment() {
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
                     animateImageViewPressed(iv)
+                    isMotionEventCanceled = false
                 }
                 MotionEvent.ACTION_UP -> {
+                    if (isMotionEventCanceled) {
+                        return@setOnTouchListener false
+                    }
                     searchModeOff()
                     animateImageViewUnpressed(iv)
                 }
                 MotionEvent.ACTION_CANCEL -> {
                     animateImageViewUnpressed(iv)
+                    isMotionEventCanceled = true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if (isMotionEventCanceled) {
+                        return@setOnTouchListener false
+                    }
+                    val distance = getMoveDistance(iv.width / 2f, iv.height / 2f, motionEvent)
+                    if (distance > ACTION_CANCEL_TRIGGER_DISTANCE) {
+                        motionEvent.action = MotionEvent.ACTION_CANCEL
+                        iv.dispatchTouchEvent(motionEvent)
+                    }
                 }
             }
+
             return@setOnTouchListener true
         }
+    }
+
+    private fun getMoveDistance(startX: Float, startY: Float, ev: MotionEvent): Float {
+        val dx = ev.x - startX
+        val dy = ev.y - startY
+        return sqrt(dx * dx + dy * dy)
     }
 
     private fun addSearchEditTextListeners() {
@@ -279,6 +308,25 @@ class LocationFragment : Fragment() {
             )
             postDelayTvLocationNameAnimation()
         }
+
+        viewModel.isLocationDetectSuccess.observe(viewLifecycleOwner) {
+            when (it) {
+                true -> {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.str_detect_location_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                false -> {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.str_detect_location_failure),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
     }
 
     private fun searchModeOff() {
@@ -353,7 +401,8 @@ class LocationFragment : Fragment() {
     }
 
     companion object {
-
         fun newInstance() = LocationFragment()
+
+        private const val ACTION_CANCEL_TRIGGER_DISTANCE = 250
     }
 }

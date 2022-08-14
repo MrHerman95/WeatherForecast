@@ -26,10 +26,13 @@
 
     <string name="str_cloudiness_value">%d%%</string>
     <string name="str_humidity_value">%d%%</string>
-    <string name="str_precipitation_value">%.1f mm/h</string>
-    <string name="str_pressure_value">%d mmHg</string>
-    <string name="str_wind_speed_value">%.1f m/s</string>
-    <string name="str_wind_gust_value">%.1f m/s</string>
+    <string name="str_precipitation_value_mm">%.1f mm/h</string>
+    <string name="str_precipitation_value_in">%.2f in</string>
+    <string name="str_pressure_value_mm">%.0f mm Hg</string>
+    <string name="str_pressure_value_in">%.2f in Hg</string>
+    <string name="str_wind_speed_value_ms">%.1f m/s</string>
+    <string name="str_wind_speed_value_kph">%.1f km/h</string>
+    <string name="str_wind_speed_value_mph">%.1f mph</string>
 
     <string name="str_settings_units">Measurement units</string>
     <string name="str_settings_temp">Temperature</string>

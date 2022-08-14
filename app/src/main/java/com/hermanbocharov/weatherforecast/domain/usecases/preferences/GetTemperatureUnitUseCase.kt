@@ -1,4 +1,4 @@
-package com.hermanbocharov.weatherforecast.domain.usecases
+package com.hermanbocharov.weatherforecast.domain.usecases.preferences
 
 import com.hermanbocharov.weatherforecast.domain.repository.OpenWeatherRepository
 import javax.inject.Inject

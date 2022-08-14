@@ -120,11 +120,11 @@ class WeatherForecastFragment : Fragment() {
             binding.tvHumidityValue.text =
                 requireContext().getString(R.string.str_humidity_value, humidity)
             binding.tvPressureValue.text =
-                requireContext().getString(R.string.str_pressure_value, pressure)
+                requireContext().getString(R.string.str_pressure_value_mm, pressure)
             binding.tvWindSpeedValue.text =
-                requireContext().getString(R.string.str_wind_speed_value, windSpeed)
+                requireContext().getString(R.string.str_wind_speed_value_ms, windSpeed)
             binding.tvWindGustValue.text =
-                requireContext().getString(R.string.str_wind_gust_value, windGustValue)
+                requireContext().getString(R.string.str_wind_speed_value_ms, windGustValue)
             binding.tvWindDirValue.text = windDirection
             binding.tvUviValue.text = String.format("%.1f", uvi)
 
@@ -139,7 +139,7 @@ class WeatherForecastFragment : Fragment() {
                 precipitationIconId = R.drawable.ic_weather_snowy
             }
             binding.tvPrecipitationValue.text =
-                requireContext().getString(R.string.str_precipitation_value, precipitation)
+                requireContext().getString(R.string.str_precipitation_value_mm, precipitation)
             binding.ivPrecipitation.setImageDrawable(
                 AppCompatResources.getDrawable(
                     requireContext(),

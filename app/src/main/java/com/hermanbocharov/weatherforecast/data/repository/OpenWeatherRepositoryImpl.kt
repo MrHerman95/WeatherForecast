@@ -56,7 +56,15 @@ class OpenWeatherRepositoryImpl @Inject constructor(
 
     override fun getHourlyForecast(): Single<List<HourlyForecast>> {
         return hourlyForecastFullDataDao.getHourlyForecastFullData(getCurrentLocationId())
-            .map { mapper.mapHourlyForecastFullDataToDomain(it, getTemperatureUnit()) }
+            .map {
+                mapper.mapHourlyForecastFullDataToDomain(
+                    it,
+                    getTemperatureUnit(),
+                    getSpeedUnit(),
+                    getPrecipitationUnit(),
+                    getPressureUnit()
+                )
+            }
     }
 
     override fun getDailyForecast(): Single<List<DailyForecast>> {
@@ -133,17 +141,20 @@ class OpenWeatherRepositoryImpl @Inject constructor(
             .map { mapper.mapEntityToLocationDomain(it) }
     }
 
-    override fun getCurrentLocationId(): Int {
-        return prefs.getCurrentLocationId()
-    }
+    override fun getCurrentLocationId(): Int = prefs.getCurrentLocationId()
 
-    override fun getTemperatureUnit(): Int {
-        return prefs.getTemperatureUnit()
-    }
+    override fun getSpeedUnit(): Int = prefs.getSpeedUnit()
+    override fun saveSpeedUnit(unitId: Int) = prefs.saveSpeedUnit(unitId)
 
-    override fun saveTemperatureUnit(unitId: Int) {
-        prefs.saveTemperatureUnit(unitId)
-    }
+    override fun getTemperatureUnit(): Int = prefs.getTemperatureUnit()
+    override fun saveTemperatureUnit(unitId: Int) = prefs.saveTemperatureUnit(unitId)
+
+    override fun getPrecipitationUnit(): Int = prefs.getPrecipitationUnit()
+    override fun savePrecipitationUnit(unitId: Int) = prefs.savePrecipitationUnit(unitId)
+
+    override fun getPressureUnit(): Int = prefs.getPressureUnit()
+    override fun savePressureUnit(unitId: Int) = prefs.savePressureUnit(unitId)
+
 
     override fun addNewLocation(location: Location): Single<Unit> {
         return locationDao.insertLocation(mapper.mapLocationDomainToEntity(location))

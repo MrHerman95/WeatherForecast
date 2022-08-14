@@ -16,6 +16,12 @@ interface OpenWeatherRepository {
     fun getCurrentLocation(): Single<Location>
     fun addNewLocation(location: Location): Single<Unit>
     fun getCurrentLocationId(): Int
+    fun getSpeedUnit(): Int
+    fun saveSpeedUnit(unitId: Int)
     fun getTemperatureUnit(): Int
     fun saveTemperatureUnit(unitId: Int)
+    fun getPrecipitationUnit(): Int
+    fun savePrecipitationUnit(unitId: Int)
+    fun getPressureUnit(): Int
+    fun savePressureUnit(unitId: Int)
 }

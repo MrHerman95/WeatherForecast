@@ -4,7 +4,7 @@ data class HourlyForecast(
     val forecastTime: Int,
     val timezone: String,
     val temp: Int,
-    val pressure: Int,
+    val pressure: Double,
     val humidity: Int,
     val cloudiness: Int,
     val uvi: Double,

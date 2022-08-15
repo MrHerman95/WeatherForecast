@@ -1,11 +1,15 @@
 package com.hermanbocharov.weatherforecast.presentation.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hermanbocharov.weatherforecast.R
@@ -55,6 +59,7 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRadioGroup()
         observeViewModel()
+        setupOnViewContainerTouchListener(binding.tempViewContainer)
     }
 
     override fun onDestroyView() {
@@ -62,22 +67,70 @@ class SettingsFragment : Fragment() {
         _binding = null
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupOnViewContainerTouchListener(v: View) {
+        v.setOnTouchListener { view, motionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    animateViewContainerPressed(view)
+                }
+                MotionEvent.ACTION_UP -> {
+                    animateViewContainerUnpressed(view)
+                    val settingsBottomSheet = SettingsBottomSheet.newInstanceTemperature()
+                    settingsBottomSheet.show(
+                        requireActivity().supportFragmentManager,
+                        SettingsBottomSheet.TAG
+                    )
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    animateViewContainerUnpressed(view)
+                }
+                MotionEvent.ACTION_MOVE -> {
+                }
+            }
+
+            return@setOnTouchListener true
+        }
+    }
+
+    private fun animateViewContainerPressed(v: View) {
+        v.background.colorFilter =
+            BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                0x33FFFFFF,
+                BlendModeCompat.OVERLAY
+            )
+        v.invalidate()
+    }
+
+    private fun animateViewContainerUnpressed(v: View) {
+        v.background.clearColorFilter()
+        v.invalidate()
+    }
+
     private fun setupRadioGroup() {
-        binding.rgSettingsTemp.setOnCheckedChangeListener { _, checkedId ->
+        /*binding.rgSettingsTemp.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 binding.rbSettingsCelsius.id -> viewModel.saveTemperatureUnit(TemperatureUnit.CELSIUS)
                 binding.rbSettingsFahrenheit.id -> viewModel.saveTemperatureUnit(TemperatureUnit.FAHRENHEIT)
             }
-        }
+        }*/
     }
 
     private fun observeViewModel() {
         viewModel.temperatureUnit.observe(viewLifecycleOwner) {
             when (it) {
-                TemperatureUnit.CELSIUS -> binding.rgSettingsTemp.check(R.id.rb_settings_celsius)
-                TemperatureUnit.FAHRENHEIT -> binding.rgSettingsTemp.check(R.id.rb_settings_fahrenheit)
+                TemperatureUnit.CELSIUS -> {
+                    binding.tvSettingsTempUnit.text =
+                        requireContext().getString(R.string.str_settings_celsius)
+                    //binding.rgSettingsTemp.check(R.id.rb_settings_celsius)
+                }
+                TemperatureUnit.FAHRENHEIT -> {
+                    binding.tvSettingsTempUnit.text =
+                        requireContext().getString(R.string.str_settings_fahrenheit)
+                    //binding.rgSettingsTemp.check(R.id.rb_settings_fahrenheit)
+                }
             }
-            binding.rgSettingsTemp.jumpDrawablesToCurrentState()
+            //binding.rgSettingsTemp.jumpDrawablesToCurrentState()
         }
     }
 

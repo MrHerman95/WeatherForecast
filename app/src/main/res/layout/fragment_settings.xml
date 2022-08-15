@@ -13,41 +13,76 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto_bold"
+        android:maxLines="1"
         android:text="@string/str_settings_units"
+        android:textColor="@color/white"
+        android:textSize="21sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:textColor="@color/black" />
+
+    <View
+        android:id="@+id/temp_view_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_settings_temp_unit"
+        app:layout_constraintEnd_toEndOf="@id/temp_setting_div"
+        app:layout_constraintStart_toStartOf="@id/temp_setting_div"
+        app:layout_constraintTop_toTopOf="@id/tv_settings_temp" />
 
     <TextView
         android:id="@+id/tv_settings_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/roboto_regular"
+        android:maxLines="1"
+        android:paddingTop="4dp"
         android:text="@string/str_settings_temp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_units" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_units"
+        tools:textColor="@color/black" />
 
-    <RadioGroup
-        android:id="@+id/rg_settings_temp"
+    <TextView
+        android:id="@+id/tv_settings_temp_unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:fontFamily="@font/roboto_bold"
+        android:maxLines="1"
+        android:paddingBottom="4dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_settings_temp">
+        app:layout_constraintTop_toBottomOf="@+id/tv_settings_temp"
+        tools:text="@string/str_settings_celsius"
+        tools:textColor="@color/black" />
 
-        <RadioButton
-            android:id="@+id/rb_settings_celsius"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/str_settings_celsius" />
+    <ImageView
+        android:id="@+id/iv_temp_unit_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="@string/str_temp_unit_desc"
+        android:src="@drawable/ic_drop_down"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_settings_temp_unit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_settings_temp" />
 
-        <RadioButton
-            android:id="@+id/rb_settings_fahrenheit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/str_settings_fahrenheit" />
-
-    </RadioGroup>
+    <View
+        android:id="@+id/temp_setting_div"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/white_transparent_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_settings_temp_unit" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

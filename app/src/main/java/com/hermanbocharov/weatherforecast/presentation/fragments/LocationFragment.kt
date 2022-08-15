@@ -137,7 +137,6 @@ class LocationFragment : Fragment() {
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun setupSearchModeView() {
         setupRecyclerView()
         addSearchEditTextListeners()
@@ -154,6 +153,11 @@ class LocationFragment : Fragment() {
             binding.etLocName.text.clear()
         }
 
+        setupOnCancelSearchTouchListener()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupOnCancelSearchTouchListener() {
         binding.ivCancelSearch.setOnTouchListener { view, motionEvent ->
             val iv: ImageView = view as ImageView
 

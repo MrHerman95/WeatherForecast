@@ -71,6 +71,10 @@
     <string name="str_sunrise_ic_desc">Sunrise time</string>
     <string name="str_sunset_ic_desc">Sunset time</string>
     <string name="str_location_city_desc">Here will be the list of the locations</string>
+    <string name="str_temp_unit_desc">Choose temperature measurement unit</string>
+    <string name="str_pressure_unit_desc">Choose pressure measurement unit</string>
+    <string name="str_speed_unit_desc">Choose wind speed measurement unit</string>
+    <string name="str_precipitation_unit_desc">Choose precipitation measurement unit</string>
 
     <string name="str_tools_city">Indianapolis</string>
     <string name="str_tools_timezone">UTC+3:30</string>

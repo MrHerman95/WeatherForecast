@@ -20,8 +20,6 @@ import com.hermanbocharov.weatherforecast.presentation.bottomsheet.TemperatureSe
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.SettingsViewModel
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
 import javax.inject.Inject
-import kotlin.math.abs
-import kotlin.math.sqrt
 
 class SettingsFragment : Fragment() {
 

@@ -1,10 +1,8 @@
 package com.hermanbocharov.weatherforecast.di
 
 import android.app.Application
-import com.hermanbocharov.weatherforecast.presentation.fragments.CurrentWeatherFragment
-import com.hermanbocharov.weatherforecast.presentation.fragments.LocationFragment
-import com.hermanbocharov.weatherforecast.presentation.fragments.SettingsFragment
-import com.hermanbocharov.weatherforecast.presentation.fragments.WeatherForecastFragment
+import com.hermanbocharov.weatherforecast.presentation.bottomsheet.TemperatureSettingsBottomSheet
+import com.hermanbocharov.weatherforecast.presentation.fragments.*
 import dagger.BindsInstance
 import dagger.Component
 
@@ -16,6 +14,7 @@ interface ApplicationComponent {
     fun inject(fragment: LocationFragment)
     fun inject(fragment: SettingsFragment)
     fun inject(fragment: WeatherForecastFragment)
+    fun inject(bottomSheet: TemperatureSettingsBottomSheet)
 
     @Component.Factory
     interface Factory {

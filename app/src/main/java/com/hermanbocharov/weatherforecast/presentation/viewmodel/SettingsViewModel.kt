@@ -40,10 +40,25 @@ class SettingsViewModel @Inject constructor(
         getPressureUnit()
     }
 
-    fun saveTemperatureUnit(unitId: Int) = saveTemperatureUnitUseCase(unitId)
-    fun savePrecipitationUnit(unitId: Int) = savePrecipitationUnitUseCase(unitId)
-    fun saveSpeedUnit(unitId: Int) = saveSpeedUnitUseCase(unitId)
-    fun savePressureUnit(unitId: Int) = savePressureUnitUseCase(unitId)
+    fun saveTemperatureUnit(unitId: Int) {
+        saveTemperatureUnitUseCase(unitId)
+        getTemperatureUnit()
+    }
+
+    fun savePrecipitationUnit(unitId: Int) {
+        savePrecipitationUnitUseCase(unitId)
+        getPrecipitationUnit()
+    }
+
+    fun saveSpeedUnit(unitId: Int) {
+        saveSpeedUnitUseCase(unitId)
+        getSpeedUnit()
+    }
+
+    fun savePressureUnit(unitId: Int) {
+        savePressureUnitUseCase(unitId)
+        getPressureUnit()
+    }
 
     private fun getTemperatureUnit() {
         _temperatureUnit.value = getTemperatureUnitUseCase()

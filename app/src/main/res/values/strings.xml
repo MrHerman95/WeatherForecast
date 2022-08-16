@@ -36,8 +36,18 @@
 
     <string name="str_settings_units">Measurement units</string>
     <string name="str_settings_temp">Temperature</string>
+    <string name="str_settings_pressure">Pressure</string>
+    <string name="str_settings_precipitation">Precipitation</string>
+    <string name="str_settings_wind_speed">Wind speed</string>
     <string name="str_settings_celsius">Celsius (\u00B0C)</string>
     <string name="str_settings_fahrenheit">Fahrenheit (\u00B0F)</string>
+    <string name="str_settings_mmhg">Millimeters of mercury (mm Hg)</string>
+    <string name="str_settings_inhg">Inches of mercury (in Hg)</string>
+    <string name="str_settings_mmh">Millimeters per hour (mm/h)</string>
+    <string name="str_settings_inh">Inches per hour (in/h)</string>
+    <string name="str_settings_ms">Meters per second (m/s)</string>
+    <string name="str_settings_kmh">Kilometers per hour (km/h)</string>
+    <string name="str_settings_mph">Miles per hour (mph)</string>
 
     <string name="str_hourly_forecast">Hourly forecast</string>
     <string name="str_humidity">Humidity</string>
@@ -52,6 +62,8 @@
     <string name="str_daily_forecast">Daily forecast</string>
     <string name="str_sunrise">Sunrise</string>
     <string name="str_sunset">Sunset</string>
+
+    <string name="str_close_bottom_sheet">Cancel</string>
 
     <string name="str_earth_desc">This is just a picture of the planet Earth</string>
     <string name="str_detect_loc_desc">Detect your location automatically</string>

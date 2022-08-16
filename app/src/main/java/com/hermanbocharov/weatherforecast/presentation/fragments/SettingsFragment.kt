@@ -16,9 +16,12 @@ import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentSettingsBinding
 import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
+import com.hermanbocharov.weatherforecast.presentation.bottomsheet.TemperatureSettingsBottomSheet
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.SettingsViewModel
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
 import javax.inject.Inject
+import kotlin.math.abs
+import kotlin.math.sqrt
 
 class SettingsFragment : Fragment() {
 
@@ -30,12 +33,14 @@ class SettingsFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[SettingsViewModel::class.java]
+        ViewModelProvider(requireActivity(), viewModelFactory)[SettingsViewModel::class.java]
     }
 
     private val component by lazy {
         (requireActivity().application as WeatherForecastApp).component
     }
+
+    private var isMotionEventCanceled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +62,6 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRadioGroup()
         observeViewModel()
         setupOnViewContainerTouchListener(binding.tempViewContainer)
     }
@@ -73,24 +77,48 @@ class SettingsFragment : Fragment() {
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
                     animateViewContainerPressed(view)
+                    isMotionEventCanceled = false
                 }
                 MotionEvent.ACTION_UP -> {
+                    if (isMotionEventCanceled) {
+                        return@setOnTouchListener false
+                    }
                     animateViewContainerUnpressed(view)
-                    val settingsBottomSheet = SettingsBottomSheet.newInstanceTemperature()
-                    settingsBottomSheet.show(
-                        requireActivity().supportFragmentManager,
-                        SettingsBottomSheet.TAG
-                    )
+                    synchronized(LOCK) {
+                        if (childFragmentManager.findFragmentByTag(TemperatureSettingsBottomSheet.TAG) == null) {
+                            val temperatureSettingsBottomSheet =
+                                TemperatureSettingsBottomSheet.newInstance()
+                            temperatureSettingsBottomSheet.show(
+                                childFragmentManager,
+                                TemperatureSettingsBottomSheet.TAG
+                            )
+                        }
+                    }
                 }
                 MotionEvent.ACTION_CANCEL -> {
                     animateViewContainerUnpressed(view)
+                    isMotionEventCanceled = true
                 }
                 MotionEvent.ACTION_MOVE -> {
+                    if (isMotionEventCanceled) {
+                        return@setOnTouchListener false
+                    }
+                    if (!isTouchOnView(v, motionEvent)) {
+                        motionEvent.action = MotionEvent.ACTION_CANCEL
+                        v.dispatchTouchEvent(motionEvent)
+                    }
                 }
             }
 
             return@setOnTouchListener true
         }
+    }
+
+    private fun isTouchOnView(v: View, ev: MotionEvent): Boolean {
+        return ev.x >= -ACCURACY_ERROR_VAL &&
+               ev.x <= v.width + ACCURACY_ERROR_VAL &&
+               ev.y >= -ACCURACY_ERROR_VAL &&
+               ev.y <= v.height + ACCURACY_ERROR_VAL
     }
 
     private fun animateViewContainerPressed(v: View) {
@@ -107,35 +135,27 @@ class SettingsFragment : Fragment() {
         v.invalidate()
     }
 
-    private fun setupRadioGroup() {
-        /*binding.rgSettingsTemp.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                binding.rbSettingsCelsius.id -> viewModel.saveTemperatureUnit(TemperatureUnit.CELSIUS)
-                binding.rbSettingsFahrenheit.id -> viewModel.saveTemperatureUnit(TemperatureUnit.FAHRENHEIT)
-            }
-        }*/
-    }
-
     private fun observeViewModel() {
+        Log.d("TEST_OF_LOADING_DATA", viewModel.toString())
         viewModel.temperatureUnit.observe(viewLifecycleOwner) {
             when (it) {
                 TemperatureUnit.CELSIUS -> {
                     binding.tvSettingsTempUnit.text =
                         requireContext().getString(R.string.str_settings_celsius)
-                    //binding.rgSettingsTemp.check(R.id.rb_settings_celsius)
                 }
                 TemperatureUnit.FAHRENHEIT -> {
                     binding.tvSettingsTempUnit.text =
                         requireContext().getString(R.string.str_settings_fahrenheit)
-                    //binding.rgSettingsTemp.check(R.id.rb_settings_fahrenheit)
                 }
             }
-            //binding.rgSettingsTemp.jumpDrawablesToCurrentState()
         }
     }
 
     companion object {
 
         fun newInstance() = SettingsFragment()
+
+        private val LOCK = Any()
+        private const val ACCURACY_ERROR_VAL = 30
     }
 }

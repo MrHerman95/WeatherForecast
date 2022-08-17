@@ -13,41 +13,274 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto_bold"
+        android:maxLines="1"
         android:text="@string/str_settings_units"
+        android:textColor="@color/white"
+        android:textSize="21sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:textColor="@color/black" />
+
+    <View
+        android:id="@+id/temp_view_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_settings_temp_unit"
+        app:layout_constraintEnd_toEndOf="@id/temp_setting_div"
+        app:layout_constraintStart_toStartOf="@id/temp_setting_div"
+        app:layout_constraintTop_toTopOf="@id/tv_settings_temp" />
 
     <TextView
         android:id="@+id/tv_settings_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/roboto_regular"
+        android:maxLines="1"
+        android:paddingTop="8dp"
         android:text="@string/str_settings_temp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_units" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_units"
+        tools:textColor="@color/black" />
 
-    <RadioGroup
-        android:id="@+id/rg_settings_temp"
+    <TextView
+        android:id="@+id/tv_settings_temp_unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:fontFamily="@font/roboto_bold"
+        android:maxLines="1"
+        android:paddingBottom="4dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_settings_temp">
+        app:layout_constraintTop_toBottomOf="@+id/tv_settings_temp"
+        tools:text="@string/str_settings_celsius"
+        tools:textColor="@color/black" />
 
-        <RadioButton
-            android:id="@+id/rb_settings_celsius"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/str_settings_celsius" />
+    <ImageView
+        android:id="@+id/iv_temp_unit_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="@string/str_temp_unit_desc"
+        android:src="@drawable/ic_drop_down"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_settings_temp_unit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_settings_temp" />
 
-        <RadioButton
-            android:id="@+id/rb_settings_fahrenheit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/str_settings_fahrenheit" />
+    <View
+        android:id="@+id/temp_setting_div"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/white_transparent_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_settings_temp_unit" />
 
-    </RadioGroup>
+    <View
+        android:id="@+id/wind_speed_view_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_settings_wind_speed_unit"
+        app:layout_constraintEnd_toEndOf="@id/wind_speed_setting_div"
+        app:layout_constraintStart_toStartOf="@id/wind_speed_setting_div"
+        app:layout_constraintTop_toTopOf="@id/tv_settings_wind_speed" />
+
+    <TextView
+        android:id="@+id/tv_settings_wind_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:fontFamily="@font/roboto_regular"
+        android:maxLines="1"
+        android:paddingTop="8dp"
+        android:text="@string/str_settings_wind_speed"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temp_setting_div"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_settings_wind_speed_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:fontFamily="@font/roboto_bold"
+        android:maxLines="1"
+        android:paddingBottom="4dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_settings_wind_speed"
+        tools:text="@string/str_settings_ms"
+        tools:textColor="@color/black" />
+
+    <ImageView
+        android:id="@+id/iv_wind_speed_unit_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="@string/str_speed_unit_desc"
+        android:src="@drawable/ic_drop_down"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_settings_wind_speed_unit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_settings_wind_speed" />
+
+    <View
+        android:id="@+id/wind_speed_setting_div"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/white_transparent_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_settings_wind_speed_unit" />
+
+    <View
+        android:id="@+id/precipitation_view_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_settings_precipitation_unit"
+        app:layout_constraintEnd_toEndOf="@id/precipitation_setting_div"
+        app:layout_constraintStart_toStartOf="@id/precipitation_setting_div"
+        app:layout_constraintTop_toTopOf="@id/tv_settings_precipitation" />
+
+    <TextView
+        android:id="@+id/tv_settings_precipitation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:fontFamily="@font/roboto_regular"
+        android:maxLines="1"
+        android:paddingTop="8dp"
+        android:text="@string/str_settings_precipitation"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wind_speed_setting_div"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_settings_precipitation_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:fontFamily="@font/roboto_bold"
+        android:maxLines="1"
+        android:paddingBottom="4dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_settings_precipitation"
+        tools:text="@string/str_settings_mmh"
+        tools:textColor="@color/black" />
+
+    <ImageView
+        android:id="@+id/iv_precipitation_unit_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="@string/str_precipitation_unit_desc"
+        android:src="@drawable/ic_drop_down"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_settings_precipitation_unit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_settings_precipitation" />
+
+    <View
+        android:id="@+id/precipitation_setting_div"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/white_transparent_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_settings_precipitation_unit" />
+
+    <View
+        android:id="@+id/pressure_view_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_settings_pressure_unit"
+        app:layout_constraintEnd_toEndOf="@id/precipitation_setting_div"
+        app:layout_constraintStart_toStartOf="@id/precipitation_setting_div"
+        app:layout_constraintTop_toTopOf="@id/tv_settings_pressure" />
+
+    <TextView
+        android:id="@+id/tv_settings_pressure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:fontFamily="@font/roboto_regular"
+        android:maxLines="1"
+        android:paddingTop="8dp"
+        android:text="@string/str_settings_pressure"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/precipitation_setting_div"
+        tools:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_settings_pressure_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:fontFamily="@font/roboto_bold"
+        android:maxLines="1"
+        android:paddingBottom="4dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_settings_pressure"
+        tools:text="@string/str_settings_mmhg"
+        tools:textColor="@color/black" />
+
+    <ImageView
+        android:id="@+id/iv_pressure_unit_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="@string/str_pressure_unit_desc"
+        android:src="@drawable/ic_drop_down"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_settings_pressure_unit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_settings_pressure" />
+
+    <!--View
+        android:id="@+id/pressure_setting_div"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/white_transparent_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_settings_pressure_unit" /-->
+
+    <ImageView
+        android:id="@+id/iv_measure_units_div"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/str_divider_desc"
+        android:src="@drawable/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_settings_pressure_unit" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

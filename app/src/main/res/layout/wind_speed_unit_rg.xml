@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/mainly_blue"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
+
+    <RadioGroup
+        android:id="@+id/bottom_sheet_wind_speed_unit_rg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/rb_settings_ms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:buttonTint="@color/white"
+            android:fontFamily="@font/roboto_regular"
+            android:layoutDirection="rtl"
+            android:paddingLeft="8dp"
+            android:text="@string/str_settings_ms"
+            android:textAlignment="textStart"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white_transparent_20" />
+
+        <RadioButton
+            android:id="@+id/rb_settings_kmh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:buttonTint="@color/white"
+            android:fontFamily="@font/roboto_regular"
+            android:layoutDirection="rtl"
+            android:paddingLeft="8dp"
+            android:text="@string/str_settings_kmh"
+            android:textAlignment="textStart"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white_transparent_20" />
+
+        <RadioButton
+            android:id="@+id/rb_settings_mph"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:buttonTint="@color/white"
+            android:fontFamily="@font/roboto_regular"
+            android:layoutDirection="rtl"
+            android:paddingLeft="8dp"
+            android:text="@string/str_settings_mph"
+            android:textAlignment="textStart"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
+    </RadioGroup>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_transparent_20" />
+
+    <Button
+        android:id="@+id/close_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/str_close_bottom_sheet"
+        android:textColor="@color/white" />
+</LinearLayout>

@@ -3,10 +3,10 @@
     <style name="Theme.WeatherForecast" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/cyan_light</item>
-        <item name="colorPrimaryVariant">@color/cyan_blue</item>
+        <item name="colorPrimaryVariant">@color/dark_blue</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/cyan_light</item>
+        <item name="colorSecondary">@color/dark_blue</item>
         <item name="colorSecondaryVariant">@color/cyan_blue</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->

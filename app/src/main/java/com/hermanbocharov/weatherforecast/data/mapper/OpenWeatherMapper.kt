@@ -165,7 +165,10 @@ class OpenWeatherMapper @Inject constructor() {
 
     fun mapHourlyForecastFullDataToDomain(
         entityList: List<HourlyForecastFullData>,
-        tempUnit: Int
+        tempUnit: Int,
+        speedUnit: Int,
+        precipitationUnit: Int,
+        pressureUnit: Int
     ): List<HourlyForecast> {
         val hourlyForecast = mutableListOf<HourlyForecast>()
 
@@ -175,21 +178,50 @@ class OpenWeatherMapper @Inject constructor() {
                 temperature = convertCelsiusToFahrenheit(temperature)
             }
 
+            var windSpeed = hour.hourlyForecast.windSpeed
+            var windGust = hour.hourlyForecast.windGust
+            when (speedUnit) {
+                SpeedUnit.KILOMETERS_PER_HOUR -> {
+                    if (windGust != null) windGust = convertMsToKph(windGust)
+                    windSpeed = convertMsToKph(windSpeed)
+                }
+                SpeedUnit.MILES_PER_HOUR -> {
+                    if (windGust != null) windGust = convertMsToMph(windGust)
+                    windSpeed = convertMsToMph(windSpeed)
+                }
+            }
+
+            var rain = hour.hourlyForecast.rain
+            var snow = hour.hourlyForecast.snow
+            if (precipitationUnit == PrecipitationUnit.INCHES) {
+                if (rain != null) rain = convertMmToIn(rain)
+                if (snow != null) snow = convertMmToIn(snow)
+            }
+
+            var pressure = hour.hourlyForecast.pressure.toDouble()
+            when (pressureUnit) {
+                PressureUnit.MILLIMETERS_HG -> pressure = convertHPaToMmHg(pressure)
+                PressureUnit.INCHES_HG -> pressure = convertHPaToInHg(pressure)
+            }
+
             hourlyForecast.add(
                 HourlyForecast(
                     forecastTime = hour.hourlyForecast.forecastTime,
                     timezone = hour.hourlyForecast.timezoneName,
                     temp = temperature,
-                    pressure = convertHPaToMmHg(hour.hourlyForecast.pressure),
+                    pressure = pressure,
                     humidity = hour.hourlyForecast.humidity,
                     cloudiness = hour.hourlyForecast.cloudiness,
                     uvi = hour.hourlyForecast.uvi,
-                    rain = hour.hourlyForecast.rain,
-                    snow = hour.hourlyForecast.snow,
-                    windSpeed = hour.hourlyForecast.windSpeed,
+                    rain = rain,
+                    snow = snow,
+                    windSpeed = windSpeed,
                     windDirection = convertWindDegreeToDirection(hour.hourlyForecast.windDegree),
-                    windGust = hour.hourlyForecast.windGust,
+                    windGust = windGust,
                     tempUnit = tempUnit,
+                    precipitationUnit = precipitationUnit,
+                    pressureUnit = pressureUnit,
+                    windSpeedUnit = speedUnit,
                     cityName = hour.location.name,
                     description = hour.weatherCondition.main
                 )
@@ -236,12 +268,28 @@ class OpenWeatherMapper @Inject constructor() {
         return Locale("", code).displayCountry
     }
 
+    private fun convertMsToKph(speed: Double): Double {
+        return speed * 3.6
+    }
+
+    private fun convertMsToMph(speed: Double): Double {
+        return speed * 2.237
+    }
+
     private fun convertCelsiusToFahrenheit(celsius: Int): Int {
         return (celsius * 1.8).roundToInt() + 32
     }
 
-    private fun convertHPaToMmHg(pressure: Int): Int {
-        return (pressure / 1.333).roundToInt()
+    private fun convertMmToIn(precipitation: Double): Double {
+        return precipitation / 25.4
+    }
+
+    private fun convertHPaToMmHg(pressure: Double): Double {
+        return pressure / 1.333224
+    }
+
+    private fun convertHPaToInHg(pressure: Double): Double {
+        return pressure / 33.863887
     }
 
     private fun convertWindDegreeToDirection(degree: Int): String {

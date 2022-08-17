@@ -1,6 +1,10 @@
 package com.hermanbocharov.weatherforecast.di
 
 import android.app.Application
+import com.hermanbocharov.weatherforecast.presentation.bottomsheet.PrecipitationSettingsBottomSheet
+import com.hermanbocharov.weatherforecast.presentation.bottomsheet.PressureSettingsBottomSheet
+import com.hermanbocharov.weatherforecast.presentation.bottomsheet.TemperatureSettingsBottomSheet
+import com.hermanbocharov.weatherforecast.presentation.bottomsheet.WindSpeedSettingsBottomSheet
 import com.hermanbocharov.weatherforecast.presentation.fragments.CurrentWeatherFragment
 import com.hermanbocharov.weatherforecast.presentation.fragments.LocationFragment
 import com.hermanbocharov.weatherforecast.presentation.fragments.SettingsFragment
@@ -16,6 +20,10 @@ interface ApplicationComponent {
     fun inject(fragment: LocationFragment)
     fun inject(fragment: SettingsFragment)
     fun inject(fragment: WeatherForecastFragment)
+    fun inject(bottomSheet: TemperatureSettingsBottomSheet)
+    fun inject(bottomSheet: PressureSettingsBottomSheet)
+    fun inject(bottomSheet: WindSpeedSettingsBottomSheet)
+    fun inject(bottomSheet: PrecipitationSettingsBottomSheet)
 
     @Component.Factory
     interface Factory {

@@ -74,7 +74,7 @@ class PressureSettingsBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.temperatureUnit.observe(viewLifecycleOwner) {
+        viewModel.pressureUnit.observe(viewLifecycleOwner) {
             when (it) {
                 PressureUnit.MILLIMETERS_HG -> {
                     binding.bottomSheetPressureUnitRg.check(R.id.rb_settings_mmhg)

@@ -74,7 +74,7 @@ class PrecipitationSettingsBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.temperatureUnit.observe(viewLifecycleOwner) {
+        viewModel.precipitationUnit.observe(viewLifecycleOwner) {
             when (it) {
                 PrecipitationUnit.MILLIMETERS -> {
                     binding.bottomSheetPrecipitationUnitRg.check(R.id.rb_settings_mmh)

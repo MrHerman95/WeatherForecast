@@ -27,7 +27,7 @@
     <string name="str_cloudiness_value">%d%%</string>
     <string name="str_humidity_value">%d%%</string>
     <string name="str_precipitation_value_mm">%.1f mm/h</string>
-    <string name="str_precipitation_value_in">%.2f in</string>
+    <string name="str_precipitation_value_in">%.2f in/h</string>
     <string name="str_pressure_value_mm">%.0f mm Hg</string>
     <string name="str_pressure_value_in">%.2f in Hg</string>
     <string name="str_wind_speed_value_ms">%.1f m/s</string>

@@ -219,6 +219,9 @@ class OpenWeatherMapper @Inject constructor() {
                     windDirection = convertWindDegreeToDirection(hour.hourlyForecast.windDegree),
                     windGust = windGust,
                     tempUnit = tempUnit,
+                    precipitationUnit = precipitationUnit,
+                    pressureUnit = pressureUnit,
+                    windSpeedUnit = speedUnit,
                     cityName = hour.location.name,
                     description = hour.weatherCondition.main
                 )

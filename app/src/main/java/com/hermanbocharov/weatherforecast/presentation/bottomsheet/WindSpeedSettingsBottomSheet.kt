@@ -75,7 +75,7 @@ class WindSpeedSettingsBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.temperatureUnit.observe(viewLifecycleOwner) {
+        viewModel.speedUnit.observe(viewLifecycleOwner) {
             when (it) {
                 SpeedUnit.METERS_PER_SECOND -> {
                     binding.bottomSheetWindSpeedUnitRg.check(R.id.rb_settings_ms)

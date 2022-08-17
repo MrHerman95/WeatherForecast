@@ -37,7 +37,7 @@ class SettingsViewModel @Inject constructor(
         getTemperatureUnit()
         getPressureUnit()
         getSpeedUnit()
-        getPressureUnit()
+        getPrecipitationUnit()
     }
 
     fun saveTemperatureUnit(unitId: Int) {

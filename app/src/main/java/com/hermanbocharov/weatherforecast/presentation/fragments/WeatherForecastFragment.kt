@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentWeatherForecastBinding
+import com.hermanbocharov.weatherforecast.domain.entities.*
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.EAST
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTH
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHEAST
@@ -19,7 +20,6 @@ import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTH
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHEAST
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHWEST
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.WEST
-import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
 import com.hermanbocharov.weatherforecast.presentation.recyclerview.DailyForecastAdapter
 import com.hermanbocharov.weatherforecast.presentation.recyclerview.HourlyForecastAdapter
@@ -114,17 +114,56 @@ class WeatherForecastFragment : Fragment() {
                 windGustValue = windSpeed
             }
 
+            val pressureStr: String = when (pressureUnit) {
+                PressureUnit.MILLIMETERS_HG -> requireContext().getString(
+                    R.string.str_pressure_value_mm,
+                    pressure
+                )
+                PressureUnit.INCHES_HG -> requireContext().getString(
+                    R.string.str_pressure_value_in,
+                    pressure
+                )
+                else -> throw RuntimeException("Unknown pressure unit $pressureUnit")
+            }
+
+            val windSpeedStr: String
+            val windGustStr: String
+            when (windSpeedUnit) {
+                SpeedUnit.METERS_PER_SECOND -> {
+                    windSpeedStr = requireContext().getString(
+                        R.string.str_wind_speed_value_ms, windSpeed
+                    )
+                    windGustStr = requireContext().getString(
+                        R.string.str_wind_speed_value_ms, windGustValue
+                    )
+                }
+                SpeedUnit.KILOMETERS_PER_HOUR -> {
+                    windSpeedStr = requireContext().getString(
+                        R.string.str_wind_speed_value_kph, windSpeed
+                    )
+                    windGustStr = requireContext().getString(
+                        R.string.str_wind_speed_value_kph, windGustValue
+                    )
+                }
+                SpeedUnit.MILES_PER_HOUR -> {
+                    windSpeedStr = requireContext().getString(
+                        R.string.str_wind_speed_value_mph, windSpeed
+                    )
+                    windGustStr = requireContext().getString(
+                        R.string.str_wind_speed_value_mph, windGustValue
+                    )
+                }
+                else -> throw RuntimeException("Unknown speed unit $windSpeedUnit")
+            }
+
             binding.tvWeatherCondMain.text = description
             binding.tvCloudinessValue.text =
                 requireContext().getString(R.string.str_cloudiness_value, cloudiness)
             binding.tvHumidityValue.text =
                 requireContext().getString(R.string.str_humidity_value, humidity)
-            binding.tvPressureValue.text =
-                requireContext().getString(R.string.str_pressure_value_mm, pressure)
-            binding.tvWindSpeedValue.text =
-                requireContext().getString(R.string.str_wind_speed_value_ms, windSpeed)
-            binding.tvWindGustValue.text =
-                requireContext().getString(R.string.str_wind_speed_value_ms, windGustValue)
+            binding.tvPressureValue.text = pressureStr
+            binding.tvWindSpeedValue.text = windSpeedStr
+            binding.tvWindGustValue.text = windGustStr
             binding.tvWindDirValue.text = windDirection
             binding.tvUviValue.text = String.format("%.1f", uvi)
 
@@ -138,8 +177,18 @@ class WeatherForecastFragment : Fragment() {
                 precipitation += snow
                 precipitationIconId = R.drawable.ic_weather_snowy
             }
-            binding.tvPrecipitationValue.text =
-                requireContext().getString(R.string.str_precipitation_value_mm, precipitation)
+            val precipitationStr: String = when (item.precipitationUnit) {
+                PrecipitationUnit.MILLIMETERS -> requireContext().getString(
+                    R.string.str_precipitation_value_mm,
+                    precipitation
+                )
+                PrecipitationUnit.INCHES -> requireContext().getString(
+                    R.string.str_precipitation_value_in,
+                    precipitation
+                )
+                else -> throw RuntimeException("Unknown precipitation unit $precipitationUnit")
+            }
+            binding.tvPrecipitationValue.text = precipitationStr
             binding.ivPrecipitation.setImageDrawable(
                 AppCompatResources.getDrawable(
                     requireContext(),

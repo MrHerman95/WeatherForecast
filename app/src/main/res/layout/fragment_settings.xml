@@ -215,8 +215,8 @@
         android:layout_height="0dp"
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@id/tv_settings_pressure_unit"
-        app:layout_constraintEnd_toEndOf="@id/iv_measure_units_div"
-        app:layout_constraintStart_toStartOf="@id/iv_measure_units_div"
+        app:layout_constraintEnd_toEndOf="@id/precipitation_setting_div"
+        app:layout_constraintStart_toStartOf="@id/precipitation_setting_div"
         app:layout_constraintTop_toTopOf="@id/tv_settings_pressure" />
 
     <TextView
@@ -275,8 +275,8 @@
         android:id="@+id/iv_measure_units_div"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:contentDescription="@string/str_divider_desc"
         android:src="@drawable/divider"
         app:layout_constraintEnd_toEndOf="parent"

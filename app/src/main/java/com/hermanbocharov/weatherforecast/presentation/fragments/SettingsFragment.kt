@@ -14,9 +14,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentSettingsBinding
+import com.hermanbocharov.weatherforecast.domain.entities.PrecipitationUnit
+import com.hermanbocharov.weatherforecast.domain.entities.PressureUnit
+import com.hermanbocharov.weatherforecast.domain.entities.SpeedUnit
 import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
+import com.hermanbocharov.weatherforecast.presentation.bottomsheet.PrecipitationSettingsBottomSheet
+import com.hermanbocharov.weatherforecast.presentation.bottomsheet.PressureSettingsBottomSheet
 import com.hermanbocharov.weatherforecast.presentation.bottomsheet.TemperatureSettingsBottomSheet
+import com.hermanbocharov.weatherforecast.presentation.bottomsheet.WindSpeedSettingsBottomSheet
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.SettingsViewModel
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
 import javax.inject.Inject
@@ -62,6 +68,9 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
         setupOnViewContainerTouchListener(binding.tempViewContainer)
+        setupOnViewContainerTouchListener(binding.pressureViewContainer)
+        setupOnViewContainerTouchListener(binding.precipitationViewContainer)
+        setupOnViewContainerTouchListener(binding.windSpeedViewContainer)
     }
 
     override fun onDestroyView() {
@@ -83,14 +92,7 @@ class SettingsFragment : Fragment() {
                     }
                     animateViewContainerUnpressed(view)
                     synchronized(LOCK) {
-                        if (childFragmentManager.findFragmentByTag(TemperatureSettingsBottomSheet.TAG) == null) {
-                            val temperatureSettingsBottomSheet =
-                                TemperatureSettingsBottomSheet.newInstance()
-                            temperatureSettingsBottomSheet.show(
-                                childFragmentManager,
-                                TemperatureSettingsBottomSheet.TAG
-                            )
-                        }
+                        showBottomSheet(view)
                     }
                 }
                 MotionEvent.ACTION_CANCEL -> {
@@ -112,11 +114,43 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    private fun showBottomSheet(view: View) {
+        if (isAnyBottomSheetShown())
+            return
+
+        when (view) {
+            binding.tempViewContainer -> {
+                val bottomSheet = TemperatureSettingsBottomSheet.newInstance()
+                bottomSheet.show(childFragmentManager, TemperatureSettingsBottomSheet.TAG)
+            }
+            binding.pressureViewContainer -> {
+                val bottomSheet = PressureSettingsBottomSheet.newInstance()
+                bottomSheet.show(childFragmentManager, PressureSettingsBottomSheet.TAG)
+            }
+            binding.precipitationViewContainer -> {
+                val bottomSheet = PrecipitationSettingsBottomSheet.newInstance()
+                bottomSheet.show(childFragmentManager, PrecipitationSettingsBottomSheet.TAG)
+            }
+            binding.windSpeedViewContainer -> {
+                val bottomSheet = WindSpeedSettingsBottomSheet.newInstance()
+                bottomSheet.show(childFragmentManager, WindSpeedSettingsBottomSheet.TAG)
+            }
+            else -> throw RuntimeException("Invalid view $view to show bottom sheet")
+        }
+    }
+
+    private fun isAnyBottomSheetShown(): Boolean {
+        return childFragmentManager.findFragmentByTag(TemperatureSettingsBottomSheet.TAG) != null ||
+                childFragmentManager.findFragmentByTag(PressureSettingsBottomSheet.TAG) != null ||
+                childFragmentManager.findFragmentByTag(PrecipitationSettingsBottomSheet.TAG) != null ||
+                childFragmentManager.findFragmentByTag(WindSpeedSettingsBottomSheet.TAG) != null
+    }
+
     private fun isTouchOnView(v: View, ev: MotionEvent): Boolean {
         return ev.x >= -ACCURACY_ERROR_VAL &&
-               ev.x <= v.width + ACCURACY_ERROR_VAL &&
-               ev.y >= -ACCURACY_ERROR_VAL &&
-               ev.y <= v.height + ACCURACY_ERROR_VAL
+                ev.x <= v.width + ACCURACY_ERROR_VAL &&
+                ev.y >= -ACCURACY_ERROR_VAL &&
+                ev.y <= v.height + ACCURACY_ERROR_VAL
     }
 
     private fun animateViewContainerPressed(v: View) {
@@ -144,6 +178,49 @@ class SettingsFragment : Fragment() {
                 TemperatureUnit.FAHRENHEIT -> {
                     binding.tvSettingsTempUnit.text =
                         requireContext().getString(R.string.str_settings_fahrenheit)
+                }
+            }
+        }
+
+        viewModel.pressureUnit.observe(viewLifecycleOwner) {
+            when (it) {
+                PressureUnit.MILLIMETERS_HG -> {
+                    binding.tvSettingsPressureUnit.text =
+                        requireContext().getString(R.string.str_settings_mmhg)
+                }
+                PressureUnit.INCHES_HG -> {
+                    binding.tvSettingsPressureUnit.text =
+                        requireContext().getString(R.string.str_settings_inhg)
+                }
+            }
+        }
+
+        viewModel.precipitationUnit.observe(viewLifecycleOwner) {
+            when (it) {
+                PrecipitationUnit.MILLIMETERS -> {
+                    binding.tvSettingsPrecipitationUnit.text =
+                        requireContext().getString(R.string.str_settings_mmh)
+                }
+                PrecipitationUnit.INCHES -> {
+                    binding.tvSettingsPrecipitationUnit.text =
+                        requireContext().getString(R.string.str_settings_inh)
+                }
+            }
+        }
+
+        viewModel.speedUnit.observe(viewLifecycleOwner) {
+            when (it) {
+                SpeedUnit.METERS_PER_SECOND -> {
+                    binding.tvSettingsWindSpeedUnit.text =
+                        requireContext().getString(R.string.str_settings_ms)
+                }
+                SpeedUnit.KILOMETERS_PER_HOUR -> {
+                    binding.tvSettingsWindSpeedUnit.text =
+                        requireContext().getString(R.string.str_settings_kmh)
+                }
+                SpeedUnit.MILES_PER_HOUR -> {
+                    binding.tvSettingsWindSpeedUnit.text =
+                        requireContext().getString(R.string.str_settings_mph)
                 }
             }
         }

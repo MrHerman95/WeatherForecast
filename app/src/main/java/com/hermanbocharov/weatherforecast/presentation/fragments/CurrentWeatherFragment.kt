@@ -96,6 +96,8 @@ class CurrentWeatherFragment : Fragment() {
                     else -> throw RuntimeException("Unknown temperature unit ${it.tempUnit}")
                 }
 
+                pbCurrentWeather.visibility = View.INVISIBLE
+
                 tvTemperature.text = requireContext().getString(tempResId, it.temp)
                 tvFeelsLike.text = requireContext().getString(feelsLikeResId, it.feelsLike)
                 tvCity.text = it.cityName

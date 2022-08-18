@@ -111,8 +111,7 @@
         android:contentDescription="@string/str_weather_ic_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline_daily_iv"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_test_small_3d" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_daily_iv"

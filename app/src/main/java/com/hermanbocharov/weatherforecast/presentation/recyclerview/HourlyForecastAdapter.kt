@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.hermanbocharov.weatherforecast.R
@@ -59,13 +58,15 @@ class HourlyForecastAdapter :
             hourForecastItem.timezone
         )
         holder.tvTemp.text = temperature
-        holder.ivWeather.setImageDrawable(
-            ResourcesCompat.getDrawable(
-                holder.view.resources,
-                R.drawable.ic_test_small_3d,
-                null
+
+        val context = holder.ivWeather.context
+        val weatherIconId =
+            context.resources.getIdentifier(
+                hourForecastItem.weatherIcon,
+                "drawable",
+                context.packageName
             )
-        )
+        holder.ivWeather.setImageResource(weatherIconId)
 
         holder.view.setOnClickListener {
             getItem(selectedItemPos).isSelected = false

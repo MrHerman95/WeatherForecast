@@ -74,6 +74,7 @@ class OpenWeatherMapper @Inject constructor() {
             temp = dto.current.temp.roundToInt(),
             feelsLike = dto.current.feelsLike.roundToInt(),
             weatherConditionId = dto.current.weather[0].id,
+            weatherConditionIcon = dto.current.weather[0].icon,
             locationId = locationId,
             timezoneOffset = dto.timezoneOffset,
             timezoneName = dto.timezoneName
@@ -99,6 +100,7 @@ class OpenWeatherMapper @Inject constructor() {
                 windDegree = dto.hourly[i].windDeg,
                 windGust = dto.hourly[i].windGust,
                 weatherConditionId = dto.hourly[i].weather[0].id,
+                weatherConditionIcon = dto.hourly[i].weather[0].icon,
                 timezoneName = dto.timezoneName
             )
             hourlyForecast.add(item)
@@ -129,6 +131,7 @@ class OpenWeatherMapper @Inject constructor() {
                 windDegree = day.windDeg,
                 windGust = day.windGust,
                 weatherConditionId = day.weather[0].id,
+                weatherConditionIcon = day.weather[0].icon,
                 timezoneName = dto.timezoneName
             )
             dailyForecast.add(item)
@@ -159,7 +162,9 @@ class OpenWeatherMapper @Inject constructor() {
                 it.titlecase(Locale.getDefault())
             },
             timezone = convertTimezoneOffsetToTimezone(entity.currentWeather.timezoneOffset),
-            timezoneName = entity.currentWeather.timezoneName
+            timezoneName = entity.currentWeather.timezoneName,
+            weatherIcon = WeatherIconsMapper.idIcon[entity.currentWeather.weatherConditionIcon]
+                ?: DEFAULT_WEATHER_ICON
         )
     }
 
@@ -223,7 +228,10 @@ class OpenWeatherMapper @Inject constructor() {
                     pressureUnit = pressureUnit,
                     windSpeedUnit = speedUnit,
                     cityName = hour.location.name,
-                    description = hour.weatherCondition.main
+                    description = hour.weatherCondition.description.replaceFirstChar {
+                        it.titlecase(Locale.getDefault())
+                    },
+                    weatherIcon = "${WeatherIconsMapper.idIcon[hour.hourlyForecast.weatherConditionIcon] ?: DEFAULT_WEATHER_ICON}_small"
                 )
             )
         }
@@ -252,7 +260,8 @@ class OpenWeatherMapper @Inject constructor() {
                     maxTemp = temperatureMax,
                     sunriseTime = day.dailyForecast.sunrise,
                     sunsetTime = day.dailyForecast.sunset,
-                    tempUnit = tempUnit
+                    tempUnit = tempUnit,
+                    weatherIcon = "${WeatherIconsMapper.idIcon[day.dailyForecast.weatherConditionIcon] ?: DEFAULT_WEATHER_ICON}_small"
                 )
             )
         }
@@ -263,6 +272,20 @@ class OpenWeatherMapper @Inject constructor() {
         val countryName = name.lowercase().removePrefix("the ")
         return CountriesISO.countryNameISO[countryName] ?: ""
     }
+
+    /*private fun getWeatherIconName(
+        iconId: Int,
+        isSmall: Boolean,
+        forecastTime: Int,
+        sunriseTime: Int,
+        sunsetTime: Int
+    ): String {
+        val icName = WeatherIconsIds.idIcon[iconId] ?: DEFAULT_WEATHER_ICON
+
+        if ()
+
+            return icName
+    }*/
 
     private fun convertCountryCodeToName(code: String): String {
         return Locale("", code).displayCountry
@@ -315,5 +338,9 @@ class OpenWeatherMapper @Inject constructor() {
         }
 
         return String.format("UTC%s%02d:%02d", sign, abs(hours), abs(minutes))
+    }
+
+    companion object {
+        private const val DEFAULT_WEATHER_ICON = "scattered_clouds_3d_icon"
     }
 }

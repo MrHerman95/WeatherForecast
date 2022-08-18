@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentWeatherForecastBinding
-import com.hermanbocharov.weatherforecast.domain.entities.*
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.EAST
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTH
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHEAST
@@ -20,6 +19,10 @@ import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTH
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHEAST
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHWEST
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.WEST
+import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
+import com.hermanbocharov.weatherforecast.domain.entities.PrecipitationUnit
+import com.hermanbocharov.weatherforecast.domain.entities.PressureUnit
+import com.hermanbocharov.weatherforecast.domain.entities.SpeedUnit
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
 import com.hermanbocharov.weatherforecast.presentation.recyclerview.DailyForecastAdapter
 import com.hermanbocharov.weatherforecast.presentation.recyclerview.HourlyForecastAdapter
@@ -168,14 +171,14 @@ class WeatherForecastFragment : Fragment() {
             binding.tvUviValue.text = String.format("%.1f", uvi)
 
             var precipitation = 0.0
-            var precipitationIconId = R.drawable.ic_weather_snowy
+            var precipitationIconId = R.drawable.ic_precipitation_none
             if (rain != null) {
                 precipitation += rain
                 precipitationIconId = R.drawable.ic_weather_raining
             }
             if (snow != null) {
                 precipitation += snow
-                precipitationIconId = R.drawable.ic_weather_snowy
+                precipitationIconId = R.drawable.ic_weather_snowing
             }
             val precipitationStr: String = when (item.precipitationUnit) {
                 PrecipitationUnit.MILLIMETERS -> requireContext().getString(

@@ -43,8 +43,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:contentDescription="@string/str_weather_ic_desc"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_test_small_3d" />
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/tv_hourly_temp"

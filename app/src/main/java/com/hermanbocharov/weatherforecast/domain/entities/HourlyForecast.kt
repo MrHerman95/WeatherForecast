@@ -19,5 +19,6 @@ data class HourlyForecast(
     val windSpeedUnit: Int,
     val cityName: String,
     val description: String,
+    val weatherIcon: String,
     var isSelected: Boolean = false
 )

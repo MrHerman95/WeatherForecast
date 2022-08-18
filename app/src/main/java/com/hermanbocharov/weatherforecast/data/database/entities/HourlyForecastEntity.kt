@@ -52,6 +52,9 @@ data class HourlyForecastEntity(
     @ColumnInfo(name = "weather_condition_id")
     val weatherConditionId: Int,
 
+    @ColumnInfo(name = "weather_condition_iс")
+    val weatherConditionIcon: String,
+
     @ColumnInfo(name = "timezone_name")
     val timezoneName: String
 )

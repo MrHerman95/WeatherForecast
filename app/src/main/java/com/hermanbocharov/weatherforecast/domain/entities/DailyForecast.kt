@@ -7,5 +7,6 @@ data class DailyForecast(
     val maxTemp: Int,
     val sunriseTime: Int,
     val sunsetTime: Int,
-    val tempUnit: Int
+    val tempUnit: Int,
+    val weatherIcon: String
 )

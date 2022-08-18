@@ -7,5 +7,6 @@ data class CurrentWeather(
     val cityName: String,
     val description: String,
     val timezone: String,
-    val timezoneName: String
+    val timezoneName: String,
+    val weatherIcon: String
 )

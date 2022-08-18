@@ -96,6 +96,8 @@ class CurrentWeatherFragment : Fragment() {
                     else -> throw RuntimeException("Unknown temperature unit ${it.tempUnit}")
                 }
 
+                pbCurrentWeather.visibility = View.INVISIBLE
+
                 tvTemperature.text = requireContext().getString(tempResId, it.temp)
                 tvFeelsLike.text = requireContext().getString(feelsLikeResId, it.feelsLike)
                 tvCity.text = it.cityName
@@ -105,7 +107,11 @@ class CurrentWeatherFragment : Fragment() {
                 tcClock.visibility = View.VISIBLE
                 tcDate.timeZone = it.timezoneName
                 tcDate.visibility = View.VISIBLE
-                ivWeatherCondition.visibility = View.VISIBLE
+
+                val context = binding.ivWeatherCondition.context
+                val weatherIconId =
+                    context.resources.getIdentifier(it.weatherIcon, "drawable", context.packageName)
+                ivWeatherCondition.setImageResource(weatherIconId)
             }
         }
     }

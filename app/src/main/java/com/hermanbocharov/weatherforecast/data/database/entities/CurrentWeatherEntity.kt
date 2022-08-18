@@ -34,6 +34,9 @@ data class CurrentWeatherEntity(
     @ColumnInfo(name = "weather_condition_id")
     val weatherConditionId: Int,
 
+    @ColumnInfo(name = "weather_condition_iс")
+    val weatherConditionIcon: String,
+
     @PrimaryKey
     @ColumnInfo(name = "location_id")
     val locationId: Int,

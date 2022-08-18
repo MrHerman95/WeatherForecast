@@ -7,6 +7,16 @@
     android:layout_height="match_parent"
     tools:context=".presentation.fragments.CurrentWeatherFragment">
 
+    <ProgressBar
+        android:id="@+id/pb_current_weather"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tv_city"
         android:layout_width="0dp"
@@ -127,11 +137,10 @@
         android:id="@+id/iv_weather_condition"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="32dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginVertical="32dp"
         android:contentDescription="@string/str_weather_ic_desc"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_test_big_3d"
-        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/tv_city"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

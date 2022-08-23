@@ -3,6 +3,7 @@ package com.hermanbocharov.weatherforecast.di
 import android.app.Application
 import com.hermanbocharov.weatherforecast.data.database.AppDatabase
 import com.hermanbocharov.weatherforecast.data.database.dao.*
+import com.hermanbocharov.weatherforecast.data.network.NetworkManager
 import com.hermanbocharov.weatherforecast.data.network.api.ApiFactory
 import com.hermanbocharov.weatherforecast.data.network.api.ApiService
 import com.hermanbocharov.weatherforecast.data.repository.OpenWeatherRepositoryImpl
@@ -65,6 +66,12 @@ interface DataModule {
         @ApplicationScope
         fun provideDailyForecastFullDataDao(application: Application): DailyForecastFullDataDao {
             return AppDatabase.getInstance(application).dailyForecastFullDataDao()
+        }
+
+        @Provides
+        @ApplicationScope
+        fun provideNetworkManager(application: Application): NetworkManager {
+            return NetworkManager(application)
         }
 
         @Provides

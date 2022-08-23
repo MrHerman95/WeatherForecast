@@ -15,7 +15,7 @@
         android:text="@string/str_current_location"
         android:textColor="@color/white"
         android:textSize="28sp"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/iv_earth"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

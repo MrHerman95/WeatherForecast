@@ -310,6 +310,7 @@ class LocationFragment : Fragment() {
                 it.name,
                 it.country
             )
+            binding.tvCurrentLocation.visibility = View.VISIBLE
             postDelayTvLocationNameAnimation()
         }
 
@@ -329,6 +330,15 @@ class LocationFragment : Fragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+            }
+        }
+
+        viewModel.hasInternetConnection.observe(viewLifecycleOwner) {
+            if (it == false) {
+                binding.pbLocationSearch.visibility = View.GONE
+                binding.ivLocationSearch.visibility = View.VISIBLE
+                binding.tvLocationInfo.visibility = View.VISIBLE
+                binding.tvLocationInfo.text = requireContext().getString(R.string.str_location_no_internet)
             }
         }
     }

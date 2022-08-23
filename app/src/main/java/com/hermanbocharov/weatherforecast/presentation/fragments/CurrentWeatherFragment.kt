@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.hermanbocharov.weatherforecast.R
@@ -77,6 +78,12 @@ class CurrentWeatherFragment : Fragment() {
 
         observeViewModel()
         postDelayTvCityAnimation()
+
+        binding.btnLoadWeatherRetry.setOnClickListener {
+            binding.btnLoadWeatherRetry.visibility = View.INVISIBLE
+            binding.pbCurrentWeather.visibility = View.VISIBLE
+            viewModel.getCurrentWeather()
+        }
     }
 
     private fun observeViewModel() {
@@ -112,6 +119,31 @@ class CurrentWeatherFragment : Fragment() {
                 val weatherIconId =
                     context.resources.getIdentifier(it.weatherIcon, "drawable", context.packageName)
                 ivWeatherCondition.setImageResource(weatherIconId)
+            }
+        }
+
+        viewModel.hasInternetConnection.observe(viewLifecycleOwner) {
+            if (it == false) {
+                Toast.makeText(
+                    requireContext(),
+                    "Couldn't refresh the forecast. Please check your internet connection and try again.",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                binding.pbCurrentWeather.visibility = View.INVISIBLE
+                binding.btnLoadWeatherRetry.visibility = View.VISIBLE
+            }
+        }
+
+        viewModel.isLocationEnabled.observe(viewLifecycleOwner) {
+            if (it == false) {
+                Toast.makeText(
+                    requireContext(),
+                    "Couldn't find your location. Please choose a location manually in the location menu.",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                binding.pbCurrentWeather.visibility = View.INVISIBLE
             }
         }
     }

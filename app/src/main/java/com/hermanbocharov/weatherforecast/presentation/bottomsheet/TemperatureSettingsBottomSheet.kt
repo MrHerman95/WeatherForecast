@@ -65,25 +65,31 @@ class TemperatureSettingsBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setupRadioGroup() {
+        checkTemperatureUnitRb(viewModel.getTemperatureUnit())
         binding.bottomSheetTemperatureUnitRg.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 binding.rbSettingsCelsius.id -> viewModel.saveTemperatureUnit(TemperatureUnit.CELSIUS)
                 binding.rbSettingsFahrenheit.id -> viewModel.saveTemperatureUnit(TemperatureUnit.FAHRENHEIT)
             }
+            dismiss()
         }
     }
 
     private fun observeViewModel() {
         viewModel.temperatureUnit.observe(viewLifecycleOwner) {
-            when (it) {
-                TemperatureUnit.CELSIUS -> {
-                    binding.bottomSheetTemperatureUnitRg.check(R.id.rb_settings_celsius)
-                }
-                TemperatureUnit.FAHRENHEIT -> {
-                    binding.bottomSheetTemperatureUnitRg.check(R.id.rb_settings_fahrenheit)
-                }
-            }
+            checkTemperatureUnitRb(it)
             binding.bottomSheetTemperatureUnitRg.jumpDrawablesToCurrentState()
+        }
+    }
+
+    private fun checkTemperatureUnitRb(unit: Int) {
+        when (unit) {
+            TemperatureUnit.CELSIUS -> {
+                binding.bottomSheetTemperatureUnitRg.check(R.id.rb_settings_celsius)
+            }
+            TemperatureUnit.FAHRENHEIT -> {
+                binding.bottomSheetTemperatureUnitRg.check(R.id.rb_settings_fahrenheit)
+            }
         }
     }
 

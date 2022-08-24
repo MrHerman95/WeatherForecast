@@ -65,29 +65,35 @@ class WindSpeedSettingsBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setupRadioGroup() {
+        checkWindSpeedUnitRb(viewModel.getSpeedUnit())
         binding.bottomSheetWindSpeedUnitRg.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 binding.rbSettingsMs.id -> viewModel.saveSpeedUnit(SpeedUnit.METERS_PER_SECOND)
                 binding.rbSettingsKmh.id -> viewModel.saveSpeedUnit(SpeedUnit.KILOMETERS_PER_HOUR)
                 binding.rbSettingsMph.id -> viewModel.saveSpeedUnit(SpeedUnit.MILES_PER_HOUR)
             }
+            dismiss()
         }
     }
 
     private fun observeViewModel() {
         viewModel.speedUnit.observe(viewLifecycleOwner) {
-            when (it) {
-                SpeedUnit.METERS_PER_SECOND -> {
-                    binding.bottomSheetWindSpeedUnitRg.check(R.id.rb_settings_ms)
-                }
-                SpeedUnit.KILOMETERS_PER_HOUR -> {
-                    binding.bottomSheetWindSpeedUnitRg.check(R.id.rb_settings_kmh)
-                }
-                SpeedUnit.MILES_PER_HOUR -> {
-                    binding.bottomSheetWindSpeedUnitRg.check(R.id.rb_settings_mph)
-                }
-            }
+            checkWindSpeedUnitRb(it)
             binding.bottomSheetWindSpeedUnitRg.jumpDrawablesToCurrentState()
+        }
+    }
+
+    private fun checkWindSpeedUnitRb(unit: Int) {
+        when (unit) {
+            SpeedUnit.METERS_PER_SECOND -> {
+                binding.bottomSheetWindSpeedUnitRg.check(R.id.rb_settings_ms)
+            }
+            SpeedUnit.KILOMETERS_PER_HOUR -> {
+                binding.bottomSheetWindSpeedUnitRg.check(R.id.rb_settings_kmh)
+            }
+            SpeedUnit.MILES_PER_HOUR -> {
+                binding.bottomSheetWindSpeedUnitRg.check(R.id.rb_settings_mph)
+            }
         }
     }
 

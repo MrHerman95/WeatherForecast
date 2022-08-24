@@ -56,7 +56,6 @@ class PrecipitationSettingsBottomSheet : BottomSheetDialogFragment() {
         binding.closeBottomSheet.setOnClickListener {
             dismiss()
         }
-
     }
 
     override fun onDestroyView() {
@@ -65,25 +64,31 @@ class PrecipitationSettingsBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setupRadioGroup() {
+        checkPrecipitationUnitRb(viewModel.getPrecipitationUnit())
         binding.bottomSheetPrecipitationUnitRg.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 binding.rbSettingsMmh.id -> viewModel.savePrecipitationUnit(PrecipitationUnit.MILLIMETERS)
                 binding.rbSettingsInh.id -> viewModel.savePrecipitationUnit(PrecipitationUnit.INCHES)
             }
+            dismiss()
         }
     }
 
     private fun observeViewModel() {
         viewModel.precipitationUnit.observe(viewLifecycleOwner) {
-            when (it) {
-                PrecipitationUnit.MILLIMETERS -> {
-                    binding.bottomSheetPrecipitationUnitRg.check(R.id.rb_settings_mmh)
-                }
-                PrecipitationUnit.INCHES -> {
-                    binding.bottomSheetPrecipitationUnitRg.check(R.id.rb_settings_inh)
-                }
-            }
+            checkPrecipitationUnitRb(it)
             binding.bottomSheetPrecipitationUnitRg.jumpDrawablesToCurrentState()
+        }
+    }
+
+    private fun checkPrecipitationUnitRb(unit: Int) {
+        when (unit) {
+            PrecipitationUnit.MILLIMETERS -> {
+                binding.bottomSheetPrecipitationUnitRg.check(R.id.rb_settings_mmh)
+            }
+            PrecipitationUnit.INCHES -> {
+                binding.bottomSheetPrecipitationUnitRg.check(R.id.rb_settings_inh)
+            }
         }
     }
 

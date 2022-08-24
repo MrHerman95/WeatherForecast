@@ -7,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentWeatherForecastBinding
 import com.hermanbocharov.weatherforecast.domain.entities.Direction.EAST
@@ -45,6 +48,7 @@ class WeatherForecastFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private lateinit var disposable: Disposable
+    private var snackbar: Snackbar? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[ForecastViewModel::class.java]
@@ -97,6 +101,16 @@ class WeatherForecastFragment : Fragment() {
         viewModel.dailyForecast.observe(viewLifecycleOwner) {
             dailyForecastAdapter.submitList(it)
             binding.rvDailyForecast.visibility = View.VISIBLE
+        }
+
+        viewModel.hasForecastToDisplay.observe(viewLifecycleOwner) {
+            if (it == false) {
+                for (view in binding.fragmentWeatherForecast) {
+                    view.visibility = View.INVISIBLE
+                }
+                snackbar = goToLocationSnackbar()
+                snackbar?.show()
+            }
         }
     }
 
@@ -249,8 +263,22 @@ class WeatherForecastFragment : Fragment() {
             }
     }
 
+    private fun goToLocationSnackbar(): Snackbar {
+        return Snackbar.make(
+            binding.fragmentWeatherForecast,
+            "Couldn't find your location. Select a\u00A0location manually in the\u00A0\"Location\" menu",
+            Snackbar.LENGTH_LONG
+        )
+            .setTextMaxLines(4)
+            .setAction("Location") {
+                val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+                bottomNav.selectedItemId = R.id.location_page
+            }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        snackbar?.dismiss()
         disposable.dispose()
         _binding = null
     }

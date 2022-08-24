@@ -6,8 +6,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentCurrentWeatherBinding
 import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit.CELSIUS
@@ -28,9 +31,8 @@ class CurrentWeatherFragment : Fragment() {
     private val binding
         get() = _binding ?: throw RuntimeException("FragmentCurrentWeatherBinding is null")
 
-    private val permissionsManager = PermissionsManager()
-
     private lateinit var disposable: Disposable
+    private var snackbar: Snackbar? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -77,6 +79,12 @@ class CurrentWeatherFragment : Fragment() {
 
         observeViewModel()
         postDelayTvCityAnimation()
+
+        binding.btnLoadWeatherRetry.setOnClickListener {
+            binding.btnLoadWeatherRetry.visibility = View.INVISIBLE
+            binding.pbCurrentWeather.visibility = View.VISIBLE
+            viewModel.getCurrentWeather()
+        }
     }
 
     private fun observeViewModel() {
@@ -114,6 +122,28 @@ class CurrentWeatherFragment : Fragment() {
                 ivWeatherCondition.setImageResource(weatherIconId)
             }
         }
+
+        viewModel.hasInternetConnection.observe(viewLifecycleOwner) {
+            if (it == false) {
+                Toast.makeText(
+                    requireContext(),
+                    "Couldn't refresh the forecast. Please check your internet connection and try again.",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                binding.pbCurrentWeather.visibility = View.INVISIBLE
+                binding.btnLoadWeatherRetry.visibility = View.VISIBLE
+            }
+        }
+
+        viewModel.isLocationEnabled.observe(viewLifecycleOwner) {
+            if (it == false) {
+                snackbar = goToLocationSnackbar("Couldn't find your location. Select a\u00A0location manually in the\u00A0\"Location\" menu")
+                snackbar?.show()
+
+                binding.pbCurrentWeather.visibility = View.INVISIBLE
+            }
+        }
     }
 
     private fun postDelayTvCityAnimation() {
@@ -125,19 +155,40 @@ class CurrentWeatherFragment : Fragment() {
     }
 
     private fun requestLocationPermission() {
-        if (permissionsManager.isLocationPermissionGranted(requireContext())) {
+        if (PermissionsManager.isLocationPermissionGranted(requireContext())) {
             viewModel.onLocationPermissionGranted()
         } else {
-            permissionsManager.onRequestLocationPermissionResult(this, {
+            PermissionsManager.onRequestLocationPermissionResult(this, {
                 viewModel.onLocationPermissionGranted()
             }, {
                 viewModel.onLocationPermissionDenied()
+                showOnLocationPermissionDeniedSnackbar()
             })
         }
     }
 
+    private fun showOnLocationPermissionDeniedSnackbar() {
+        binding.pbCurrentWeather.visibility = View.INVISIBLE
+        snackbar = goToLocationSnackbar("Location permission denied. Select a\u00A0location manually in the\u00A0\"Location\" menu")
+        snackbar?.show()
+    }
+
+    private fun goToLocationSnackbar(text: String): Snackbar {
+        return Snackbar.make(
+            binding.fragmentCurrentWeather,
+            text,
+            Snackbar.LENGTH_LONG
+        )
+            .setTextMaxLines(4)
+            .setAction("Location") {
+                val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+                bottomNav.selectedItemId = R.id.location_page
+            }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        snackbar?.dismiss()
         disposable.dispose()
         _binding = null
     }

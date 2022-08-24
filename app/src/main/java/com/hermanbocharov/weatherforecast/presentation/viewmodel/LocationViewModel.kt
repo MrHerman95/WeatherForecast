@@ -9,6 +9,7 @@ import com.hermanbocharov.weatherforecast.domain.usecases.AddNewLocationUseCase
 import com.hermanbocharov.weatherforecast.domain.usecases.GetCurrentLocationUseCase
 import com.hermanbocharov.weatherforecast.domain.usecases.GetListOfCitiesUseCase
 import com.hermanbocharov.weatherforecast.domain.usecases.LoadWeatherForecastGpsLocUseCase
+import com.hermanbocharov.weatherforecast.exception.NoInternetException
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -36,6 +37,10 @@ class LocationViewModel @Inject constructor(
     val isLocationDetectSuccess: LiveData<Boolean>
         get() = _isLocationDetectSuccess
 
+    private val _hasInternetConnection = MutableLiveData<Boolean>()
+    val hasInternetConnection: LiveData<Boolean>
+        get() = _hasInternetConnection
+
     init {
         getCurrentLocation()
     }
@@ -47,7 +52,16 @@ class LocationViewModel @Inject constructor(
             .subscribe({
                 _listOfCities.value = it
             }, {
-                Log.d("TEST_OF_LOADING_DATA", "getListOfCities() ${it.message}")
+                if (it is NoInternetException) {
+                    _hasInternetConnection.value = false
+                    Log.d("TEST_OF_LOADING_DATA", "No internet connection")
+                } else {
+                    _hasInternetConnection.value = false
+                    Log.d(
+                        "TEST_OF_LOADING_DATA",
+                        "Unable to fetch list of the cities ${it.message}"
+                    )
+                }
             })
 
         compositeDisposable.add(disposable)
@@ -67,7 +81,7 @@ class LocationViewModel @Inject constructor(
         compositeDisposable.add(disposable)
     }
 
-    fun detectLocation() {
+    private fun detectLocation() {
         val disposable = loadWeatherForecastGpsLocUseCase()
             .flatMap { getCurrentLocationUseCase() }
             .delaySubscription(DETECT_LOCATION_DELAY, TimeUnit.MILLISECONDS)
@@ -96,6 +110,15 @@ class LocationViewModel @Inject constructor(
             })
 
         compositeDisposable.add(disposable)
+    }
+
+    fun onLocationPermissionGranted() {
+        Log.d("TEST_OF_LOADING_DATA", "viewModel onLocationPermissionGranted()")
+        detectLocation()
+    }
+
+    fun onLocationPermissionDenied() {
+        Log.d("TEST_OF_LOADING_DATA", "viewModel onLocationPermissionDenied()")
     }
 
     override fun onCleared() {

@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import com.google.android.gms.location.LocationServices
 import com.hermanbocharov.weatherforecast.di.ApplicationScope
+import com.hermanbocharov.weatherforecast.exception.GeolocationDisabledException
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
@@ -24,7 +25,7 @@ class FusedLocationDataSource @Inject constructor(
                         val gpsCoordinates = GpsCoordinates(location.latitude, location.longitude)
                         e.onSuccess(gpsCoordinates)
                     } else {
-                        e.onError(Throwable("Location is turned off"))
+                        e.onError(GeolocationDisabledException())
                     }
                 }
             } catch (unlikely: SecurityException) {

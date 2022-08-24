@@ -4,6 +4,7 @@ import android.util.Log
 import com.hermanbocharov.weatherforecast.data.database.dao.*
 import com.hermanbocharov.weatherforecast.data.geolocation.FusedLocationDataSource
 import com.hermanbocharov.weatherforecast.data.mapper.OpenWeatherMapper
+import com.hermanbocharov.weatherforecast.data.network.NetworkManager
 import com.hermanbocharov.weatherforecast.data.network.api.ApiService
 import com.hermanbocharov.weatherforecast.data.network.model.FullWeatherInfoDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherForecastDto
@@ -13,6 +14,7 @@ import com.hermanbocharov.weatherforecast.domain.entities.DailyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.Location
 import com.hermanbocharov.weatherforecast.domain.repository.OpenWeatherRepository
+import com.hermanbocharov.weatherforecast.exception.NoInternetException
 import io.reactivex.rxjava3.core.Single
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -20,6 +22,7 @@ import javax.inject.Inject
 class OpenWeatherRepositoryImpl @Inject constructor(
     private val mapper: OpenWeatherMapper,
     private val apiService: ApiService,
+    private val networkManager: NetworkManager,
     private val currentDao: CurrentWeatherDao,
     private val hourlyForecastDao: HourlyForecastDao,
     private val dailyForecastDao: DailyForecastDao,
@@ -45,12 +48,22 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 .map { mapper.mapEntityToCurrentWeatherDomain(it, getTemperatureUnit()) }
         } else {
             Log.d("TEST_OF_LOADING_DATA", "From internet")
-            loadWeatherForecastCurLoc()
-                .flatMap {
-                    currentWeatherFullDataDao
-                        .getCurrentWeatherFullData(getCurrentLocationId())
-                        .map { mapper.mapEntityToCurrentWeatherDomain(it, getTemperatureUnit()) }
-                }
+            if (networkManager.isNetworkAvailable()) {
+                loadWeatherForecastCurLoc()
+                    .flatMap {
+                        currentWeatherFullDataDao
+                            .getCurrentWeatherFullData(getCurrentLocationId())
+                            .map {
+                                mapper.mapEntityToCurrentWeatherDomain(
+                                    it,
+                                    getTemperatureUnit()
+                                )
+                            }
+                    }
+            }
+            else {
+                Single.error(NoInternetException())
+            }
         }
     }
 
@@ -130,10 +143,14 @@ class OpenWeatherRepositoryImpl @Inject constructor(
         }
         val cityCountry = "$city,$countryISO"
 
-        return apiService.getListOfCities(cityCountry)
-            .map {
-                it.map { mapper.mapDtoToLocationDomain(it) }
-            }
+        return if (networkManager.isNetworkAvailable()) {
+            apiService.getListOfCities(cityCountry)
+                .map {
+                    it.map { mapper.mapDtoToLocationDomain(it) }
+                }
+        } else {
+            Single.error(NoInternetException())
+        }
     }
 
     override fun getCurrentLocation(): Single<Location> {

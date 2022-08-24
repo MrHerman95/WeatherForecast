@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hermanbocharov.weatherforecast.domain.entities.DailyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
+import com.hermanbocharov.weatherforecast.domain.usecases.GetCurrentLocationIdUseCase
 import com.hermanbocharov.weatherforecast.domain.usecases.GetDailyForecastUseCase
 import com.hermanbocharov.weatherforecast.domain.usecases.GetHourlyForecastUseCase
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 class ForecastViewModel @Inject constructor(
     private val getHourlyForecastUseCase: GetHourlyForecastUseCase,
-    private val getDailyForecastUseCase: GetDailyForecastUseCase
+    private val getDailyForecastUseCase: GetDailyForecastUseCase,
+    private val getCurrentLocationIdUseCase: GetCurrentLocationIdUseCase
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -28,9 +30,18 @@ class ForecastViewModel @Inject constructor(
     val dailyForecast: LiveData<List<DailyForecast>>
         get() = _dailyForecast
 
+    private val _hasForecastToDisplay = MutableLiveData<Boolean>()
+    val hasForecastToDisplay: LiveData<Boolean>
+        get() = _hasForecastToDisplay
+
     init {
-        getHourlyForecast()
-        getDailyForecast()
+        if (getCurrentLocationIdUseCase() != 0) {
+            _hasForecastToDisplay.value = true
+            getHourlyForecast()
+            getDailyForecast()
+        } else {
+            _hasForecastToDisplay.value = false
+        }
     }
 
     private fun getHourlyForecast() {
@@ -45,6 +56,10 @@ class ForecastViewModel @Inject constructor(
             })
 
         compositeDisposable.add(disposable)
+    }
+
+    fun getCurrentLocationId(): Int {
+        return getCurrentLocationIdUseCase()
     }
 
     private fun getDailyForecast() {

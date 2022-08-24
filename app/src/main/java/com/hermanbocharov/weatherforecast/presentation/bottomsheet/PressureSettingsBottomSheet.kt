@@ -65,25 +65,31 @@ class PressureSettingsBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setupRadioGroup() {
+        checkPressureUnitRb(viewModel.getPressureUnit())
         binding.bottomSheetPressureUnitRg.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 binding.rbSettingsMmhg.id -> viewModel.savePressureUnit(PressureUnit.MILLIMETERS_HG)
                 binding.rbSettingsInhg.id -> viewModel.savePressureUnit(PressureUnit.INCHES_HG)
             }
+            dismiss()
         }
     }
 
     private fun observeViewModel() {
         viewModel.pressureUnit.observe(viewLifecycleOwner) {
-            when (it) {
-                PressureUnit.MILLIMETERS_HG -> {
-                    binding.bottomSheetPressureUnitRg.check(R.id.rb_settings_mmhg)
-                }
-                PressureUnit.INCHES_HG -> {
-                    binding.bottomSheetPressureUnitRg.check(R.id.rb_settings_inhg)
-                }
-            }
+            checkPressureUnitRb(it)
             binding.bottomSheetPressureUnitRg.jumpDrawablesToCurrentState()
+        }
+    }
+
+    private fun checkPressureUnitRb(unit: Int) {
+        when (unit) {
+            PressureUnit.MILLIMETERS_HG -> {
+                binding.bottomSheetPressureUnitRg.check(R.id.rb_settings_mmhg)
+            }
+            PressureUnit.INCHES_HG -> {
+                binding.bottomSheetPressureUnitRg.check(R.id.rb_settings_inhg)
+            }
         }
     }
 

@@ -9,7 +9,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
-class PermissionsManager {
+object PermissionsManager {
 
     fun isLocationPermissionGranted(context: Context): Boolean {
         return isPermissionGranted(context, Manifest.permission.ACCESS_COARSE_LOCATION)

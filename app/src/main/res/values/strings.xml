@@ -18,6 +18,7 @@
     <string name="str_detecting_location">Detecting location…</string>
     <string name="str_detect_location_success">Location has been detected successfully.</string>
     <string name="str_detect_location_failure">Failed to detect location. Make sure your device\'s location is turned on.</string>
+    <string name="str_location_no_internet">Search failed. Please check your internet connection and try again</string>
 
     <string name="str_temp_celsius">%d\u00B0C</string>
     <string name="str_feels_like_celsius">Feels Like %d\u00B0C</string>
@@ -87,6 +88,8 @@
     <string name="str_pressure_unit_desc">Choose pressure measurement unit</string>
     <string name="str_speed_unit_desc">Choose wind speed measurement unit</string>
     <string name="str_precipitation_unit_desc">Choose precipitation measurement unit</string>
+
+    <string name="str_retry">Retry</string>
 
     <string name="str_tools_city">Indianapolis</string>
     <string name="str_tools_timezone">UTC+3:30</string>

@@ -81,7 +81,7 @@ class LocationViewModel @Inject constructor(
         compositeDisposable.add(disposable)
     }
 
-    fun detectLocation() {
+    private fun detectLocation() {
         val disposable = loadWeatherForecastGpsLocUseCase()
             .flatMap { getCurrentLocationUseCase() }
             .delaySubscription(DETECT_LOCATION_DELAY, TimeUnit.MILLISECONDS)
@@ -110,6 +110,15 @@ class LocationViewModel @Inject constructor(
             })
 
         compositeDisposable.add(disposable)
+    }
+
+    fun onLocationPermissionGranted() {
+        Log.d("TEST_OF_LOADING_DATA", "viewModel onLocationPermissionGranted()")
+        detectLocation()
+    }
+
+    fun onLocationPermissionDenied() {
+        Log.d("TEST_OF_LOADING_DATA", "viewModel onLocationPermissionDenied()")
     }
 
     override fun onCleared() {

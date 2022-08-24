@@ -76,7 +76,7 @@ class CurrentWeatherViewModel @Inject constructor(
                         Log.d("TEST_OF_LOADING_DATA", "No internet connection")
                     }
                     is GeolocationDisabledException -> {
-                        _isLocationEnabled.value = false
+                        onGetLocationError(it)
                         Log.d("TEST_OF_LOADING_DATA", "Location is disabled")
                     }
                     else -> {
@@ -98,7 +98,7 @@ class CurrentWeatherViewModel @Inject constructor(
     }
 
     private fun onGetLocationError(throwable: Throwable) {
-
+        _isLocationEnabled.value = false
     }
 
     override fun onCleared() {

@@ -3,7 +3,10 @@ package com.hermanbocharov.weatherforecast.presentation.fragments
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -20,12 +23,15 @@ import androidx.core.graphics.BlendModeCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.*
+import com.google.android.material.snackbar.Snackbar
+import com.hermanbocharov.weatherforecast.BuildConfig
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentLocationBinding
 import com.hermanbocharov.weatherforecast.presentation.WeatherForecastApp
 import com.hermanbocharov.weatherforecast.presentation.recyclerview.LocationAdapter
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.LocationViewModel
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
+import com.hermanbocharov.weatherforecast.utils.PermissionsManager
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -42,6 +48,8 @@ class LocationFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    private var snackbar: Snackbar? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[LocationViewModel::class.java]
@@ -92,17 +100,13 @@ class LocationFragment : Fragment() {
         observeViewModel()
 
         binding.fabDetect.setOnClickListener {
-            viewModel.detectLocation()
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.str_detecting_location),
-                Toast.LENGTH_LONG
-            ).show()
+            requestLocationPermission()
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        snackbar?.dismiss()
         compositeDisposable.dispose()
         _binding = null
     }
@@ -338,7 +342,8 @@ class LocationFragment : Fragment() {
                 binding.pbLocationSearch.visibility = View.GONE
                 binding.ivLocationSearch.visibility = View.VISIBLE
                 binding.tvLocationInfo.visibility = View.VISIBLE
-                binding.tvLocationInfo.text = requireContext().getString(R.string.str_location_no_internet)
+                binding.tvLocationInfo.text =
+                    requireContext().getString(R.string.str_location_no_internet)
             }
         }
     }
@@ -412,6 +417,43 @@ class LocationFragment : Fragment() {
                 binding.tvLocationName.isSelected = true
             }
         compositeDisposable.add(disposable)
+    }
+
+    private fun requestLocationPermission() {
+        if (PermissionsManager.isLocationPermissionGranted(requireContext())) {
+            viewModel.onLocationPermissionGranted()
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.str_detecting_location),
+                Toast.LENGTH_LONG
+            ).show()
+        } else {
+            viewModel.onLocationPermissionDenied()
+            showOnLocationPermissionDeniedSnackbar()
+        }
+    }
+
+    private fun showOnLocationPermissionDeniedSnackbar() {
+        snackbar = Snackbar.make(
+            binding.fragmentLocation,
+            "Location permission denied. To detect location enable it in the\u00A0settings",
+            Snackbar.LENGTH_LONG
+        )
+            .setTextMaxLines(4)
+            .setAction("Settings") {
+                val intent = Intent()
+                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                val uri = Uri.fromParts(
+                    "package",
+                    BuildConfig.APPLICATION_ID,
+                    null
+                )
+                intent.data = uri
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+            }
+
+        snackbar?.show()
     }
 
     companion object {

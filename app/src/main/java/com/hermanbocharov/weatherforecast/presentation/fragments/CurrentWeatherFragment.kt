@@ -2,7 +2,6 @@ package com.hermanbocharov.weatherforecast.presentation.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,11 +44,6 @@ class CurrentWeatherFragment : Fragment() {
         (requireActivity().application as WeatherForecastApp).component
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d("INSTANCES", "onCreate() CurrentWeatherFragment")
-    }
-
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
@@ -65,11 +59,6 @@ class CurrentWeatherFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        Log.d(
-            "TEST_OF_LOADING_DATA",
-            "Current location id curr weather frag = ${viewModel.getCurrentLocationId()}"
-        )
 
         if (viewModel.getCurrentLocationId() == 0) {
             requestLocationPermission()
@@ -161,7 +150,6 @@ class CurrentWeatherFragment : Fragment() {
             PermissionsManager.onRequestLocationPermissionResult(this, {
                 viewModel.onLocationPermissionGranted()
             }, {
-                viewModel.onLocationPermissionDenied()
                 showOnLocationPermissionDeniedSnackbar()
             })
         }

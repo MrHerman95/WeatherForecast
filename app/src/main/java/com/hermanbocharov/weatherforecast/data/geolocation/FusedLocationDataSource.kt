@@ -1,7 +1,6 @@
 package com.hermanbocharov.weatherforecast.data.geolocation
 
 import android.app.Application
-import android.util.Log
 import com.google.android.gms.location.LocationServices
 import com.hermanbocharov.weatherforecast.di.ApplicationScope
 import com.hermanbocharov.weatherforecast.exception.GeolocationDisabledException
@@ -29,7 +28,6 @@ class FusedLocationDataSource @Inject constructor(
                     }
                 }
             } catch (unlikely: SecurityException) {
-                Log.d("TEST_OF_LOADING_DATA", "Lost location permissions. $unlikely")
             }
         }
     }

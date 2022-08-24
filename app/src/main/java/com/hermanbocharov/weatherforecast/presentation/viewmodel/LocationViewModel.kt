@@ -1,6 +1,5 @@
 package com.hermanbocharov.weatherforecast.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -54,13 +53,8 @@ class LocationViewModel @Inject constructor(
             }, {
                 if (it is NoInternetException) {
                     _hasInternetConnection.value = false
-                    Log.d("TEST_OF_LOADING_DATA", "No internet connection")
                 } else {
                     _hasInternetConnection.value = false
-                    Log.d(
-                        "TEST_OF_LOADING_DATA",
-                        "Unable to fetch list of the cities ${it.message}"
-                    )
                 }
             })
 
@@ -75,7 +69,6 @@ class LocationViewModel @Inject constructor(
             .subscribe({
                 _currentLocation.value = it
             }, {
-                Log.d("TEST_OF_LOADING_DATA", "detectLocation() ${it.message}")
             })
 
         compositeDisposable.add(disposable)
@@ -92,7 +85,6 @@ class LocationViewModel @Inject constructor(
                 _currentLocation.value = it
                 _isLocationDetectSuccess.value = true
             }, {
-                Log.d("TEST_OF_LOADING_DATA", "detectLocation() ${it.message}")
                 _isLocationDetectSuccess.value = false
             })
 
@@ -106,19 +98,13 @@ class LocationViewModel @Inject constructor(
             .subscribe({
                 _currentLocation.value = it
             }, {
-                Log.d("TEST_OF_LOADING_DATA", "getCurrentLocation() ${it.message}")
             })
 
         compositeDisposable.add(disposable)
     }
 
     fun onLocationPermissionGranted() {
-        Log.d("TEST_OF_LOADING_DATA", "viewModel onLocationPermissionGranted()")
         detectLocation()
-    }
-
-    fun onLocationPermissionDenied() {
-        Log.d("TEST_OF_LOADING_DATA", "viewModel onLocationPermissionDenied()")
     }
 
     override fun onCleared() {

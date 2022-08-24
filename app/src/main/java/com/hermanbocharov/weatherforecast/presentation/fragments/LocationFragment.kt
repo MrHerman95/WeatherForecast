@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.inputmethod.EditorInfo
@@ -75,11 +74,6 @@ class LocationFragment : Fragment() {
     private var isSearchMode = false
     private var prevQuery = ""
     private var isMotionEventCanceled = false
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d("INSTANCES", "onCreate() LocationFragment")
-    }
 
     override fun onAttach(context: Context) {
         component.inject(this)
@@ -428,7 +422,6 @@ class LocationFragment : Fragment() {
                 Toast.LENGTH_LONG
             ).show()
         } else {
-            viewModel.onLocationPermissionDenied()
             showOnLocationPermissionDeniedSnackbar()
         }
     }

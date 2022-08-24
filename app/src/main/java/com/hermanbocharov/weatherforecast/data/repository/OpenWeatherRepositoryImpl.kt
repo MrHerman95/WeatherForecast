@@ -1,6 +1,5 @@
 package com.hermanbocharov.weatherforecast.data.repository
 
-import android.util.Log
 import com.hermanbocharov.weatherforecast.data.database.dao.*
 import com.hermanbocharov.weatherforecast.data.geolocation.FusedLocationDataSource
 import com.hermanbocharov.weatherforecast.data.mapper.OpenWeatherMapper
@@ -36,18 +35,12 @@ class OpenWeatherRepositoryImpl @Inject constructor(
 ) : OpenWeatherRepository {
 
     override fun getCurrentWeather(): Single<CurrentWeather> {
-        Log.d(
-            "TEST_OF_LOADING_DATA",
-            "System time = ${TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())}"
-        )
-        Log.d("TEST_OF_LOADING_DATA", "Last update time = ${prefs.getLastUpdateTime()}")
+
         return if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - prefs.getLastUpdateTime() < UPDATE_FREQUENCY) {
-            Log.d("TEST_OF_LOADING_DATA", "From db")
             currentWeatherFullDataDao
                 .getCurrentWeatherFullData(getCurrentLocationId())
                 .map { mapper.mapEntityToCurrentWeatherDomain(it, getTemperatureUnit()) }
         } else {
-            Log.d("TEST_OF_LOADING_DATA", "From internet")
             if (networkManager.isNetworkAvailable()) {
                 loadWeatherForecastCurLoc()
                     .flatMap {
@@ -91,16 +84,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 apiService.getWeatherForecast(latitude = it.lat, longitude = it.lon)
             }
             .map {
-                Log.d(
-                    "TEST_OF_LOADING_DATA",
-                    "Timezone name = ${it.timezoneName}, offset = ${it.timezoneOffset}"
-                )
-                for (cond in it.current.weather) {
-                    Log.d("TEST_OF_LOADING_DATA", "Condition = $cond")
-                }
-
                 insertWeatherForecastToDatabase(it, getCurrentLocationId())
-
                 prefs.saveLastUpdateTime(it.current.updateTime)
             }
     }
@@ -119,11 +103,6 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 }
             }
             .map {
-                Log.d(
-                    "TEST_OF_LOADING_DATA",
-                    "Timezone name = ${it.weatherForecast.timezoneName}, offset = ${it.weatherForecast.timezoneOffset}"
-                )
-
                 val locationId = locationDao.insertLocation(
                     mapper.mapDtoToLocationEntity(it.location)
                 ).blockingGet().toInt()
@@ -176,7 +155,6 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     override fun addNewLocation(location: Location): Single<Unit> {
         return locationDao.insertLocation(mapper.mapLocationDomainToEntity(location))
             .flatMap {
-                Log.d("TEST_OF_LOADING_DATA", "New loc id = $it")
                 prefs.saveCurrentLocationId(it.toInt())
                 loadWeatherForecastCurLoc()
             }

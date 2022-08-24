@@ -2,7 +2,6 @@ package com.hermanbocharov.weatherforecast.presentation.bottomsheet
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +49,6 @@ class TemperatureSettingsBottomSheet : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRadioGroup()
-        Log.d("TEST_OF_LOADING_DATA", viewModel.toString())
         observeViewModel()
 
         binding.closeBottomSheet.setOnClickListener {

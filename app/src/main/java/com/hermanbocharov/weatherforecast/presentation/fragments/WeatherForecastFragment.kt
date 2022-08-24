@@ -2,7 +2,6 @@ package com.hermanbocharov.weatherforecast.presentation.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,11 +63,6 @@ class WeatherForecastFragment : Fragment() {
 
     private val dailyForecastAdapter by lazy {
         DailyForecastAdapter()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d("INSTANCES", "onCreate() WeatherForecastFragment")
     }
 
     override fun onAttach(context: Context) {

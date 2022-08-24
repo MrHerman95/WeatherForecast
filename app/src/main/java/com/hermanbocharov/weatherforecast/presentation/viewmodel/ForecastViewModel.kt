@@ -1,6 +1,5 @@
 package com.hermanbocharov.weatherforecast.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -52,14 +51,9 @@ class ForecastViewModel @Inject constructor(
                 it[DEFAULT_SELECTED_ITEM_POS].isSelected = true
                 _hourlyForecast.value = it
             }, {
-                Log.d("TEST_OF_LOADING_DATA", "getHourlyForecast() ${it.message}")
             })
 
         compositeDisposable.add(disposable)
-    }
-
-    fun getCurrentLocationId(): Int {
-        return getCurrentLocationIdUseCase()
     }
 
     private fun getDailyForecast() {
@@ -69,7 +63,6 @@ class ForecastViewModel @Inject constructor(
             .subscribe({
                 _dailyForecast.value = it
             }, {
-                Log.d("TEST_OF_LOADING_DATA", "getDailyForecast() ${it.message}")
             })
 
         compositeDisposable.add(disposable)

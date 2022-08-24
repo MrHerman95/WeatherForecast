@@ -1,6 +1,5 @@
 package com.hermanbocharov.weatherforecast.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -45,11 +44,9 @@ class CurrentWeatherViewModel @Inject constructor(
             }, {
                 if (it is NoInternetException) {
                     _hasInternetConnection.value = false
-                    Log.d("TEST_OF_LOADING_DATA", "No internet connection")
                 }
                 else {
                     _hasInternetConnection.value = false
-                    Log.d("TEST_OF_LOADING_DATA", "Unable to fetch data ${it.message}")
                 }
             })
 
@@ -61,7 +58,6 @@ class CurrentWeatherViewModel @Inject constructor(
     }
 
     fun onLocationPermissionGranted() {
-        Log.d("TEST_OF_LOADING_DATA", "viewModel onLocationPermissionGranted()")
         val disposable = loadWeatherForecastGpsLocUseCase()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -69,28 +65,20 @@ class CurrentWeatherViewModel @Inject constructor(
                 _isLocationEnabled.value = true
                 onGetLocationSuccess()
             }, {
-                Log.d("TEST_OF_LOADING_DATA", "viewModel init() ${it.message}")
                 when (it) {
                     is NoInternetException -> {
                         _hasInternetConnection.value = false
-                        Log.d("TEST_OF_LOADING_DATA", "No internet connection")
                     }
                     is GeolocationDisabledException -> {
                         onGetLocationError(it)
-                        Log.d("TEST_OF_LOADING_DATA", "Location is disabled")
                     }
                     else -> {
                         _hasInternetConnection.value = false
-                        Log.d("TEST_OF_LOADING_DATA", "Unable to fetch data ${it.message}")
                     }
                 }
             })
 
         compositeDisposable.add(disposable)
-    }
-
-    fun onLocationPermissionDenied() {
-        Log.d("TEST_OF_LOADING_DATA", "viewModel onLocationPermissionDenied()")
     }
 
     private fun onGetLocationSuccess() {

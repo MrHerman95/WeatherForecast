@@ -3,7 +3,6 @@ package com.hermanbocharov.weatherforecast.presentation.fragments
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -45,11 +44,6 @@ class SettingsFragment : Fragment() {
     }
 
     private var isMotionEventCanceled = false
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d("INSTANCES", "onCreate() SettingsFragment")
-    }
 
     override fun onAttach(context: Context) {
         component.inject(this)
@@ -168,7 +162,6 @@ class SettingsFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        Log.d("TEST_OF_LOADING_DATA", viewModel.toString())
         viewModel.temperatureUnit.observe(viewLifecycleOwner) {
             when (it) {
                 TemperatureUnit.CELSIUS -> {

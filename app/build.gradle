@@ -11,14 +11,19 @@ android {
         applicationId "com.hermanbocharov.weatherforecast"
         minSdk 23
         targetSdk 32
-        versionCode 3
-        versionName "1.2"
+        versionCode 9
+        versionName "1.08"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

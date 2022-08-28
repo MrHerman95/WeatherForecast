@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.*
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.inputmethod.EditorInfo
@@ -303,13 +304,23 @@ class LocationFragment : Fragment() {
         }
 
         viewModel.currentLocation.observe(viewLifecycleOwner) {
-            binding.tvLocationName.text = requireContext().getString(
-                R.string.str_location_name,
-                it.name,
-                it.country
-            )
-            binding.tvCurrentLocation.visibility = View.VISIBLE
-            postDelayTvLocationNameAnimation()
+            if (it != null) {
+                binding.tvCurrentLocation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28f)
+                binding.tvCurrentLocation.text =
+                    requireContext().getString(R.string.str_current_location)
+                binding.tvLocationName.text = requireContext().getString(
+                    R.string.str_location_name,
+                    it.name,
+                    it.country
+                )
+                binding.tvLocationName.visibility = View.VISIBLE
+                postDelayTvLocationNameAnimation()
+            } else {
+                binding.tvLocationName.visibility = View.GONE
+                binding.tvCurrentLocation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f)
+                binding.tvCurrentLocation.text =
+                    requireContext().getString(R.string.str_undefined_location)
+            }
         }
 
         viewModel.isLocationDetectSuccess.observe(viewLifecycleOwner) {

@@ -10,7 +10,7 @@
     <string name="str_location_city_country">%1$s, %2$s</string>
     <string name="str_location_search_hint">e.g. Paris, France</string>
     <string name="str_current_location">Current location</string>
-    <string name="str_undefined_location">Undefined</string>
+    <string name="str_undefined_location">No current location available. Set up your location</string>
     <string name="str_search_location">Search location</string>
     <string name="str_location_name">%1$s, %2$s</string>
     <string name="str_nothing_found">No cities found :(</string>

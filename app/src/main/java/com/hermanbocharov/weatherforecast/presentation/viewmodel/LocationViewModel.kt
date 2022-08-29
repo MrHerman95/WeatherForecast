@@ -29,8 +29,8 @@ class LocationViewModel @Inject constructor(
     val listOfCities: LiveData<List<Location>>
         get() = _listOfCities
 
-    private val _currentLocation = MutableLiveData<Location>()
-    val currentLocation: LiveData<Location>
+    private val _currentLocation = MutableLiveData<Location?>()
+    val currentLocation: LiveData<Location?>
         get() = _currentLocation
 
     private val _isLocationDetectSuccess = MutableLiveData<Boolean>()
@@ -106,7 +106,7 @@ class LocationViewModel @Inject constructor(
             .subscribe({
                 _currentLocation.value = it
             }, {
-                Log.d("TEST_OF_LOADING_DATA", "getCurrentLocation() ${it.message}")
+                _currentLocation.value = null
             })
 
         compositeDisposable.add(disposable)

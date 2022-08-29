@@ -22,6 +22,16 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:textColor="@color/black" />
 
+    <View
+        android:id="@+id/section_hourly_forecast"
+        android:layout_width="32dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/white"
+        app:layout_constraintStart_toStartOf="@id/tv_hourly_forecast"
+        app:layout_constraintTop_toBottomOf="@+id/tv_hourly_forecast"
+        tools:background="@color/black" />
+
     <TextView
         android:id="@+id/tv_city_forecast"
         android:layout_width="0dp"
@@ -47,7 +57,7 @@
         android:id="@+id/rv_hourly_forecast"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:layout_marginBottom="8dp"
         android:fadingEdgeLength="16dp"
         android:orientation="horizontal"
@@ -55,7 +65,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_hourly_forecast"
+        app:layout_constraintTop_toBottomOf="@+id/section_hourly_forecast"
         tools:listitem="@layout/item_hourly_selected" />
 
     <TextView
@@ -447,7 +457,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:fontFamily="@font/roboto_bold"
         android:maxLines="1"
         android:text="@string/str_daily_forecast"
@@ -457,12 +467,22 @@
         app:layout_constraintTop_toBottomOf="@+id/flow_wind_dir_full"
         tools:textColor="@color/black" />
 
+    <View
+        android:id="@+id/section_daily_forecast"
+        android:layout_width="32dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/white"
+        app:layout_constraintStart_toStartOf="@id/tv_daily_forecast"
+        app:layout_constraintTop_toBottomOf="@+id/tv_daily_forecast"
+        tools:background="@color/black" />
+
     <com.hermanbocharov.weatherforecast.presentation.recyclerview.FadingEdgeRecyclerView
         android:id="@+id/rv_daily_forecast"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/recycler_view_bg"
@@ -478,7 +498,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_daily_forecast"
+        app:layout_constraintTop_toBottomOf="@+id/section_daily_forecast"
         tools:listitem="@layout/item_daily"
         tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

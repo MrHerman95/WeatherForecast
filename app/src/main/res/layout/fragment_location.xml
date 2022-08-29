@@ -9,13 +9,15 @@
 
     <TextView
         android:id="@+id/tv_current_location"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:fontFamily="@font/roboto_regular"
-        android:text="@string/str_current_location"
+        android:gravity="center_horizontal"
         android:textColor="@color/white"
         android:textSize="28sp"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/iv_earth"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

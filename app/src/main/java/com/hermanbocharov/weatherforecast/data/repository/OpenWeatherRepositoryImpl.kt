@@ -170,6 +170,8 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 mapper.mapWeatherConditionDtoToEntity(hour.weather[0])
             )
         }
+
+        for (day in forecast.daily) {
             weatherConditionDao.insertWeatherCondition(
                 mapper.mapWeatherConditionDtoToEntity(day.weather[0])
             )

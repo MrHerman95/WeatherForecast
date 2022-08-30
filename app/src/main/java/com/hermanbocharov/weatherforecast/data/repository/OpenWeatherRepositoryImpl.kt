@@ -170,8 +170,6 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 mapper.mapWeatherConditionDtoToEntity(hour.weather[0])
             )
         }
-
-        for (day in forecast.daily) {
             weatherConditionDao.insertWeatherCondition(
                 mapper.mapWeatherConditionDtoToEntity(day.weather[0])
             )
@@ -200,7 +198,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     }
 
     companion object {
-        private const val UPDATE_FREQUENCY = 1 * 60 /* in seconds */
+        private const val UPDATE_FREQUENCY = 15 * 60 /* in seconds */
         private const val ISO_LENGTH = 2
         private const val MIN_COUNTRY_NAME_LENGTH = 3
     }

@@ -50,6 +50,13 @@
     <string name="str_settings_kmh">Kilometers per hour (km/h)</string>
     <string name="str_settings_mph">Miles per hour (mph)</string>
 
+    <string name="str_rate_share">Rate &amp; Share</string>
+    <string name="str_rate">5-star rating</string>
+    <string name="str_rate_desc">Please rate the app with 5 stars if you like it. Easy for you, very helpful for us</string>
+    <string name="str_share">Share</string>
+    <string name="str_share_desc">Please share the app with your friends to make the app even better</string>
+    <string name="str_app_name_version">Weather Forecast v1.0</string>
+
     <string name="str_hourly_forecast">Hourly forecast</string>
     <string name="str_humidity">Humidity</string>
     <string name="str_cloudiness">Cloudiness</string>

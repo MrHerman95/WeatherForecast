@@ -1,7 +1,10 @@
 package com.hermanbocharov.weatherforecast.presentation.fragments
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -11,6 +14,7 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.hermanbocharov.weatherforecast.BuildConfig
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentSettingsBinding
 import com.hermanbocharov.weatherforecast.domain.entities.PrecipitationUnit
@@ -25,6 +29,7 @@ import com.hermanbocharov.weatherforecast.presentation.bottomsheet.WindSpeedSett
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.SettingsViewModel
 import com.hermanbocharov.weatherforecast.presentation.viewmodel.ViewModelFactory
 import javax.inject.Inject
+
 
 class SettingsFragment : Fragment() {
 
@@ -65,6 +70,8 @@ class SettingsFragment : Fragment() {
         setupOnViewContainerTouchListener(binding.pressureViewContainer)
         setupOnViewContainerTouchListener(binding.precipitationViewContainer)
         setupOnViewContainerTouchListener(binding.windSpeedViewContainer)
+        setupOnViewContainerTouchListener(binding.rateContainer)
+        setupOnViewContainerTouchListener(binding.shareContainer)
     }
 
     override fun onDestroyView() {
@@ -86,7 +93,7 @@ class SettingsFragment : Fragment() {
                     }
                     animateViewContainerUnpressed(view)
                     synchronized(LOCK) {
-                        showBottomSheet(view)
+                        performTouch(view)
                     }
                 }
                 MotionEvent.ACTION_CANCEL -> {
@@ -108,28 +115,47 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    private fun performTouch(view: View) {
+        with(binding) {
+            when (view) {
+                tempViewContainer, pressureViewContainer, precipitationViewContainer, windSpeedViewContainer -> {
+                    showBottomSheet(view)
+                }
+                rateContainer -> {
+                    rateAppIntent()
+                }
+                shareContainer -> {
+                    shareLinkIntent()
+                }
+                else -> throw RuntimeException("Invalid view $view to perform touch")
+            }
+        }
+    }
+
     private fun showBottomSheet(view: View) {
         if (isAnyBottomSheetShown())
             return
 
-        when (view) {
-            binding.tempViewContainer -> {
-                val bottomSheet = TemperatureSettingsBottomSheet.newInstance()
-                bottomSheet.show(childFragmentManager, TemperatureSettingsBottomSheet.TAG)
+        with(binding) {
+            when (view) {
+                tempViewContainer -> {
+                    val bottomSheet = TemperatureSettingsBottomSheet.newInstance()
+                    bottomSheet.show(childFragmentManager, TemperatureSettingsBottomSheet.TAG)
+                }
+                pressureViewContainer -> {
+                    val bottomSheet = PressureSettingsBottomSheet.newInstance()
+                    bottomSheet.show(childFragmentManager, PressureSettingsBottomSheet.TAG)
+                }
+                precipitationViewContainer -> {
+                    val bottomSheet = PrecipitationSettingsBottomSheet.newInstance()
+                    bottomSheet.show(childFragmentManager, PrecipitationSettingsBottomSheet.TAG)
+                }
+                windSpeedViewContainer -> {
+                    val bottomSheet = WindSpeedSettingsBottomSheet.newInstance()
+                    bottomSheet.show(childFragmentManager, WindSpeedSettingsBottomSheet.TAG)
+                }
+                else -> throw RuntimeException("Invalid view $view to show bottom sheet")
             }
-            binding.pressureViewContainer -> {
-                val bottomSheet = PressureSettingsBottomSheet.newInstance()
-                bottomSheet.show(childFragmentManager, PressureSettingsBottomSheet.TAG)
-            }
-            binding.precipitationViewContainer -> {
-                val bottomSheet = PrecipitationSettingsBottomSheet.newInstance()
-                bottomSheet.show(childFragmentManager, PrecipitationSettingsBottomSheet.TAG)
-            }
-            binding.windSpeedViewContainer -> {
-                val bottomSheet = WindSpeedSettingsBottomSheet.newInstance()
-                bottomSheet.show(childFragmentManager, WindSpeedSettingsBottomSheet.TAG)
-            }
-            else -> throw RuntimeException("Invalid view $view to show bottom sheet")
         }
     }
 
@@ -138,6 +164,49 @@ class SettingsFragment : Fragment() {
                 childFragmentManager.findFragmentByTag(PressureSettingsBottomSheet.TAG) != null ||
                 childFragmentManager.findFragmentByTag(PrecipitationSettingsBottomSheet.TAG) != null ||
                 childFragmentManager.findFragmentByTag(WindSpeedSettingsBottomSheet.TAG) != null
+    }
+
+    private fun shareLinkIntent() {
+        try {
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Weather Forecast")
+            var shareMessage =
+                """
+                Let me recommend you the following app: Weather Forecast.
+                Always stay up to date with the latest changes in the weather forecast.
+
+                Play Store - Download link for Android:
+                """.trimIndent()
+            shareMessage =
+                "${shareMessage}\nhttps://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}"
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
+            startActivity(Intent.createChooser(shareIntent, "Share"))
+        } catch (e: Exception) {
+        }
+    }
+
+    private fun rateAppIntent() {
+        val uri: Uri = Uri.parse("market://details?id=${BuildConfig.APPLICATION_ID}")
+        val goToPlayStore = Intent(Intent.ACTION_VIEW, uri)
+
+        // After pressing the back button in Play Store to return to our application,
+        // we need to add following flags to intent.
+        goToPlayStore.addFlags(
+            Intent.FLAG_ACTIVITY_NO_HISTORY or
+                    Intent.FLAG_ACTIVITY_NEW_DOCUMENT or
+                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+        )
+        try {
+            startActivity(goToPlayStore)
+        } catch (e: ActivityNotFoundException) {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}")
+                )
+            )
+        }
     }
 
     private fun isTouchOnView(v: View, ev: MotionEvent): Boolean {

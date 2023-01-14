@@ -6,14 +6,6 @@ import com.hermanbocharov.weatherforecast.data.network.model.LocationDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherConditionDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherForecastDto
 import com.hermanbocharov.weatherforecast.domain.entities.*
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.EAST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTH
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHEAST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHWEST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTH
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHEAST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHWEST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.WEST
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -221,7 +213,7 @@ class OpenWeatherMapper @Inject constructor() {
                     rain = rain,
                     snow = snow,
                     windSpeed = windSpeed,
-                    windDirection = convertWindDegreeToDirection(hour.hourlyForecast.windDegree),
+                    windDirectionDeg = hour.hourlyForecast.windDegree,
                     windGust = windGust,
                     tempUnit = tempUnit,
                     precipitationUnit = precipitationUnit,
@@ -273,20 +265,6 @@ class OpenWeatherMapper @Inject constructor() {
         return CountriesISO.countryNameISO[countryName] ?: ""
     }
 
-    /*private fun getWeatherIconName(
-        iconId: Int,
-        isSmall: Boolean,
-        forecastTime: Int,
-        sunriseTime: Int,
-        sunsetTime: Int
-    ): String {
-        val icName = WeatherIconsIds.idIcon[iconId] ?: DEFAULT_WEATHER_ICON
-
-        if ()
-
-            return icName
-    }*/
-
     private fun convertCountryCodeToName(code: String): String {
         return Locale("", code).displayCountry
     }
@@ -313,19 +291,6 @@ class OpenWeatherMapper @Inject constructor() {
 
     private fun convertHPaToInHg(pressure: Double): Double {
         return pressure / 33.863887
-    }
-
-    private fun convertWindDegreeToDirection(degree: Int): String {
-        return when (degree) {
-            in 24..68 -> NORTHEAST
-            in 69..113 -> EAST
-            in 114..158 -> SOUTHEAST
-            in 159..203 -> SOUTH
-            in 204..248 -> SOUTHWEST
-            in 249..293 -> WEST
-            in 294..336 -> NORTHWEST
-            else -> NORTH
-        }
     }
 
     private fun convertTimezoneOffsetToTimezone(offset: Int): String {

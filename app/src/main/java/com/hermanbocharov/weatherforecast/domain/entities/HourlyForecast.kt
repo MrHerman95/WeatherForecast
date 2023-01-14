@@ -11,7 +11,7 @@ data class HourlyForecast(
     val rain: Double?,
     val snow: Double?,
     val windSpeed: Double,
-    val windDirection: String,
+    val windDirectionDeg: Int,
     val windGust: Double?,
     val tempUnit: Int,
     val pressureUnit: Int,

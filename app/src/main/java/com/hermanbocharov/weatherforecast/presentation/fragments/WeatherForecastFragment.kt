@@ -13,14 +13,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentWeatherForecastBinding
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.EAST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTH
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHEAST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHWEST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTH
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHEAST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHWEST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.WEST
+import com.hermanbocharov.weatherforecast.domain.entities.DirectionDeg.EAST
+import com.hermanbocharov.weatherforecast.domain.entities.DirectionDeg.NORTH
+import com.hermanbocharov.weatherforecast.domain.entities.DirectionDeg.NORTHEAST
+import com.hermanbocharov.weatherforecast.domain.entities.DirectionDeg.NORTHWEST
+import com.hermanbocharov.weatherforecast.domain.entities.DirectionDeg.SOUTH
+import com.hermanbocharov.weatherforecast.domain.entities.DirectionDeg.SOUTHEAST
+import com.hermanbocharov.weatherforecast.domain.entities.DirectionDeg.SOUTHWEST
+import com.hermanbocharov.weatherforecast.domain.entities.DirectionDeg.WEST
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.PrecipitationUnit
 import com.hermanbocharov.weatherforecast.domain.entities.PressureUnit
@@ -137,6 +137,7 @@ class WeatherForecastFragment : Fragment() {
                 else -> throw RuntimeException("Unknown pressure unit $pressureUnit")
             }
 
+            val windDirection = convertWindDegreeToDirection(windDirectionDeg)
             val windSpeedStr: String
             val windGustStr: String
             when (windSpeedUnit) {
@@ -207,22 +208,34 @@ class WeatherForecastFragment : Fragment() {
                 )
             )
 
-            updateIvWindDirection(windDirection)
+            updateIvWindDirection(windDirectionDeg)
             updateIvHumidity(humidity)
         }
     }
 
-    private fun updateIvWindDirection(direction: String) {
-        val drawableId = when (direction) {
-            NORTH -> R.drawable.ic_north
-            SOUTH -> R.drawable.ic_south
-            EAST -> R.drawable.ic_east
-            WEST -> R.drawable.ic_west
-            NORTHWEST -> R.drawable.ic_north_west
-            NORTHEAST -> R.drawable.ic_north_east
-            SOUTHWEST -> R.drawable.ic_south_west
-            SOUTHEAST -> R.drawable.ic_south_east
-            else -> throw RuntimeException("Unknown direction $direction")
+    private fun convertWindDegreeToDirection(degree: Int): String {
+        return when (degree) {
+            in NORTHEAST -> getString(R.string.str_northeast)
+            in EAST -> getString(R.string.str_east)
+            in SOUTHEAST -> getString(R.string.str_southeast)
+            in SOUTH -> getString(R.string.str_south)
+            in SOUTHWEST -> getString(R.string.str_southwest)
+            in WEST -> getString(R.string.str_west)
+            in NORTHWEST -> getString(R.string.str_northwest)
+            else -> getString(R.string.str_north)
+        }
+    }
+
+    private fun updateIvWindDirection(degree: Int) {
+        val drawableId = when (degree) {
+            in SOUTH -> R.drawable.ic_south
+            in EAST -> R.drawable.ic_east
+            in WEST -> R.drawable.ic_west
+            in NORTHWEST -> R.drawable.ic_north_west
+            in NORTHEAST -> R.drawable.ic_north_east
+            in SOUTHWEST -> R.drawable.ic_south_west
+            in SOUTHEAST -> R.drawable.ic_south_east
+            else -> R.drawable.ic_north
         }
 
         binding.ivWindDir.setImageDrawable(
@@ -260,11 +273,11 @@ class WeatherForecastFragment : Fragment() {
     private fun goToLocationSnackbar(): Snackbar {
         return Snackbar.make(
             binding.fragmentWeatherForecast,
-            "Couldn't find your location. Select a\u00A0location manually in the\u00A0\"Location\" menu",
+            getString(R.string.str_loc_cant_find),
             Snackbar.LENGTH_LONG
         )
             .setTextMaxLines(4)
-            .setAction("Location") {
+            .setAction(getString(R.string.str_location)) {
                 val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav_view)
                 bottomNav.selectedItemId = R.id.location_page
             }

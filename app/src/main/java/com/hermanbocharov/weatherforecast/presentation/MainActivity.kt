@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
+
         binding.bottomNavView.setOnItemSelectedListener { item ->
             if (item.isChecked) {
                 return@setOnItemSelectedListener true
@@ -56,18 +57,6 @@ class MainActivity : AppCompatActivity() {
                 .commit()
             return@setOnItemSelectedListener true
         }
-    }
-
-    override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(ContextWrapper(newBase?.setAppLocale(Locale.ENGLISH)))
-    }
-
-    private fun Context.setAppLocale(locale: Locale): Context {
-        Locale.setDefault(locale)
-        val config = resources.configuration
-        config.setLocale(locale)
-        config.setLayoutDirection(locale)
-        return createConfigurationContext(config)
     }
 
     private fun setStatusBarGradiant(activity: Activity) {

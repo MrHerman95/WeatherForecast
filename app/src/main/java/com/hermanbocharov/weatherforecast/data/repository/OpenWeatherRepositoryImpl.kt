@@ -15,6 +15,7 @@ import com.hermanbocharov.weatherforecast.domain.entities.Location
 import com.hermanbocharov.weatherforecast.domain.repository.OpenWeatherRepository
 import com.hermanbocharov.weatherforecast.exception.NoInternetException
 import io.reactivex.rxjava3.core.Single
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -53,8 +54,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                                 )
                             }
                     }
-            }
-            else {
+            } else {
                 Single.error(NoInternetException())
             }
         }
@@ -81,7 +81,11 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     override fun loadWeatherForecastCurLoc(): Single<Unit> {
         return getCurrentLocation()
             .flatMap {
-                apiService.getWeatherForecast(latitude = it.lat, longitude = it.lon)
+                apiService.getWeatherForecast(
+                    latitude = it.lat,
+                    longitude = it.lon,
+                    lang = getForecastLanguage()
+                )
             }
             .map {
                 insertWeatherForecastToDatabase(it, getCurrentLocationId())
@@ -97,7 +101,11 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                         latitude = it.latitude,
                         longitude = it.longitude
                     ),
-                    apiService.getWeatherForecast(latitude = it.latitude, longitude = it.longitude)
+                    apiService.getWeatherForecast(
+                        latitude = it.latitude,
+                        longitude = it.longitude,
+                        lang = getForecastLanguage()
+                    )
                 ) { location, weather ->
                     FullWeatherInfoDto(location[0], weather)
                 }
@@ -197,6 +205,14 @@ class OpenWeatherRepositoryImpl @Inject constructor(
         dailyForecastDao.insertDailyForecast(
             mapper.mapWeatherForecastDtoToDailyForecastEntityList(forecast, locationId)
         )
+    }
+
+    private fun getForecastLanguage(): String {
+        return when (Locale.getDefault().language) {
+            "ru" -> "ru"
+            "uk" -> "uk"
+            else -> "en"
+        }
     }
 
     companion object {

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Прогноз погоди</string>
+
+    <string name="str_settings">Налаштування</string>
+    <string name="str_location">Локація</string>
+    <string name="str_weather_now">Зараз</string>
+    <string name="str_weather_forecast">Прогноз</string>
+
+    <string name="str_location_full">%1$s, %2$s, %3$s</string>
+    <string name="str_location_city_country">%1$s, %2$s</string>
+    <string name="str_location_search_hint">напр. Київ, Україна</string>
+    <string name="str_current_location">Населений пункт</string>
+    <string name="str_undefined_location">Поточне місцезнаходження недоступне. Встановіть своє місцезнаходження</string>
+    <string name="str_search_location">Пошук</string>
+    <string name="str_location_name">%1$s, %2$s</string>
+    <string name="str_nothing_found">Місто не знайдено :(</string>
+    <string name="str_search_hint_tv">Будь ласка, введіть місто та країну (або код країни, напр.\u00A0\'UA\') через кому</string>
+    <string name="str_detecting_location">Визначення місцезнаходження…</string>
+    <string name="str_detect_location_success">Місцезнаходження було успішно визначено.</string>
+    <string name="str_detect_location_failure">Не вдалося визначити місцезнаходження. Переконайтеся, що визначення місцезнаходження пристрою увімкнено.</string>
+    <string name="str_location_no_internet">Не вдалося виконати пошук. Перевірте підключення до Інтернету та спробуйте ще раз</string>
+
+    <string name="str_temp_celsius">%d\u00B0C</string>
+    <string name="str_feels_like_celsius">Відчуття %d\u00B0C</string>
+    <string name="str_temp_fahrenheit">%d\u00B0F</string>
+    <string name="str_feels_like_fahrenheit">Відчуття %d\u00B0F</string>
+
+    <string name="str_cloudiness_value">%d%%</string>
+    <string name="str_humidity_value">%d%%</string>
+    <string name="str_precipitation_value_mm">%.1f мм/г</string>
+    <string name="str_precipitation_value_in">%.2f дюйм/г</string>
+    <string name="str_pressure_value_mm">%.0f мм рт.ст.</string>
+    <string name="str_pressure_value_in">%.2f дюйм рт.ст.</string>
+    <string name="str_wind_speed_value_ms">%.1f м/с</string>
+    <string name="str_wind_speed_value_kph">%.1f км/г</string>
+    <string name="str_wind_speed_value_mph">%.1f миль/г</string>
+
+    <string name="str_settings_units">Одиниці вимірювання</string>
+    <string name="str_settings_temp">Температура</string>
+    <string name="str_settings_pressure">Атмосферний тиск</string>
+    <string name="str_settings_precipitation">Атмосферні опади</string>
+    <string name="str_settings_wind_speed">Швидкість вітру</string>
+    <string name="str_settings_celsius">Цельсій (\u00B0C)</string>
+    <string name="str_settings_fahrenheit">Фаренгейт (\u00B0F)</string>
+    <string name="str_settings_mmhg">Міліметр ртутного стовпа</string>
+    <string name="str_settings_inhg">Дюйм ртутного стовпа</string>
+    <string name="str_bottom_sheet_mmhg">Міліметр ртутного стовпа (мм\u00A0рт.ст.)</string>
+    <string name="str_bottom_sheet_inhg">Дюйм ртутного стовпа (дюйм\u00A0рт.ст.)</string>
+    <string name="str_settings_mmh">Міліметр за годину (мм/г)</string>
+    <string name="str_settings_inh">Дюйм за годину (дюйм/г)</string>
+    <string name="str_settings_ms">Метр на секунду (м/с)</string>
+    <string name="str_settings_kmh">Кілометр на годину (км/г)</string>
+    <string name="str_settings_mph">Миля на годину (миль/г)</string>
+
+    <string name="str_rate_share">Оцінити та поділитися</string>
+    <string name="str_rate">5-зірковий рейтинг</string>
+    <string name="str_rate_desc">Будь ласка, оцініть додаток на 5 зірок, якщо він вам подобається. Вам не складно, нам приємно</string>
+    <string name="str_share">Поділитися</string>
+    <string name="str_share_desc">Будь ласка, поділіться додатком з друзями, щоб зробити його ще кращим</string>
+    <string name="str_app_name_version">Прогноз погоди v1.1</string>
+
+    <string name="str_hourly_forecast">Погодинний прогноз</string>
+    <string name="str_humidity">Вологість</string>
+    <string name="str_cloudiness">Хмарність</string>
+    <string name="str_precipitation">Опади</string>
+    <string name="str_pressure">Тиск</string>
+    <string name="str_wind_speed">Швидкість вітру</string>
+    <string name="str_wind_gust">Пориви вітру</string>
+    <string name="str_wind_dir">Напрямок вітру</string>
+    <string name="str_uvi">УФ-індекс</string>
+
+    <string name="str_daily_forecast">Щоденний прогноз</string>
+    <string name="str_sunrise">Схід сонця</string>
+    <string name="str_sunset">Захід сонця</string>
+
+    <string name="str_close_bottom_sheet">Скасувати</string>
+
+    <string name="str_earth_desc">Зображення планети Земля</string>
+    <string name="str_detect_loc_desc">Визначити ваше місцезнаходження автоматично</string>
+    <string name="str_ic_search_desc">Натисніть, щоб ввести місцезнаходження</string>
+    <string name="str_ic_clear_desc">Очистити поле введення місцезнаходження</string>
+    <string name="str_ic_cancel_desc">Скасувати поточний пошук</string>
+    <string name="str_divider_desc">Просто роздільник</string>
+    <string name="str_weather_ic_desc">Зображення погодних умов</string>
+    <string name="str_humidity_ic_desc">Вологість</string>
+    <string name="str_cloudiness_ic_desc">Хмарність</string>
+    <string name="str_precipitation_ic_desc">Атмосферні опади</string>
+    <string name="str_pressure_ic_desc">Атмосферний тиск</string>
+    <string name="str_wind_speed_ic_desc">Швидкість вітру</string>
+    <string name="str_wind_gust_ic_desc">Пориви вітру</string>
+    <string name="str_wind_dir_ic_desc">Напрямок вітру</string>
+    <string name="str_uvi_ic_desc">УФ-індекс</string>
+    <string name="str_sunrise_ic_desc">Час сходу сонця</string>
+    <string name="str_sunset_ic_desc">Час заходу сонця</string>
+    <string name="str_location_city_desc">Тут буде перелік міст</string>
+    <string name="str_temp_unit_desc">Виберіть одиницю вимірювання температури</string>
+    <string name="str_pressure_unit_desc">Виберіть одиницю вимірювання атмосферного тиску</string>
+    <string name="str_speed_unit_desc">Виберіть одиницю вимірювання швидкості вітру</string>
+    <string name="str_precipitation_unit_desc">Виберіть одиницю вимірювання випадання опадів</string>
+
+    <string name="str_retry">Спробувати знову</string>
+
+    <string name="str_north">Пн.</string>
+    <string name="str_south">Пд.</string>
+    <string name="str_west">Зх.</string>
+    <string name="str_east">Сх.</string>
+    <string name="str_northeast">Пн. Сх.</string>
+    <string name="str_northwest">Пн. Зх.</string>
+    <string name="str_southwest">Пд. Зх.</string>
+    <string name="str_southeast">Пд. Сх.</string>
+
+    <string name="str_loc_permission_denied">Доступ до даних про місцезнаходження заборонено. Встановіть місцезнаходження вручну в меню \"Локація\"</string>
+    <string name="str_loc_cant_find">Не вдалося знайти Ваше місцезнаходження. Встановіть місцезнаходження вручну в меню \"Локація\"</string>
+    <string name="str_loc_permission_denied_settings">Доступ до даних про місцезнаходження заборонено. Необхідно дозволити доступ у налаштуваннях</string>
+    <string name="str_no_internet_message">Не вдалося оновити погоду. Будь ласка, перевірте інтернет-з\'єднання і спробуйте знову.</string>
+
+    <string name="str_tools_city">Indianapolis</string>
+    <string name="str_tools_timezone">UTC+3:30</string>
+    <string name="str_tools_date">Wednesday, Sept. 28</string>
+    <string name="str_tools_time">9:41 PM</string>
+    <string name="str_tools_hour">9 AM</string>
+    <string name="str_tools_date_hour_forecast">Sept. 28</string>
+    <string name="str_tools_zone_date">Wednesday, 31st</string>
+    <string name="str_tools_weather_condition">Thunderstorm with heavy drizzle</string>
+    <string name="str_tools_weather_cond_main">Rain</string>
+    <string name="str_tools_temperature">25\u00B0C</string>
+    <string name="str_tools_feels_like">Feels Like 23\u00B0C</string>
+    <string name="str_tools_item_loc_city_country">Lviv, Ukraine</string>
+    <string name="str_tools_item_loc_state">Lviv Oblast</string>
+    <string name="str_tools_location_name">Odesa, Ukraine</string>
+    <string name="str_tools_humidity_value">100%</string>
+    <string name="str_tools_cloudiness_value">0%</string>
+    <string name="str_tools_precipitation_value">15 mm</string>
+    <string name="str_tools_pressure_value">750 mmHg</string>
+    <string name="str_tools_wind_speed_value">6 m/s</string>
+    <string name="str_tools_wind_gust_value">9 m/s</string>
+    <string name="str_tools_wind_dir_value">SW</string>
+    <string name="str_tools_uvi_value">3</string>
+    <string name="str_tools_date_day_forecast">Sun, Sept. 11</string>
+
+</resources>

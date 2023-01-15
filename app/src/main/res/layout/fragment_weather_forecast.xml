@@ -116,13 +116,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/str_precipitation_ic_desc"
-        tools:src="@drawable/ic_weather_snowy" />
+        tools:src="@drawable/ic_weather_snowing" />
 
     <TextView
         android:id="@+id/tv_precipitation_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_regular"
+        android:paddingStart="2dp"
         android:textColor="@color/white"
         android:textSize="13sp"
         tools:text="@string/str_tools_precipitation_value"
@@ -133,6 +134,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_regular"
+        android:paddingStart="2dp"
         android:text="@string/str_precipitation"
         android:textColor="@color/white"
         android:textSize="11sp"

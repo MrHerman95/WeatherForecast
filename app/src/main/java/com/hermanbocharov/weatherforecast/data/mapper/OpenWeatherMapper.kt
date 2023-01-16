@@ -16,17 +16,21 @@ import kotlin.text.Typography.plusMinus
 
 class OpenWeatherMapper @Inject constructor() {
 
-    fun mapDtoToLocationEntity(dto: LocationDto) = LocationEntity(
-        name = dto.name,
-        lat = dto.lat,
-        lon = dto.lon,
-        country = convertCountryCodeToName(dto.country),
-        state = dto.state
-    )
+    fun mapDtoToLocationEntity(dto: LocationDto): LocationEntity {
+        val localName = getLocalNameFromLocation(dto)
+        return LocationEntity(
+            name = localName,
+            lat = dto.lat,
+            lon = dto.lon,
+            country = convertCountryCodeToName(dto.country),
+            state = dto.state
+        )
+    }
 
     fun mapDtoToLocationDomain(dto: LocationDto): Location {
+        val localName = getLocalNameFromLocation(dto)
         return Location(
-            name = dto.name,
+            name = localName,
             lat = dto.lat,
             lon = dto.lon,
             country = convertCountryCodeToName(dto.country),
@@ -303,6 +307,18 @@ class OpenWeatherMapper @Inject constructor() {
         }
 
         return String.format("UTC%s%02d:%02d", sign, abs(hours), abs(minutes))
+    }
+
+    private fun getLocalNameFromLocation(dto: LocationDto): String {
+        var localName = dto.localNames?.let {
+            when (Locale.getDefault().language) {
+                "ru" -> it.ru
+                "uk" -> it.uk
+                else -> dto.name
+            }
+        } ?: dto.name
+
+        return localName
     }
 
     companion object {

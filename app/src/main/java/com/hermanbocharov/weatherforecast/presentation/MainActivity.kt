@@ -1,8 +1,6 @@
 package com.hermanbocharov.weatherforecast.presentation
 
 import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
@@ -14,7 +12,6 @@ import com.hermanbocharov.weatherforecast.presentation.fragments.CurrentWeatherF
 import com.hermanbocharov.weatherforecast.presentation.fragments.LocationFragment
 import com.hermanbocharov.weatherforecast.presentation.fragments.SettingsFragment
 import com.hermanbocharov.weatherforecast.presentation.fragments.WeatherForecastFragment
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {

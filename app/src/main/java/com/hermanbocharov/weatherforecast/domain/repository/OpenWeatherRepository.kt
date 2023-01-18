@@ -14,7 +14,7 @@ interface OpenWeatherRepository {
     fun loadWeatherForecastCurLoc(): Single<Unit>
     fun getListOfCities(city: String, country: String): Single<List<Location>>
     fun getCurrentLocation(): Single<Location>
-    fun addNewLocation(location: Location): Single<Unit>
+    fun setNewLocation(location: Location): Single<Unit>
     fun getCurrentLocationId(): Int
     fun getSpeedUnit(): Int
     fun saveSpeedUnit(unitId: Int)

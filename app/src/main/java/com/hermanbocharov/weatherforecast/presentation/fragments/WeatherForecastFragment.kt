@@ -14,7 +14,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.hermanbocharov.weatherforecast.R
 import com.hermanbocharov.weatherforecast.databinding.FragmentWeatherForecastBinding
 import com.hermanbocharov.weatherforecast.domain.entities.DirectionDeg.EAST
-import com.hermanbocharov.weatherforecast.domain.entities.DirectionDeg.NORTH
 import com.hermanbocharov.weatherforecast.domain.entities.DirectionDeg.NORTHEAST
 import com.hermanbocharov.weatherforecast.domain.entities.DirectionDeg.NORTHWEST
 import com.hermanbocharov.weatherforecast.domain.entities.DirectionDeg.SOUTH

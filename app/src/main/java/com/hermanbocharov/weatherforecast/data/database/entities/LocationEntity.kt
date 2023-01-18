@@ -1,5 +1,6 @@
 package com.hermanbocharov.weatherforecast.data.database.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -9,10 +10,15 @@ import androidx.room.PrimaryKey
     indices = [Index(value = ["lat", "lon"], unique = true)]
 )
 data class LocationEntity(
-    val name: String,
+    @ColumnInfo(name = "name_en")
+    val nameEn: String,
+    @ColumnInfo(name = "name_ru")
+    val nameRu: String?,
+    @ColumnInfo(name = "name_uk")
+    val nameUk: String?,
     val lat: Double,
     val lon: Double,
-    val country: String,
+    val countryCode: String,
     val state: String?
 ) {
     @PrimaryKey(autoGenerate = true)

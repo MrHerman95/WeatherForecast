@@ -44,8 +44,7 @@ class CurrentWeatherViewModel @Inject constructor(
             }, {
                 if (it is NoInternetException) {
                     _hasInternetConnection.value = false
-                }
-                else {
+                } else {
                     _hasInternetConnection.value = false
                 }
             })

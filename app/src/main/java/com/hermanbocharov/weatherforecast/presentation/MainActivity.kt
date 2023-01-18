@@ -1,8 +1,6 @@
 package com.hermanbocharov.weatherforecast.presentation
 
 import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
@@ -14,7 +12,6 @@ import com.hermanbocharov.weatherforecast.presentation.fragments.CurrentWeatherF
 import com.hermanbocharov.weatherforecast.presentation.fragments.LocationFragment
 import com.hermanbocharov.weatherforecast.presentation.fragments.SettingsFragment
 import com.hermanbocharov.weatherforecast.presentation.fragments.WeatherForecastFragment
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -38,6 +35,7 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
+
         binding.bottomNavView.setOnItemSelectedListener { item ->
             if (item.isChecked) {
                 return@setOnItemSelectedListener true
@@ -56,18 +54,6 @@ class MainActivity : AppCompatActivity() {
                 .commit()
             return@setOnItemSelectedListener true
         }
-    }
-
-    override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(ContextWrapper(newBase?.setAppLocale(Locale.ENGLISH)))
-    }
-
-    private fun Context.setAppLocale(locale: Locale): Context {
-        Locale.setDefault(locale)
-        val config = resources.configuration
-        config.setLocale(locale)
-        config.setLayoutDirection(locale)
-        return createConfigurationContext(config)
     }
 
     private fun setStatusBarGradiant(activity: Activity) {

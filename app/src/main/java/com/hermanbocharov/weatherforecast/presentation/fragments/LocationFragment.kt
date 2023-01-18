@@ -112,7 +112,7 @@ class LocationFragment : Fragment() {
 
         locationAdapter.onLocationClickListener = {
             binding.tvLocationName.isSelected = false
-            viewModel.addNewLocation(it)
+            viewModel.setNewLocation(it)
             searchModeOff()
         }
 
@@ -440,11 +440,11 @@ class LocationFragment : Fragment() {
     private fun showOnLocationPermissionDeniedSnackbar() {
         snackbar = Snackbar.make(
             binding.fragmentLocation,
-            "Location permission denied. To detect location enable it in the\u00A0settings",
+            getString(R.string.str_loc_permission_denied_settings),
             Snackbar.LENGTH_LONG
         )
             .setTextMaxLines(4)
-            .setAction("Settings") {
+            .setAction(getString(R.string.str_settings)) {
                 val intent = Intent()
                 intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                 val uri = Uri.fromParts(

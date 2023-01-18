@@ -8,6 +8,10 @@ data class LocationDto(
     @Expose
     val name: String,
 
+    @SerializedName("local_names")
+    @Expose
+    val localNames: LocalNamesDto? = null,
+
     @SerializedName("lat")
     @Expose
     val lat: Double,

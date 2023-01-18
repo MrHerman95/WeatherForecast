@@ -15,6 +15,7 @@ import com.hermanbocharov.weatherforecast.domain.entities.Location
 import com.hermanbocharov.weatherforecast.domain.repository.OpenWeatherRepository
 import com.hermanbocharov.weatherforecast.exception.NoInternetException
 import io.reactivex.rxjava3.core.Single
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -35,8 +36,9 @@ class OpenWeatherRepositoryImpl @Inject constructor(
 ) : OpenWeatherRepository {
 
     override fun getCurrentWeather(): Single<CurrentWeather> {
-
-        return if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - prefs.getLastUpdateTime() < UPDATE_FREQUENCY) {
+        return if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - prefs.getLastUpdateTime() < UPDATE_FREQUENCY
+            && getForecastLanguage() == prefs.getSavedLocale()
+        ) {
             currentWeatherFullDataDao
                 .getCurrentWeatherFullData(getCurrentLocationId())
                 .map { mapper.mapEntityToCurrentWeatherDomain(it, getTemperatureUnit()) }
@@ -53,8 +55,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                                 )
                             }
                     }
-            }
-            else {
+            } else {
                 Single.error(NoInternetException())
             }
         }
@@ -81,11 +82,16 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     override fun loadWeatherForecastCurLoc(): Single<Unit> {
         return getCurrentLocation()
             .flatMap {
-                apiService.getWeatherForecast(latitude = it.lat, longitude = it.lon)
+                apiService.getWeatherForecast(
+                    latitude = it.lat,
+                    longitude = it.lon,
+                    lang = getForecastLanguage()
+                )
             }
             .map {
                 insertWeatherForecastToDatabase(it, getCurrentLocationId())
                 prefs.saveLastUpdateTime(it.current.updateTime)
+                prefs.saveCurrentLocale(getForecastLanguage())
             }
     }
 
@@ -97,7 +103,11 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                         latitude = it.latitude,
                         longitude = it.longitude
                     ),
-                    apiService.getWeatherForecast(latitude = it.latitude, longitude = it.longitude)
+                    apiService.getWeatherForecast(
+                        latitude = it.latitude,
+                        longitude = it.longitude,
+                        lang = getForecastLanguage()
+                    )
                 ) { location, weather ->
                     FullWeatherInfoDto(location[0], weather)
                 }
@@ -125,7 +135,10 @@ class OpenWeatherRepositoryImpl @Inject constructor(
         return if (networkManager.isNetworkAvailable()) {
             apiService.getListOfCities(cityCountry)
                 .map {
-                    it.map { mapper.mapDtoToLocationDomain(it) }
+                    it.map {
+                        locationDao.insertLocation(mapper.mapDtoToLocationEntity(it)).blockingGet()
+                        mapper.mapDtoToLocationDomain(it)
+                    }
                 }
         } else {
             Single.error(NoInternetException())
@@ -151,11 +164,10 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     override fun getPressureUnit(): Int = prefs.getPressureUnit()
     override fun savePressureUnit(unitId: Int) = prefs.savePressureUnit(unitId)
 
-
-    override fun addNewLocation(location: Location): Single<Unit> {
-        return locationDao.insertLocation(mapper.mapLocationDomainToEntity(location))
+    override fun setNewLocation(location: Location): Single<Unit> {
+        return locationDao.getLocation(lat = location.lat, lon = location.lon)
             .flatMap {
-                prefs.saveCurrentLocationId(it.toInt())
+                prefs.saveCurrentLocationId(it.id)
                 loadWeatherForecastCurLoc()
             }
     }
@@ -197,6 +209,14 @@ class OpenWeatherRepositoryImpl @Inject constructor(
         dailyForecastDao.insertDailyForecast(
             mapper.mapWeatherForecastDtoToDailyForecastEntityList(forecast, locationId)
         )
+    }
+
+    private fun getForecastLanguage(): String {
+        return when (Locale.getDefault().language) {
+            "ru" -> "ru"
+            "uk" -> "uk"
+            else -> "en"
+        }
     }
 
     companion object {

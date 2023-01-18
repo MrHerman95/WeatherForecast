@@ -133,7 +133,10 @@ class OpenWeatherRepositoryImpl @Inject constructor(
         return if (networkManager.isNetworkAvailable()) {
             apiService.getListOfCities(cityCountry)
                 .map {
-                    it.map { mapper.mapDtoToLocationDomain(it) }
+                    it.map {
+                        locationDao.insertLocation(mapper.mapDtoToLocationEntity(it)).blockingGet()
+                        mapper.mapDtoToLocationDomain(it)
+                    }
                 }
         } else {
             Single.error(NoInternetException())
@@ -160,10 +163,10 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     override fun savePressureUnit(unitId: Int) = prefs.savePressureUnit(unitId)
 
 
-    override fun addNewLocation(location: Location): Single<Unit> {
-        return locationDao.insertLocation(mapper.mapLocationDomainToEntity(location))
+    override fun setNewLocation(location: Location): Single<Unit> {
+        return locationDao.getLocation(lat = location.lat, lon = location.lon)
             .flatMap {
-                prefs.saveCurrentLocationId(it.toInt())
+                prefs.saveCurrentLocationId(it.id)
                 loadWeatherForecastCurLoc()
             }
     }

@@ -17,12 +17,13 @@ import kotlin.text.Typography.plusMinus
 class OpenWeatherMapper @Inject constructor() {
 
     fun mapDtoToLocationEntity(dto: LocationDto): LocationEntity {
-        val localName = getLocalNameFromLocation(dto)
         return LocationEntity(
-            name = localName,
+            nameEn = dto.name,
+            nameRu = dto.localNames?.ru,
+            nameUk = dto.localNames?.uk,
             lat = dto.lat,
             lon = dto.lon,
-            country = convertCountryCodeToName(dto.country),
+            countryCode = dto.country,
             state = dto.state
         )
     }
@@ -39,22 +40,13 @@ class OpenWeatherMapper @Inject constructor() {
     }
 
     fun mapEntityToLocationDomain(entity: LocationEntity): Location {
+        val localName = getLocalNameFromLocation(entity)
         return Location(
-            name = entity.name,
+            name = localName,
             lat = entity.lat,
             lon = entity.lon,
-            country = entity.country,
+            country = convertCountryCodeToName(entity.countryCode),
             state = entity.state
-        )
-    }
-
-    fun mapLocationDomainToEntity(domain: Location): LocationEntity {
-        return LocationEntity(
-            name = domain.name,
-            lat = domain.lat,
-            lon = domain.lon,
-            country = domain.country,
-            state = domain.state
         )
     }
 
@@ -149,11 +141,13 @@ class OpenWeatherMapper @Inject constructor() {
 
         convertTimezoneOffsetToTimezone(entity.currentWeather.timezoneOffset)
 
+        val localName = getLocalNameFromLocation(entity.location)
+
         return CurrentWeather(
             temp = temperature,
             feelsLike = feelsLike,
             tempUnit = tempUnit,
-            cityName = entity.location.name,
+            cityName = localName,
             description = entity.weatherCondition.description.replaceFirstChar {
                 it.titlecase(Locale.getDefault())
             },
@@ -205,6 +199,8 @@ class OpenWeatherMapper @Inject constructor() {
                 PressureUnit.INCHES_HG -> pressure = convertHPaToInHg(pressure)
             }
 
+            val localName = getLocalNameFromLocation(hour.location)
+
             hourlyForecast.add(
                 HourlyForecast(
                     forecastTime = hour.hourlyForecast.forecastTime,
@@ -223,7 +219,7 @@ class OpenWeatherMapper @Inject constructor() {
                     precipitationUnit = precipitationUnit,
                     pressureUnit = pressureUnit,
                     windSpeedUnit = speedUnit,
-                    cityName = hour.location.name,
+                    cityName = localName,
                     description = hour.weatherCondition.description.replaceFirstChar {
                         it.titlecase(Locale.getDefault())
                     },
@@ -310,13 +306,23 @@ class OpenWeatherMapper @Inject constructor() {
     }
 
     private fun getLocalNameFromLocation(dto: LocationDto): String {
-        var localName = dto.localNames?.let {
+        val localName = dto.localNames?.let {
             when (Locale.getDefault().language) {
                 "ru" -> it.ru
                 "uk" -> it.uk
                 else -> dto.name
             }
         } ?: dto.name
+
+        return localName
+    }
+
+    private fun getLocalNameFromLocation(entity: LocationEntity): String {
+        val localName = when (Locale.getDefault().language) {
+            "ru" -> entity.nameRu
+            "uk" -> entity.nameUk
+            else -> entity.nameEn
+        } ?: entity.nameEn
 
         return localName
     }

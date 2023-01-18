@@ -112,7 +112,7 @@ class LocationFragment : Fragment() {
 
         locationAdapter.onLocationClickListener = {
             binding.tvLocationName.isSelected = false
-            viewModel.addNewLocation(it)
+            viewModel.setNewLocation(it)
             searchModeOff()
         }
 

@@ -68,6 +68,14 @@ class PreferenceManager @Inject constructor(
         return preferences.getInt(KEY_PRESSURE_UNITS, PressureUnit.MILLIMETERS_HG)
     }
 
+    fun saveCurrentLocale(locale: String) {
+        preferences.edit().putString(KEY_LOCALE, locale).apply()
+    }
+
+    fun getSavedLocale(): String {
+        return preferences.getString(KEY_LOCALE, "en") ?: "en"
+    }
+
     companion object {
         private const val KEY_LAST_UPDATE_TIME = "key_last_update_time"
         private const val KEY_LOCATION_ID = "key_location_id"
@@ -75,5 +83,6 @@ class PreferenceManager @Inject constructor(
         private const val KEY_SPEED_UNITS = "key_speed_units"
         private const val KEY_PRECIPITATION_UNITS = "key_precipitation_units"
         private const val KEY_PRESSURE_UNITS = "key_pressure_units"
+        private const val KEY_LOCALE = "key_locale"
     }
 }

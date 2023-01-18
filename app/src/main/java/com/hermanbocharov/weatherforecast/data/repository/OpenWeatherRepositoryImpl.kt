@@ -36,8 +36,9 @@ class OpenWeatherRepositoryImpl @Inject constructor(
 ) : OpenWeatherRepository {
 
     override fun getCurrentWeather(): Single<CurrentWeather> {
-
-        return if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - prefs.getLastUpdateTime() < UPDATE_FREQUENCY) {
+        return if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - prefs.getLastUpdateTime() < UPDATE_FREQUENCY
+            && getForecastLanguage() == prefs.getSavedLocale()
+        ) {
             currentWeatherFullDataDao
                 .getCurrentWeatherFullData(getCurrentLocationId())
                 .map { mapper.mapEntityToCurrentWeatherDomain(it, getTemperatureUnit()) }
@@ -90,6 +91,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
             .map {
                 insertWeatherForecastToDatabase(it, getCurrentLocationId())
                 prefs.saveLastUpdateTime(it.current.updateTime)
+                prefs.saveCurrentLocale(getForecastLanguage())
             }
     }
 
@@ -161,7 +163,6 @@ class OpenWeatherRepositoryImpl @Inject constructor(
 
     override fun getPressureUnit(): Int = prefs.getPressureUnit()
     override fun savePressureUnit(unitId: Int) = prefs.savePressureUnit(unitId)
-
 
     override fun setNewLocation(location: Location): Single<Unit> {
         return locationDao.getLocation(lat = location.lat, lon = location.lon)

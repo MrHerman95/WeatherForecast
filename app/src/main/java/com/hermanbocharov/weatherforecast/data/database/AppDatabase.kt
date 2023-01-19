@@ -1,9 +1,8 @@
 package com.hermanbocharov.weatherforecast.data.database
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
+import androidx.room.migration.AutoMigrationSpec
 import com.hermanbocharov.weatherforecast.data.database.dao.*
 import com.hermanbocharov.weatherforecast.data.database.entities.*
 
@@ -15,10 +14,20 @@ import com.hermanbocharov.weatherforecast.data.database.entities.*
         HourlyForecastEntity::class,
         DailyForecastEntity::class
     ],
-    version = 1,
-    exportSchema = false
+    version = 2,
+    autoMigrations = [
+        AutoMigration(
+            from = 1,
+            to = 2,
+            spec = AppDatabase.MyAutoMigration::class
+        )
+    ],
+    exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
+    @RenameColumn(tableName = "location", fromColumnName = "name", toColumnName = "name_en")
+    @RenameColumn(tableName = "location", fromColumnName = "country", toColumnName = "country_code")
+    class MyAutoMigration : AutoMigrationSpec
 
     companion object {
         private var db: AppDatabase? = null

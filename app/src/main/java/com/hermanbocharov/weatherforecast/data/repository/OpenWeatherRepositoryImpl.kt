@@ -98,7 +98,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     }
 
     override fun loadWeatherForecastGpsLoc(): Single<Unit> {
-        return locationDataSource.getLastLocation()
+        return locationDataSource.getCurrentLocation()
             .flatMap {
                 Single.zip(
                     apiService.getLocationByCoordinates(

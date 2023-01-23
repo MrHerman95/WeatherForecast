@@ -76,6 +76,14 @@ class PreferenceManager @Inject constructor(
         return preferences.getString(KEY_LOCALE, "en") ?: "en"
     }
 
+    fun saveAppVersion(appVersion: String) {
+        preferences.edit().putString(KEY_APP_VERSION, appVersion).apply()
+    }
+
+    fun getAppVersion(): String {
+        return preferences.getString(KEY_APP_VERSION, "1.0") ?: "1.0"
+    }
+
     companion object {
         private const val KEY_LAST_UPDATE_TIME = "key_last_update_time"
         private const val KEY_LOCATION_ID = "key_location_id"
@@ -84,5 +92,6 @@ class PreferenceManager @Inject constructor(
         private const val KEY_PRECIPITATION_UNITS = "key_precipitation_units"
         private const val KEY_PRESSURE_UNITS = "key_pressure_units"
         private const val KEY_LOCALE = "key_locale"
+        private const val KEY_APP_VERSION = "key_app_version"
     }
 }

@@ -11,7 +11,7 @@ android {
         applicationId "com.hermanbocharov.weatherforecast"
         minSdk 23
         targetSdk 33
-        versionCode 14
+        versionCode 16
         versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

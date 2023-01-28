@@ -17,8 +17,8 @@
     <string name="str_nothing_found">Місто не знайдено :(</string>
     <string name="str_search_hint_tv">Будь ласка, введіть місто та країну (або код країни, напр.\u00A0\'UA\') через кому</string>
     <string name="str_detecting_location">Визначення місцезнаходження…</string>
-    <string name="str_detect_location_success">Місцезнаходження було успішно визначено.</string>
-    <string name="str_detect_location_failure">Не вдалося визначити місцезнаходження. Переконайтеся, що визначення місцезнаходження пристрою увімкнено.</string>
+    <string name="str_detect_location_success">Місцезнаходження було успішно визначено</string>
+    <string name="str_detect_location_failure">Не вдалося визначити місцезнаходження. Переконайтеся, що визначення місцезнаходження пристрою увімкнено</string>
     <string name="str_location_no_internet">Не вдалося виконати пошук. Перевірте підключення до Інтернету та спробуйте ще раз</string>
 
     <string name="str_temp_celsius">%d\u00B0C</string>
@@ -113,7 +113,8 @@
     <string name="str_loc_permission_denied">Доступ до даних про місцезнаходження заборонено. Встановіть місцезнаходження вручну в меню \"Локація\"</string>
     <string name="str_loc_cant_find">Не вдалося знайти Ваше місцезнаходження. Встановіть місцезнаходження вручну в меню \"Локація\"</string>
     <string name="str_loc_permission_denied_settings">Доступ до даних про місцезнаходження заборонено. Необхідно дозволити доступ у налаштуваннях</string>
-    <string name="str_no_internet_message">Не вдалося оновити погоду. Будь ласка, перевірте інтернет-з\'єднання і спробуйте знову.</string>
+    <string name="str_no_internet_message">Не вдалося оновити погоду. Будь ласка, перевірте інтернет-з\'єднання і спробуйте знову</string>
+    <string name="str_no_internet_error">Помилка! Перевірте підключення до Інтернету та спробуйте ще раз</string>
 
     <string name="str_tools_city">Indianapolis</string>
     <string name="str_tools_timezone">UTC+3:30</string>

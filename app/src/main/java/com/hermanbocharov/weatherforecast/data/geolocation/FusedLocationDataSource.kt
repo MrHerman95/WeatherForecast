@@ -8,15 +8,18 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationToken
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.OnTokenCanceledListener
+import com.hermanbocharov.weatherforecast.data.network.NetworkManager
 import com.hermanbocharov.weatherforecast.di.ApplicationScope
 import com.hermanbocharov.weatherforecast.exception.GeolocationDisabledException
+import com.hermanbocharov.weatherforecast.exception.NoInternetException
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 
 @ApplicationScope
 class FusedLocationDataSource @Inject constructor(
-    application: Application
+    application: Application,
+    private val networkManager: NetworkManager,
 ) {
 
     private val locationClient =
@@ -31,6 +34,11 @@ class FusedLocationDataSource @Inject constructor(
             try {
                 var gpsEnabled = false
                 var networkEnabled = false
+
+                if (!networkManager.isNetworkAvailable()) {
+                    e.onError(NoInternetException())
+                    return@create
+                }
 
                 try {
                     gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)

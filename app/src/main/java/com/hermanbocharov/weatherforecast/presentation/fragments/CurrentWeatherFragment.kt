@@ -1,7 +1,9 @@
 package com.hermanbocharov.weatherforecast.presentation.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
@@ -74,7 +76,23 @@ class CurrentWeatherFragment : Fragment() {
         binding.btnLoadWeatherRetry.setOnClickListener {
             binding.btnLoadWeatherRetry.visibility = View.INVISIBLE
             binding.pbCurrentWeather.visibility = View.VISIBLE
-            viewModel.getCurrentWeather()
+            if (viewModel.getCurrentLocationId() == 0) {
+                if (PermissionsManager.isLocationPermissionGranted(requireContext())) {
+                    viewModel.onLocationPermissionGranted()
+                }
+            } else {
+                viewModel.getCurrentWeather()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.getCurrentLocationId() == 0 &&
+            PermissionsManager.isLocationPermissionGranted(requireContext())
+        ) {
+            binding.pbCurrentWeather.visibility = View.VISIBLE
+            viewModel.onLocationPermissionGranted()
         }
     }
 
@@ -133,7 +151,10 @@ class CurrentWeatherFragment : Fragment() {
 
         viewModel.isLocationEnabled.observe(viewLifecycleOwner) {
             if (it == false) {
-                snackbar = goToLocationSnackbar(getString(R.string.str_loc_cant_find))
+                snackbar = goToSettingsSnackbar(
+                    getString(R.string.str_detect_location_failure),
+                    Settings.ACTION_LOCATION_SOURCE_SETTINGS
+                )
                 snackbar?.show()
 
                 binding.pbCurrentWeather.visibility = View.INVISIBLE
@@ -150,11 +171,8 @@ class CurrentWeatherFragment : Fragment() {
     }
 
     private fun requestLocationPermission() {
-        if (PermissionsManager.isLocationPermissionGranted(requireContext())) {
-            viewModel.onLocationPermissionGranted()
-        } else {
+        if (!PermissionsManager.isLocationPermissionGranted(requireContext())) {
             PermissionsManager.onRequestLocationPermissionResult(this, {
-                viewModel.onLocationPermissionGranted()
             }, {
                 showOnLocationPermissionDeniedSnackbar()
             })
@@ -175,8 +193,23 @@ class CurrentWeatherFragment : Fragment() {
         )
             .setTextMaxLines(4)
             .setAction(getString(R.string.str_location)) {
-                val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+                val bottomNav =
+                    requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav_view)
                 bottomNav.selectedItemId = R.id.location_page
+            }
+    }
+
+    private fun goToSettingsSnackbar(text: String, action: String): Snackbar {
+        return Snackbar.make(
+            binding.fragmentCurrentWeather,
+            text,
+            Snackbar.LENGTH_LONG
+        )
+            .setTextMaxLines(4)
+            .setAction(getString(R.string.str_settings)) {
+                val intent = Intent()
+                intent.action = action
+                startActivity(intent)
             }
     }
 

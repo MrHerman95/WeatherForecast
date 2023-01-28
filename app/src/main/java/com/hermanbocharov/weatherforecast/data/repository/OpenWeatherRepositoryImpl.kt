@@ -122,6 +122,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 insertWeatherForecastToDatabase(it.weatherForecast, locationId)
 
                 prefs.saveCurrentLocationId(locationId)
+                prefs.saveAppVersion(BuildConfig.VERSION_NAME)
                 prefs.saveLastUpdateTime(it.weatherForecast.current.updateTime)
             }
     }

@@ -1,5 +1,6 @@
 package com.hermanbocharov.weatherforecast.data.repository
 
+import com.hermanbocharov.weatherforecast.BuildConfig
 import com.hermanbocharov.weatherforecast.data.database.dao.*
 import com.hermanbocharov.weatherforecast.data.geolocation.FusedLocationDataSource
 import com.hermanbocharov.weatherforecast.data.mapper.OpenWeatherMapper
@@ -38,6 +39,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     override fun getCurrentWeather(): Single<CurrentWeather> {
         return if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - prefs.getLastUpdateTime() < UPDATE_FREQUENCY
             && getForecastLanguage() == prefs.getSavedLocale()
+            && BuildConfig.VERSION_NAME == prefs.getAppVersion()
         ) {
             currentWeatherFullDataDao
                 .getCurrentWeatherFullData(getCurrentLocationId())
@@ -96,7 +98,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     }
 
     override fun loadWeatherForecastGpsLoc(): Single<Unit> {
-        return locationDataSource.getLastLocation()
+        return locationDataSource.getCurrentLocation()
             .flatMap {
                 Single.zip(
                     apiService.getLocationByCoordinates(
@@ -120,6 +122,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 insertWeatherForecastToDatabase(it.weatherForecast, locationId)
 
                 prefs.saveCurrentLocationId(locationId)
+                prefs.saveAppVersion(BuildConfig.VERSION_NAME)
                 prefs.saveLastUpdateTime(it.weatherForecast.current.updateTime)
             }
     }
@@ -147,7 +150,21 @@ class OpenWeatherRepositoryImpl @Inject constructor(
 
     override fun getCurrentLocation(): Single<Location> {
         return locationDao.getLocation(getCurrentLocationId())
-            .map { mapper.mapEntityToLocationDomain(it) }
+            .flatMap {
+                if (it.countryCode.length != 2) {
+                    apiService.getLocationByCoordinates(latitude = it.lat, longitude = it.lon)
+                        .map {
+                            val locationId =
+                                locationDao.insertLocation(mapper.mapDtoToLocationEntity(it[0]))
+                                    .blockingGet().toInt()
+                            prefs.saveCurrentLocationId(locationId)
+                            prefs.saveAppVersion(BuildConfig.VERSION_NAME)
+                            mapper.mapDtoToLocationDomain(it[0])
+                        }
+                } else {
+                    Single.just(mapper.mapEntityToLocationDomain(it))
+                }
+            }
     }
 
     override fun getCurrentLocationId(): Int = prefs.getCurrentLocationId()

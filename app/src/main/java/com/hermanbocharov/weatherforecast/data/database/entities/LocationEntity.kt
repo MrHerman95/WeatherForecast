@@ -18,6 +18,7 @@ data class LocationEntity(
     val nameUk: String?,
     val lat: Double,
     val lon: Double,
+    @ColumnInfo(name = "country_code")
     val countryCode: String,
     val state: String?
 ) {

@@ -1,18 +1,22 @@
 package com.hermanbocharov.weatherforecast.utils
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
 object PermissionsManager {
 
     fun isLocationPermissionGranted(context: Context): Boolean {
-        return isPermissionGranted(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+        return isPermissionGranted(
+            context,
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        )
     }
 
     fun onRequestLocationPermissionResult(
@@ -22,7 +26,10 @@ object PermissionsManager {
     ) {
         onRequestPermissionResult(
             fragment,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
             onGranted,
             onDenied
         )
@@ -30,13 +37,13 @@ object PermissionsManager {
 
     private fun onRequestPermissionResult(
         fragment: Fragment,
-        permission: String,
+        permission: Array<String>,
         onGranted: () -> Unit,
         onDenied: () -> Unit
     ) {
         val requestMultiplePermissions =
             fragment.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-                val granted = permissions.entries.all {
+                val granted = permissions.entries.any {
                     it.value
                 }
 
@@ -47,20 +54,18 @@ object PermissionsManager {
             }
 
         requestMultiplePermissions.launch(
-            arrayOf(permission)
+            permission
         )
     }
 
-    private fun requestPermission(activity: Activity, permission: String, requestCode: Int) {
-        if (isPermissionGranted(activity, permission).not()) {
-            ActivityCompat.requestPermissions(activity, arrayOf(permission), requestCode)
+    private fun isPermissionGranted(context: Context, permissions: Array<String>): Boolean {
+        for (permission in permissions) {
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    permission
+                ) == PackageManager.PERMISSION_GRANTED
+            ) return true
         }
-    }
-
-    private fun isPermissionGranted(context: Context, permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            permission
-        ) == PackageManager.PERMISSION_GRANTED
+        return false
     }
 }

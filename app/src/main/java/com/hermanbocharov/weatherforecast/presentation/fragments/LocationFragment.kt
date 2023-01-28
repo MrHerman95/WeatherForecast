@@ -50,6 +50,7 @@ class LocationFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private var snackbar: Snackbar? = null
+    private var toastDetectLoc: Toast? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[LocationViewModel::class.java]
@@ -326,23 +327,36 @@ class LocationFragment : Fragment() {
         viewModel.isLocationDetectSuccess.observe(viewLifecycleOwner) {
             when (it) {
                 true -> {
-                    Toast.makeText(
+                    toastDetectLoc = Toast.makeText(
                         requireContext(),
                         getString(R.string.str_detect_location_success),
                         Toast.LENGTH_SHORT
-                    ).show()
+                    )
+                    toastDetectLoc?.show()
                 }
                 false -> {
-                    Toast.makeText(
-                        requireContext(),
+                    toastDetectLoc?.cancel()
+                    snackbar = goToSettingsSnackbar(
                         getString(R.string.str_detect_location_failure),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        Settings.ACTION_LOCATION_SOURCE_SETTINGS
+                    )
+                    snackbar?.show()
                 }
             }
         }
 
-        viewModel.hasInternetConnection.observe(viewLifecycleOwner) {
+        viewModel.hasInternetConnectionDetect.observe(viewLifecycleOwner) {
+            if (it == false) {
+                toastDetectLoc = Toast.makeText(
+                    requireContext(),
+                    getString(R.string.str_no_internet_error),
+                    Toast.LENGTH_LONG
+                )
+                toastDetectLoc?.show()
+            }
+        }
+
+        viewModel.hasInternetConnectionSearch.observe(viewLifecycleOwner) {
             if (it == false) {
                 binding.pbLocationSearch.visibility = View.GONE
                 binding.ivLocationSearch.visibility = View.VISIBLE
@@ -351,6 +365,29 @@ class LocationFragment : Fragment() {
                     requireContext().getString(R.string.str_location_no_internet)
             }
         }
+    }
+
+    private fun goToSettingsSnackbar(text: String, action: String): Snackbar {
+        return Snackbar.make(
+            binding.fragmentLocation,
+            text,
+            Snackbar.LENGTH_LONG
+        )
+            .setTextMaxLines(4)
+            .setAction(getString(R.string.str_settings)) {
+                val intent = Intent()
+                intent.action = action
+                if (action == Settings.ACTION_APPLICATION_DETAILS_SETTINGS) {
+                    val uri = Uri.fromParts(
+                        "package",
+                        BuildConfig.APPLICATION_ID,
+                        null
+                    )
+                    intent.data = uri
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                startActivity(intent)
+            }
     }
 
     private fun searchModeOff() {
@@ -427,37 +464,19 @@ class LocationFragment : Fragment() {
     private fun requestLocationPermission() {
         if (PermissionsManager.isLocationPermissionGranted(requireContext())) {
             viewModel.onLocationPermissionGranted()
-            Toast.makeText(
+            toastDetectLoc = Toast.makeText(
                 requireContext(),
                 getString(R.string.str_detecting_location),
                 Toast.LENGTH_LONG
-            ).show()
+            )
+            toastDetectLoc?.show()
         } else {
-            showOnLocationPermissionDeniedSnackbar()
+            snackbar = goToSettingsSnackbar(
+                getString(R.string.str_loc_permission_denied_settings),
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            )
+            snackbar?.show()
         }
-    }
-
-    private fun showOnLocationPermissionDeniedSnackbar() {
-        snackbar = Snackbar.make(
-            binding.fragmentLocation,
-            getString(R.string.str_loc_permission_denied_settings),
-            Snackbar.LENGTH_LONG
-        )
-            .setTextMaxLines(4)
-            .setAction(getString(R.string.str_settings)) {
-                val intent = Intent()
-                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                val uri = Uri.fromParts(
-                    "package",
-                    BuildConfig.APPLICATION_ID,
-                    null
-                )
-                intent.data = uri
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
-            }
-
-        snackbar?.show()
     }
 
     companion object {

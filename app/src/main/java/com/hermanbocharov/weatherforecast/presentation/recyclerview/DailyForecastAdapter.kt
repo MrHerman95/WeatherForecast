@@ -31,7 +31,6 @@ class DailyForecastAdapter :
     }
 
 
-
     override fun onBindViewHolder(holder: DailyForecastViewHolder, position: Int) {
         val dayForecastItem = getItem(position)
         val strTempId = when (dayForecastItem.tempUnit) {
@@ -70,16 +69,18 @@ class DailyForecastAdapter :
     }
 
     private fun getDateFromTimestamp(timestamp: Long, timezone: String): String {
-        val formatter = SimpleDateFormat("EEE, MMM. d", Locale.ENGLISH)
+        val pattern = DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEE, MMM d");
+        val formatter = SimpleDateFormat(pattern, Locale.getDefault())
         formatter.timeZone = TimeZone.getTimeZone(timezone)
         return formatter.format(Date(timestamp * 1000))
+            .replaceFirstChar { it.titlecase(Locale.getDefault()) }
     }
 
     private fun getTimeFromTimestamp(context: Context, timestamp: Long, timezone: String): String {
         val formatter = if (DateFormat.is24HourFormat(context)) {
-            SimpleDateFormat("HH:mm", Locale.ENGLISH)
+            SimpleDateFormat("HH:mm", Locale.getDefault())
         } else {
-            SimpleDateFormat("h:mm a", Locale.ENGLISH)
+            SimpleDateFormat("h:mm a", Locale.getDefault())
         }
         formatter.timeZone = TimeZone.getTimeZone(timezone)
         return formatter.format(Date(timestamp * 1000))

@@ -7,6 +7,6 @@ import com.hermanbocharov.weatherforecast.data.database.entities.WeatherConditio
 
 @Dao
 interface WeatherConditionDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertWeatherCondition(weatherCondition: WeatherConditionEntity)
 }

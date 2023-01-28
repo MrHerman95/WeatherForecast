@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hermanbocharov.weatherforecast.domain.entities.Location
-import com.hermanbocharov.weatherforecast.domain.usecases.AddNewLocationUseCase
 import com.hermanbocharov.weatherforecast.domain.usecases.GetCurrentLocationUseCase
 import com.hermanbocharov.weatherforecast.domain.usecases.GetListOfCitiesUseCase
 import com.hermanbocharov.weatherforecast.domain.usecases.LoadWeatherForecastGpsLocUseCase
-import com.hermanbocharov.weatherforecast.exception.NoInternetException
+import com.hermanbocharov.weatherforecast.domain.usecases.SetNewLocationUseCase
+import com.hermanbocharov.weatherforecast.exception.GeolocationDisabledException
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class LocationViewModel @Inject constructor(
     private val getListOfCitiesUseCase: GetListOfCitiesUseCase,
     private val getCurrentLocationUseCase: GetCurrentLocationUseCase,
-    private val addNewLocationUseCase: AddNewLocationUseCase,
+    private val setNewLocationUseCase: SetNewLocationUseCase,
     private val loadWeatherForecastGpsLocUseCase: LoadWeatherForecastGpsLocUseCase
 ) : ViewModel() {
 
@@ -36,9 +36,13 @@ class LocationViewModel @Inject constructor(
     val isLocationDetectSuccess: LiveData<Boolean>
         get() = _isLocationDetectSuccess
 
-    private val _hasInternetConnection = MutableLiveData<Boolean>()
-    val hasInternetConnection: LiveData<Boolean>
-        get() = _hasInternetConnection
+    private val _hasInternetConnectionSearch = MutableLiveData<Boolean>()
+    val hasInternetConnectionSearch: LiveData<Boolean>
+        get() = _hasInternetConnectionSearch
+
+    private val _hasInternetConnectionDetect = MutableLiveData<Boolean>()
+    val hasInternetConnectionDetect: LiveData<Boolean>
+        get() = _hasInternetConnectionDetect
 
     init {
         getCurrentLocation()
@@ -51,18 +55,14 @@ class LocationViewModel @Inject constructor(
             .subscribe({
                 _listOfCities.value = it
             }, {
-                if (it is NoInternetException) {
-                    _hasInternetConnection.value = false
-                } else {
-                    _hasInternetConnection.value = false
-                }
+                _hasInternetConnectionSearch.value = false
             })
 
         compositeDisposable.add(disposable)
     }
 
-    fun addNewLocation(location: Location) {
-        val disposable = addNewLocationUseCase(location)
+    fun setNewLocation(location: Location) {
+        val disposable = setNewLocationUseCase(location)
             .flatMap { getCurrentLocationUseCase() }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -78,14 +78,16 @@ class LocationViewModel @Inject constructor(
         val disposable = loadWeatherForecastGpsLocUseCase()
             .flatMap { getCurrentLocationUseCase() }
             .delaySubscription(DETECT_LOCATION_DELAY, TimeUnit.MILLISECONDS)
-            .retry(DETECT_LOCATION_RETRY_TIMES)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 _currentLocation.value = it
                 _isLocationDetectSuccess.value = true
             }, {
-                _isLocationDetectSuccess.value = false
+                when (it) {
+                    is GeolocationDisabledException -> _isLocationDetectSuccess.value = false
+                    else -> _hasInternetConnectionDetect.value = false
+                }
             })
 
         compositeDisposable.add(disposable)
@@ -115,6 +117,5 @@ class LocationViewModel @Inject constructor(
 
     companion object {
         private const val DETECT_LOCATION_DELAY = 1000L
-        private const val DETECT_LOCATION_RETRY_TIMES = 3L
     }
 }

@@ -1,7 +1,10 @@
 package com.hermanbocharov.weatherforecast.presentation.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +24,7 @@ import com.hermanbocharov.weatherforecast.utils.PermissionsManager
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -72,7 +76,23 @@ class CurrentWeatherFragment : Fragment() {
         binding.btnLoadWeatherRetry.setOnClickListener {
             binding.btnLoadWeatherRetry.visibility = View.INVISIBLE
             binding.pbCurrentWeather.visibility = View.VISIBLE
-            viewModel.getCurrentWeather()
+            if (viewModel.getCurrentLocationId() == 0) {
+                if (PermissionsManager.isLocationPermissionGranted(requireContext())) {
+                    viewModel.onLocationPermissionGranted()
+                }
+            } else {
+                viewModel.getCurrentWeather()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.getCurrentLocationId() == 0 &&
+            PermissionsManager.isLocationPermissionGranted(requireContext())
+        ) {
+            binding.pbCurrentWeather.visibility = View.VISIBLE
+            viewModel.onLocationPermissionGranted()
         }
     }
 
@@ -102,6 +122,10 @@ class CurrentWeatherFragment : Fragment() {
                 tvTimezone.text = it.timezone
                 tcClock.timeZone = it.timezoneName
                 tcClock.visibility = View.VISIBLE
+
+                val pattern = DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEE, MMM d");
+                tcDate.format12Hour = pattern
+                tcDate.format24Hour = pattern
                 tcDate.timeZone = it.timezoneName
                 tcDate.visibility = View.VISIBLE
 
@@ -116,7 +140,7 @@ class CurrentWeatherFragment : Fragment() {
             if (it == false) {
                 Toast.makeText(
                     requireContext(),
-                    "Couldn't refresh the forecast. Please check your internet connection and try again.",
+                    getString(R.string.str_no_internet_message),
                     Toast.LENGTH_LONG
                 ).show()
 
@@ -127,7 +151,10 @@ class CurrentWeatherFragment : Fragment() {
 
         viewModel.isLocationEnabled.observe(viewLifecycleOwner) {
             if (it == false) {
-                snackbar = goToLocationSnackbar("Couldn't find your location. Select a\u00A0location manually in the\u00A0\"Location\" menu")
+                snackbar = goToSettingsSnackbar(
+                    getString(R.string.str_detect_location_failure),
+                    Settings.ACTION_LOCATION_SOURCE_SETTINGS
+                )
                 snackbar?.show()
 
                 binding.pbCurrentWeather.visibility = View.INVISIBLE
@@ -144,11 +171,8 @@ class CurrentWeatherFragment : Fragment() {
     }
 
     private fun requestLocationPermission() {
-        if (PermissionsManager.isLocationPermissionGranted(requireContext())) {
-            viewModel.onLocationPermissionGranted()
-        } else {
+        if (!PermissionsManager.isLocationPermissionGranted(requireContext())) {
             PermissionsManager.onRequestLocationPermissionResult(this, {
-                viewModel.onLocationPermissionGranted()
             }, {
                 showOnLocationPermissionDeniedSnackbar()
             })
@@ -157,7 +181,7 @@ class CurrentWeatherFragment : Fragment() {
 
     private fun showOnLocationPermissionDeniedSnackbar() {
         binding.pbCurrentWeather.visibility = View.INVISIBLE
-        snackbar = goToLocationSnackbar("Location permission denied. Select a\u00A0location manually in the\u00A0\"Location\" menu")
+        snackbar = goToLocationSnackbar(getString(R.string.str_loc_permission_denied))
         snackbar?.show()
     }
 
@@ -168,9 +192,24 @@ class CurrentWeatherFragment : Fragment() {
             Snackbar.LENGTH_LONG
         )
             .setTextMaxLines(4)
-            .setAction("Location") {
-                val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+            .setAction(getString(R.string.str_location)) {
+                val bottomNav =
+                    requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav_view)
                 bottomNav.selectedItemId = R.id.location_page
+            }
+    }
+
+    private fun goToSettingsSnackbar(text: String, action: String): Snackbar {
+        return Snackbar.make(
+            binding.fragmentCurrentWeather,
+            text,
+            Snackbar.LENGTH_LONG
+        )
+            .setTextMaxLines(4)
+            .setAction(getString(R.string.str_settings)) {
+                val intent = Intent()
+                intent.action = action
+                startActivity(intent)
             }
     }
 

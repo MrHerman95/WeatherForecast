@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Weather Forecast</string>
 
@@ -16,8 +17,8 @@
     <string name="str_nothing_found">No cities found :(</string>
     <string name="str_search_hint_tv">Please enter a\u00A0city and a\u00A0country (or a\u00A0country code, e.g.\u00A0\'FR\') separated by a\u00A0comma</string>
     <string name="str_detecting_location">Detecting location…</string>
-    <string name="str_detect_location_success">Location has been detected successfully.</string>
-    <string name="str_detect_location_failure">Failed to detect location. Make sure your device\'s location is turned on.</string>
+    <string name="str_detect_location_success">Location has been detected successfully</string>
+    <string name="str_detect_location_failure">Failed to detect location. Make sure your device\'s location is turned on</string>
     <string name="str_location_no_internet">Search failed. Please check your internet connection and try again</string>
 
     <string name="str_temp_celsius">%d\u00B0C</string>
@@ -37,13 +38,15 @@
 
     <string name="str_settings_units">Measurement units</string>
     <string name="str_settings_temp">Temperature</string>
-    <string name="str_settings_pressure">Pressure</string>
+    <string name="str_settings_pressure">Atmospheric pressure</string>
     <string name="str_settings_precipitation">Precipitation</string>
     <string name="str_settings_wind_speed">Wind speed</string>
     <string name="str_settings_celsius">Celsius (\u00B0C)</string>
     <string name="str_settings_fahrenheit">Fahrenheit (\u00B0F)</string>
     <string name="str_settings_mmhg">Millimeters of mercury (mm Hg)</string>
     <string name="str_settings_inhg">Inches of mercury (in Hg)</string>
+    <string name="str_bottom_sheet_mmhg">Millimeters of mercury (mm Hg)</string>
+    <string name="str_bottom_sheet_inhg">Inches of mercury (in Hg)</string>
     <string name="str_settings_mmh">Millimeters per hour (mm/h)</string>
     <string name="str_settings_inh">Inches per hour (in/h)</string>
     <string name="str_settings_ms">Meters per second (m/s)</string>
@@ -55,7 +58,7 @@
     <string name="str_rate_desc">Please rate the app with 5 stars if you like it. Easy for you, very helpful for us</string>
     <string name="str_share">Share</string>
     <string name="str_share_desc">Please share the app with your friends to make the app even better</string>
-    <string name="str_app_name_version">Weather Forecast v1.0</string>
+    <string name="str_app_name_version">Weather Forecast v1.1</string>
 
     <string name="str_hourly_forecast">Hourly forecast</string>
     <string name="str_humidity">Humidity</string>
@@ -97,6 +100,21 @@
     <string name="str_precipitation_unit_desc">Choose precipitation measurement unit</string>
 
     <string name="str_retry">Retry</string>
+
+    <string name="str_north">N</string>
+    <string name="str_south">S</string>
+    <string name="str_west">W</string>
+    <string name="str_east">E</string>
+    <string name="str_northeast">NE</string>
+    <string name="str_northwest">NW</string>
+    <string name="str_southwest">SW</string>
+    <string name="str_southeast">SE</string>
+
+    <string name="str_loc_permission_denied">Location permission denied. Select a\u00A0location manually in the\u00A0\"Location\" menu</string>
+    <string name="str_loc_cant_find">Couldn\'t find your location. Select a\u00A0location manually in the\u00A0\"Location\" menu</string>
+    <string name="str_loc_permission_denied_settings">Location permission denied. To detect location grant location permission in the settings</string>
+    <string name="str_no_internet_message">Couldn\'t refresh the forecast. Please check your internet connection and try again</string>
+    <string name="str_no_internet_error">Error! Please check your internet connection and try again</string>
 
     <string name="str_tools_city">Indianapolis</string>
     <string name="str_tools_timezone">UTC+3:30</string>

@@ -6,14 +6,6 @@ import com.hermanbocharov.weatherforecast.data.network.model.LocationDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherConditionDto
 import com.hermanbocharov.weatherforecast.data.network.model.WeatherForecastDto
 import com.hermanbocharov.weatherforecast.domain.entities.*
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.EAST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTH
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHEAST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.NORTHWEST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTH
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHEAST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.SOUTHWEST
-import com.hermanbocharov.weatherforecast.domain.entities.Direction.WEST
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -24,17 +16,22 @@ import kotlin.text.Typography.plusMinus
 
 class OpenWeatherMapper @Inject constructor() {
 
-    fun mapDtoToLocationEntity(dto: LocationDto) = LocationEntity(
-        name = dto.name,
-        lat = dto.lat,
-        lon = dto.lon,
-        country = convertCountryCodeToName(dto.country),
-        state = dto.state
-    )
+    fun mapDtoToLocationEntity(dto: LocationDto): LocationEntity {
+        return LocationEntity(
+            nameEn = dto.name,
+            nameRu = dto.localNames?.ru,
+            nameUk = dto.localNames?.uk,
+            lat = dto.lat,
+            lon = dto.lon,
+            countryCode = dto.country,
+            state = dto.state
+        )
+    }
 
     fun mapDtoToLocationDomain(dto: LocationDto): Location {
+        val localName = getLocalNameFromLocation(dto)
         return Location(
-            name = dto.name,
+            name = localName,
             lat = dto.lat,
             lon = dto.lon,
             country = convertCountryCodeToName(dto.country),
@@ -43,22 +40,13 @@ class OpenWeatherMapper @Inject constructor() {
     }
 
     fun mapEntityToLocationDomain(entity: LocationEntity): Location {
+        val localName = getLocalNameFromLocation(entity)
         return Location(
-            name = entity.name,
+            name = localName,
             lat = entity.lat,
             lon = entity.lon,
-            country = entity.country,
+            country = convertCountryCodeToName(entity.countryCode),
             state = entity.state
-        )
-    }
-
-    fun mapLocationDomainToEntity(domain: Location): LocationEntity {
-        return LocationEntity(
-            name = domain.name,
-            lat = domain.lat,
-            lon = domain.lon,
-            country = domain.country,
-            state = domain.state
         )
     }
 
@@ -153,11 +141,13 @@ class OpenWeatherMapper @Inject constructor() {
 
         convertTimezoneOffsetToTimezone(entity.currentWeather.timezoneOffset)
 
+        val localName = getLocalNameFromLocation(entity.location)
+
         return CurrentWeather(
             temp = temperature,
             feelsLike = feelsLike,
             tempUnit = tempUnit,
-            cityName = entity.location.name,
+            cityName = localName,
             description = entity.weatherCondition.description.replaceFirstChar {
                 it.titlecase(Locale.getDefault())
             },
@@ -209,6 +199,8 @@ class OpenWeatherMapper @Inject constructor() {
                 PressureUnit.INCHES_HG -> pressure = convertHPaToInHg(pressure)
             }
 
+            val localName = getLocalNameFromLocation(hour.location)
+
             hourlyForecast.add(
                 HourlyForecast(
                     forecastTime = hour.hourlyForecast.forecastTime,
@@ -221,13 +213,13 @@ class OpenWeatherMapper @Inject constructor() {
                     rain = rain,
                     snow = snow,
                     windSpeed = windSpeed,
-                    windDirection = convertWindDegreeToDirection(hour.hourlyForecast.windDegree),
+                    windDirectionDeg = hour.hourlyForecast.windDegree,
                     windGust = windGust,
                     tempUnit = tempUnit,
                     precipitationUnit = precipitationUnit,
                     pressureUnit = pressureUnit,
                     windSpeedUnit = speedUnit,
-                    cityName = hour.location.name,
+                    cityName = localName,
                     description = hour.weatherCondition.description.replaceFirstChar {
                         it.titlecase(Locale.getDefault())
                     },
@@ -273,20 +265,6 @@ class OpenWeatherMapper @Inject constructor() {
         return CountriesISO.countryNameISO[countryName] ?: ""
     }
 
-    /*private fun getWeatherIconName(
-        iconId: Int,
-        isSmall: Boolean,
-        forecastTime: Int,
-        sunriseTime: Int,
-        sunsetTime: Int
-    ): String {
-        val icName = WeatherIconsIds.idIcon[iconId] ?: DEFAULT_WEATHER_ICON
-
-        if ()
-
-            return icName
-    }*/
-
     private fun convertCountryCodeToName(code: String): String {
         return Locale("", code).displayCountry
     }
@@ -315,19 +293,6 @@ class OpenWeatherMapper @Inject constructor() {
         return pressure / 33.863887
     }
 
-    private fun convertWindDegreeToDirection(degree: Int): String {
-        return when (degree) {
-            in 24..68 -> NORTHEAST
-            in 69..113 -> EAST
-            in 114..158 -> SOUTHEAST
-            in 159..203 -> SOUTH
-            in 204..248 -> SOUTHWEST
-            in 249..293 -> WEST
-            in 294..336 -> NORTHWEST
-            else -> NORTH
-        }
-    }
-
     private fun convertTimezoneOffsetToTimezone(offset: Int): String {
         val hours = TimeUnit.SECONDS.toHours(offset.toLong())
         val minutes = TimeUnit.SECONDS.toMinutes(offset - TimeUnit.HOURS.toSeconds(hours))
@@ -338,6 +303,28 @@ class OpenWeatherMapper @Inject constructor() {
         }
 
         return String.format("UTC%s%02d:%02d", sign, abs(hours), abs(minutes))
+    }
+
+    private fun getLocalNameFromLocation(dto: LocationDto): String {
+        val localName = dto.localNames?.let {
+            when (Locale.getDefault().language) {
+                "ru" -> it.ru
+                "uk" -> it.uk
+                else -> dto.name
+            }
+        } ?: dto.name
+
+        return localName
+    }
+
+    private fun getLocalNameFromLocation(entity: LocationEntity): String {
+        val localName = when (Locale.getDefault().language) {
+            "ru" -> entity.nameRu
+            "uk" -> entity.nameUk
+            else -> entity.nameEn
+        } ?: entity.nameEn
+
+        return localName
     }
 
     companion object {

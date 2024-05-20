@@ -3,6 +3,7 @@ package com.hermanbocharov.weatherforecast.domain.repository
 import com.hermanbocharov.weatherforecast.domain.entities.CurrentWeather
 import com.hermanbocharov.weatherforecast.domain.entities.DailyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
+import com.hermanbocharov.weatherforecast.domain.entities.Language
 import com.hermanbocharov.weatherforecast.domain.entities.Location
 import io.reactivex.rxjava3.core.Single
 
@@ -24,4 +25,6 @@ interface OpenWeatherRepository {
     fun savePrecipitationUnit(unitId: Int)
     fun getPressureUnit(): Int
     fun savePressureUnit(unitId: Int)
+    fun getAppLanguage(): Language
+    fun setAppLanguage(language: Language)
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
@@ -82,18 +83,38 @@ class WeatherForecastFragment : Fragment() {
         setupRecyclerView()
         observeViewModel()
         postDelayTvCityAnimation()
+
+        binding.btnLoadWeatherForecastRetry.setOnClickListener {
+            binding.btnLoadWeatherForecastRetry.visibility = View.INVISIBLE
+            binding.pbWeatherForecast.visibility = View.VISIBLE
+            viewModel.getCurrentWeather()
+        }
     }
 
     private fun observeViewModel() {
+        viewModel.hasInternetConnection.observe(viewLifecycleOwner) {
+            if (it == false) {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.str_no_internet_message),
+                    Toast.LENGTH_LONG
+                ).show()
+                binding.pbWeatherForecast.visibility = View.INVISIBLE
+                binding.btnLoadWeatherForecastRetry.visibility = View.VISIBLE
+            }
+        }
+
         viewModel.hourlyForecast.observe(viewLifecycleOwner) {
             hourlyForecastAdapter.submitList(it)
             binding.tvCityForecast.text = it[DEFAULT_SELECTED_ITEM_POS].cityName
             updateTvWeatherParameters(it[DEFAULT_SELECTED_ITEM_POS])
+            binding.pbWeatherForecast.visibility = View.INVISIBLE
+            binding.groupWeatherForecast.visibility = View.VISIBLE
         }
 
         viewModel.dailyForecast.observe(viewLifecycleOwner) {
             dailyForecastAdapter.submitList(it)
-            binding.rvDailyForecast.visibility = View.VISIBLE
+            binding.groupWeatherForecast.visibility = View.VISIBLE
         }
 
         viewModel.hasForecastToDisplay.observe(viewLifecycleOwner) {

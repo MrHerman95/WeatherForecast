@@ -1,6 +1,8 @@
 package com.hermanbocharov.weatherforecast.di
 
 import android.app.Application
+import com.hermanbocharov.weatherforecast.presentation.MainActivity
+import com.hermanbocharov.weatherforecast.presentation.bottomsheet.LanguageSettingsBottomSheet
 import com.hermanbocharov.weatherforecast.presentation.bottomsheet.PrecipitationSettingsBottomSheet
 import com.hermanbocharov.weatherforecast.presentation.bottomsheet.PressureSettingsBottomSheet
 import com.hermanbocharov.weatherforecast.presentation.bottomsheet.TemperatureSettingsBottomSheet
@@ -16,6 +18,7 @@ import dagger.Component
 @Component(modules = [DataModule::class, ViewModelModule::class])
 interface ApplicationComponent {
 
+    fun inject(activity: MainActivity)
     fun inject(fragment: CurrentWeatherFragment)
     fun inject(fragment: LocationFragment)
     fun inject(fragment: SettingsFragment)
@@ -24,6 +27,7 @@ interface ApplicationComponent {
     fun inject(bottomSheet: PressureSettingsBottomSheet)
     fun inject(bottomSheet: WindSpeedSettingsBottomSheet)
     fun inject(bottomSheet: PrecipitationSettingsBottomSheet)
+    fun inject(bottomSheet: LanguageSettingsBottomSheet)
 
     @Component.Factory
     interface Factory {

@@ -1,10 +1,25 @@
 package com.hermanbocharov.weatherforecast.data.database
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.AutoMigration
+import androidx.room.Database
+import androidx.room.RenameColumn
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
-import com.hermanbocharov.weatherforecast.data.database.dao.*
-import com.hermanbocharov.weatherforecast.data.database.entities.*
+import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherDao
+import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherFullDataDao
+import com.hermanbocharov.weatherforecast.data.database.dao.DailyForecastDao
+import com.hermanbocharov.weatherforecast.data.database.dao.DailyForecastFullDataDao
+import com.hermanbocharov.weatherforecast.data.database.dao.HourlyForecastDao
+import com.hermanbocharov.weatherforecast.data.database.dao.HourlyForecastFullDataDao
+import com.hermanbocharov.weatherforecast.data.database.dao.LocationDao
+import com.hermanbocharov.weatherforecast.data.database.dao.WeatherConditionDao
+import com.hermanbocharov.weatherforecast.data.database.entities.CurrentWeatherEntity
+import com.hermanbocharov.weatherforecast.data.database.entities.DailyForecastEntity
+import com.hermanbocharov.weatherforecast.data.database.entities.HourlyForecastEntity
+import com.hermanbocharov.weatherforecast.data.database.entities.LocationEntity
+import com.hermanbocharov.weatherforecast.data.database.entities.WeatherConditionEntity
 
 @Database(
     entities = [

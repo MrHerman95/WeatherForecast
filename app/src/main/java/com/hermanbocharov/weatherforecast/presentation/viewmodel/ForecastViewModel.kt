@@ -6,17 +6,20 @@ import androidx.lifecycle.ViewModel
 import com.hermanbocharov.weatherforecast.domain.entities.DailyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.domain.usecases.GetCurrentLocationIdUseCase
+import com.hermanbocharov.weatherforecast.domain.usecases.GetCurrentWeatherUseCase
 import com.hermanbocharov.weatherforecast.domain.usecases.GetDailyForecastUseCase
 import com.hermanbocharov.weatherforecast.domain.usecases.GetHourlyForecastUseCase
+import com.hermanbocharov.weatherforecast.exception.NoInternetException
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 class ForecastViewModel @Inject constructor(
+    private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
     private val getHourlyForecastUseCase: GetHourlyForecastUseCase,
     private val getDailyForecastUseCase: GetDailyForecastUseCase,
-    private val getCurrentLocationIdUseCase: GetCurrentLocationIdUseCase
+    getCurrentLocationIdUseCase: GetCurrentLocationIdUseCase
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -33,14 +36,36 @@ class ForecastViewModel @Inject constructor(
     val hasForecastToDisplay: LiveData<Boolean>
         get() = _hasForecastToDisplay
 
+    private val _hasInternetConnection = MutableLiveData<Boolean>()
+    val hasInternetConnection: LiveData<Boolean>
+        get() = _hasInternetConnection
+
     init {
         if (getCurrentLocationIdUseCase() != 0) {
             _hasForecastToDisplay.value = true
-            getHourlyForecast()
-            getDailyForecast()
+            getCurrentWeather()
         } else {
             _hasForecastToDisplay.value = false
         }
+    }
+
+    fun getCurrentWeather() {
+        val disposable = getCurrentWeatherUseCase()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _hasInternetConnection.value = true
+                getHourlyForecast()
+                getDailyForecast()
+            }, {
+                if (it is NoInternetException) {
+                    _hasInternetConnection.value = false
+                } else {
+                    _hasInternetConnection.value = false
+                }
+            })
+
+        compositeDisposable.add(disposable)
     }
 
     private fun getHourlyForecast() {

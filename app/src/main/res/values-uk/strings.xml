@@ -6,6 +6,7 @@
     <string name="str_location">Локація</string>
     <string name="str_weather_now">Зараз</string>
     <string name="str_weather_forecast">Прогноз</string>
+    <string name="language">Мова додатка</string>
 
     <string name="str_location_full">%1$s, %2$s, %3$s</string>
     <string name="str_location_city_country">%1$s, %2$s</string>
@@ -58,7 +59,7 @@
     <string name="str_rate_desc">Будь ласка, оцініть додаток на 5 зірок, якщо він вам подобається. Вам не складно, нам приємно</string>
     <string name="str_share">Поділитися</string>
     <string name="str_share_desc">Будь ласка, поділіться додатком з друзями, щоб зробити його ще кращим</string>
-    <string name="str_app_name_version">Прогноз погоди v1.1</string>
+    <string name="str_app_name_version">Прогноз погоди v1.3</string>
 
     <string name="str_hourly_forecast">Погодинний прогноз</string>
     <string name="str_humidity">Вологість</string>

@@ -8,7 +8,7 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    @GET("data/2.5/onecall")
+    @GET("data/3.0/onecall")
     fun getWeatherForecast(
         @Query(QUERY_PARAM_LATITUDE) latitude: Double,
         @Query(QUERY_PARAM_LONGITUDE) longitude: Double,

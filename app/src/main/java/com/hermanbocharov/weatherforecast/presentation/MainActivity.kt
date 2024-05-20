@@ -7,21 +7,35 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.hermanbocharov.weatherforecast.R
+import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
 import com.hermanbocharov.weatherforecast.databinding.ActivityMainBinding
 import com.hermanbocharov.weatherforecast.presentation.fragments.CurrentWeatherFragment
 import com.hermanbocharov.weatherforecast.presentation.fragments.LocationFragment
 import com.hermanbocharov.weatherforecast.presentation.fragments.SettingsFragment
 import com.hermanbocharov.weatherforecast.presentation.fragments.WeatherForecastFragment
+import com.hermanbocharov.weatherforecast.utils.setAppLocale
+import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private val component by lazy {
+        (application as WeatherForecastApp).component
+    }
+
+    @Inject
+    lateinit var prefs: PreferenceManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        component.inject(this)
         setStatusBarGradiant(this)
+
+        if (savedInstanceState == null) {
+            setAppLocale(prefs.getSavedLocale())
+        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

@@ -1,7 +1,14 @@
 package com.hermanbocharov.weatherforecast.data.repository
 
 import com.hermanbocharov.weatherforecast.BuildConfig
-import com.hermanbocharov.weatherforecast.data.database.dao.*
+import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherDao
+import com.hermanbocharov.weatherforecast.data.database.dao.CurrentWeatherFullDataDao
+import com.hermanbocharov.weatherforecast.data.database.dao.DailyForecastDao
+import com.hermanbocharov.weatherforecast.data.database.dao.DailyForecastFullDataDao
+import com.hermanbocharov.weatherforecast.data.database.dao.HourlyForecastDao
+import com.hermanbocharov.weatherforecast.data.database.dao.HourlyForecastFullDataDao
+import com.hermanbocharov.weatherforecast.data.database.dao.LocationDao
+import com.hermanbocharov.weatherforecast.data.database.dao.WeatherConditionDao
 import com.hermanbocharov.weatherforecast.data.geolocation.FusedLocationDataSource
 import com.hermanbocharov.weatherforecast.data.mapper.OpenWeatherMapper
 import com.hermanbocharov.weatherforecast.data.network.NetworkManager
@@ -12,11 +19,12 @@ import com.hermanbocharov.weatherforecast.data.preferences.PreferenceManager
 import com.hermanbocharov.weatherforecast.domain.entities.CurrentWeather
 import com.hermanbocharov.weatherforecast.domain.entities.DailyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
+import com.hermanbocharov.weatherforecast.domain.entities.Language
 import com.hermanbocharov.weatherforecast.domain.entities.Location
 import com.hermanbocharov.weatherforecast.domain.repository.OpenWeatherRepository
 import com.hermanbocharov.weatherforecast.exception.NoInternetException
 import io.reactivex.rxjava3.core.Single
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -36,15 +44,18 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     private val prefs: PreferenceManager
 ) : OpenWeatherRepository {
 
+    private var currentLocale: String = ""
+
     override fun getCurrentWeather(): Single<CurrentWeather> {
         return if (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - prefs.getLastUpdateTime() < UPDATE_FREQUENCY
-            && getForecastLanguage() == prefs.getSavedLocale()
+            && currentLocale == prefs.getSavedLocale()
             && BuildConfig.VERSION_NAME == prefs.getAppVersion()
         ) {
             currentWeatherFullDataDao
                 .getCurrentWeatherFullData(getCurrentLocationId())
                 .map { mapper.mapEntityToCurrentWeatherDomain(it, getTemperatureUnit()) }
         } else {
+            currentLocale = prefs.getSavedLocale()
             if (networkManager.isNetworkAvailable()) {
                 loadWeatherForecastCurLoc()
                     .flatMap {
@@ -180,6 +191,11 @@ class OpenWeatherRepositoryImpl @Inject constructor(
 
     override fun getPressureUnit(): Int = prefs.getPressureUnit()
     override fun savePressureUnit(unitId: Int) = prefs.savePressureUnit(unitId)
+
+    override fun getAppLanguage(): Language =
+        requireNotNull(Language.fromString(prefs.getSavedLocale()))
+
+    override fun setAppLanguage(language: Language) = prefs.saveCurrentLocale(language.value)
 
     override fun setNewLocation(location: Location): Single<Unit> {
         return locationDao.getLocation(lat = location.lat, lon = location.lon)

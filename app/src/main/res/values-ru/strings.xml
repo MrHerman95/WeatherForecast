@@ -6,6 +6,7 @@
     <string name="str_location">Локация</string>
     <string name="str_weather_now">Сейчас</string>
     <string name="str_weather_forecast">Прогноз</string>
+    <string name="language">Язык приложения</string>
 
     <string name="str_location_full">%1$s, %2$s, %3$s</string>
     <string name="str_location_city_country">%1$s, %2$s</string>
@@ -58,7 +59,7 @@
     <string name="str_rate_desc">Пожалуйста, оцените приложение на 5 звезд, если оно вам нравится. Вам не сложно, нам приятно</string>
     <string name="str_share">Поделиться</string>
     <string name="str_share_desc">Пожалуйста, поделитесь приложением с друзьями, чтобы сделать его еще лучше</string>
-    <string name="str_app_name_version">Прогноз погоды v1.1</string>
+    <string name="str_app_name_version">Прогноз погоды v1.3</string>
 
     <string name="str_hourly_forecast">Почасовой прогноз</string>
     <string name="str_humidity">Влажность</string>

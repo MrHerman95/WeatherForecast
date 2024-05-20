@@ -14,7 +14,9 @@ import com.hermanbocharov.weatherforecast.domain.entities.HourlyForecast
 import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit.CELSIUS
 import com.hermanbocharov.weatherforecast.domain.entities.TemperatureUnit.FAHRENHEIT
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class HourlyForecastAdapter :
     ListAdapter<HourlyForecast, HourlyForecastAdapter.HourlyForecastViewHolder>(

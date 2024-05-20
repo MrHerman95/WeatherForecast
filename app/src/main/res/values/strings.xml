@@ -6,6 +6,11 @@
     <string name="str_location">Location</string>
     <string name="str_weather_now">Now</string>
     <string name="str_weather_forecast">Forecast</string>
+    <string name="language">App language</string>
+
+    <string name="english" translatable="false">English</string>
+    <string name="russian" translatable="false">Русский</string>
+    <string name="ukrainian" translatable="false">Українська</string>
 
     <string name="str_location_full">%1$s, %2$s, %3$s</string>
     <string name="str_location_city_country">%1$s, %2$s</string>
@@ -58,7 +63,7 @@
     <string name="str_rate_desc">Please rate the app with 5 stars if you like it. Easy for you, very helpful for us</string>
     <string name="str_share">Share</string>
     <string name="str_share_desc">Please share the app with your friends to make the app even better</string>
-    <string name="str_app_name_version">Weather Forecast v1.1</string>
+    <string name="str_app_name_version">Weather Forecast v1.3</string>
 
     <string name="str_hourly_forecast">Hourly forecast</string>
     <string name="str_humidity">Humidity</string>

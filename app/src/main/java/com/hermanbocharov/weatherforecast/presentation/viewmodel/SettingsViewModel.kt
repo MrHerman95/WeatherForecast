@@ -3,7 +3,17 @@ package com.hermanbocharov.weatherforecast.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.hermanbocharov.weatherforecast.domain.usecases.preferences.*
+import com.hermanbocharov.weatherforecast.domain.entities.Language
+import com.hermanbocharov.weatherforecast.domain.usecases.preferences.GetAppLanguageUseCase
+import com.hermanbocharov.weatherforecast.domain.usecases.preferences.GetPrecipitationUnitUseCase
+import com.hermanbocharov.weatherforecast.domain.usecases.preferences.GetPressureUnitUseCase
+import com.hermanbocharov.weatherforecast.domain.usecases.preferences.GetSpeedUnitUseCase
+import com.hermanbocharov.weatherforecast.domain.usecases.preferences.GetTemperatureUnitUseCase
+import com.hermanbocharov.weatherforecast.domain.usecases.preferences.SavePrecipitationUnitUseCase
+import com.hermanbocharov.weatherforecast.domain.usecases.preferences.SavePressureUnitUseCase
+import com.hermanbocharov.weatherforecast.domain.usecases.preferences.SaveSpeedUnitUseCase
+import com.hermanbocharov.weatherforecast.domain.usecases.preferences.SaveTemperatureUnitUseCase
+import com.hermanbocharov.weatherforecast.domain.usecases.preferences.SetAppLanguageUseCase
 import javax.inject.Inject
 
 class SettingsViewModel @Inject constructor(
@@ -14,7 +24,9 @@ class SettingsViewModel @Inject constructor(
     private val getSpeedUnitUseCase: GetSpeedUnitUseCase,
     private val saveSpeedUnitUseCase: SaveSpeedUnitUseCase,
     private val getPressureUnitUseCase: GetPressureUnitUseCase,
-    private val savePressureUnitUseCase: SavePressureUnitUseCase
+    private val savePressureUnitUseCase: SavePressureUnitUseCase,
+    private val setAppLanguageUseCase: SetAppLanguageUseCase,
+    private val getAppLanguageUseCase: GetAppLanguageUseCase
 ) : ViewModel() {
 
     private val _temperatureUnit = MutableLiveData<Int>()
@@ -33,11 +45,16 @@ class SettingsViewModel @Inject constructor(
     val pressureUnit: LiveData<Int>
         get() = _pressureUnit
 
+    private val _language = MutableLiveData<Language>()
+    val language: LiveData<Language>
+        get() = _language
+
     init {
         _temperatureUnit.value = getTemperatureUnitUseCase()
         _precipitationUnit.value = getPrecipitationUnitUseCase()
         _speedUnit.value = getSpeedUnitUseCase()
         _pressureUnit.value = getPressureUnitUseCase()
+        _language.value = getAppLanguageUseCase()
     }
 
     fun saveTemperatureUnit(unitId: Int) {
@@ -60,8 +77,14 @@ class SettingsViewModel @Inject constructor(
         _pressureUnit.value = getPressureUnitUseCase()
     }
 
+    fun setAppLanguage(language: Language) {
+        setAppLanguageUseCase(language)
+        _language.value = language
+    }
+
     fun getTemperatureUnit(): Int = getTemperatureUnitUseCase()
     fun getPrecipitationUnit(): Int = getPrecipitationUnitUseCase()
     fun getSpeedUnit(): Int = getSpeedUnitUseCase()
     fun getPressureUnit(): Int = getPressureUnitUseCase()
+    fun getAppLanguage(): Language = getAppLanguageUseCase()
 }

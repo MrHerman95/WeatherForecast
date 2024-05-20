@@ -87,7 +87,7 @@ class OpenWeatherMapper @Inject constructor() {
         locationId: Int
     ): List<HourlyForecastEntity> {
         val hourlyForecast = mutableListOf<HourlyForecastEntity>()
-        for (i in 0 until dto.hourly.size step 2) {
+        for (i in 0 until dto.hourly.size) {
             val item = HourlyForecastEntity(
                 forecastTime = dto.hourly[i].forecastTime,
                 locationId = locationId,

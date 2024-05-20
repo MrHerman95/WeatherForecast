@@ -56,6 +56,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
                 .map { mapper.mapEntityToCurrentWeatherDomain(it, getTemperatureUnit()) }
         } else {
             currentLocale = prefs.getSavedLocale()
+            prefs.saveAppVersion(BuildConfig.VERSION_NAME)
             if (networkManager.isNetworkAvailable()) {
                 loadWeatherForecastCurLoc()
                     .flatMap {
